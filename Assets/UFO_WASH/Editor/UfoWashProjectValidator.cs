@@ -32,6 +32,7 @@ namespace UFOWASH.Editor
             Require<UfoWashJobBoard>("Contract terminal", errors);
             Require<UfoWashSupplyStation>("Supply station", errors);
             Require<UfoWashCustomerShip>("Customer ship docking controller", errors);
+            Require<UfoWashCustomerNpc>("Interactive customer NPC", errors);
             Require<UfoWashHUD>("HUD", errors);
 
             var surfaces = Object.FindObjectsByType<UfoWashDirtSurface>(FindObjectsSortMode.None);
