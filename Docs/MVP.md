@@ -18,13 +18,13 @@
 
 - Stable first-person movement, camera and interaction.
 - One readable UFO silhouette with multiple cleanable surface zones.
-- Contract acceptance and state.
+- Contract acceptance, customer ship arrival/docking/departure and state.
 - Three distinct cleaning stages with stage gating.
 - Water and foam chemical consumption.
 - Paid supply refill interaction.
 - Surface-level dirt and foam feedback.
 - Cleanliness and supply HUD.
-- Completion and credit payout.
+- Final inspection submission, quality grade, quality bonus and credit payout.
 - One meaningful equipment upgrade.
 - Repeated contract reset/accept cycle.
 
