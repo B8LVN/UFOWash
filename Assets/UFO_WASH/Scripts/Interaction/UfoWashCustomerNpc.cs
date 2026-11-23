@@ -97,6 +97,11 @@ namespace UFOWASH
             SetMessage("Perfect service. I'll be back when the next route gets messy.", 8f);
         }
 
+        public void SetDialogueVisible(bool visible)
+        {
+            if (bubbleRoot != null) bubbleRoot.gameObject.SetActive(visible);
+        }
+
         void SetMessage(string message, float seconds)
         {
             currentMessage = message;
@@ -109,6 +114,7 @@ namespace UFOWASH
         {
             var canvasObject = new GameObject("CUSTOMER SPEECH // WORLD SPACE", typeof(RectTransform), typeof(Canvas), typeof(CanvasScaler));
             canvasObject.transform.SetParent(transform, false);
+            bubbleRoot = canvasObject.transform;
             canvasObject.transform.localPosition = Vector3.up * 3.0f;
             canvasObject.transform.localScale = Vector3.one * 0.01f;
 

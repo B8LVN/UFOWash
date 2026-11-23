@@ -73,3 +73,12 @@
 - Organized generated scene roots into eight named Hierarchy groups to make the project navigable.
 
 **QA status:** source committed only. Unity compile, scene regeneration, UI clicks, pause/resume, hierarchy output and Play Mode remain unverified. The environment is still a greybox/temporary art pass and is not being represented as finished.
+
+
+## 2026-11-23 — Local Unity stabilization check
+
+- Split scene-attached MonoBehaviours into matching files and repaired current Power Slice script references.
+- Suppressed world labels, HUD and customer dialogue while the title screen is open.
+- Observed a clean title screen in Unity 6.6.10f1 Play Mode; stopped cleanly.
+
+**QA:** latest compile has no errors after its log entry. Obsolete API warnings remain; full job loop and foam rendering are unverified; hangar is still greybox.

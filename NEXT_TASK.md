@@ -71,3 +71,7 @@ Confirm the project enters through a readable game menu, communicates the premis
 - No Unity compile, Play Mode or build test has been run by the remote source-editing session.
 
 Do not mark this task complete until the owner has tested and accepted it.
+
+
+## Current verification note (2026-11-23)
+Unity compile and title-menu Play Mode smoke check passed. Next task UW-103: art-direct Bay 01 and verify the full first cleaning job. Foam rendering, end-to-end payout and Windows build remain unverified.

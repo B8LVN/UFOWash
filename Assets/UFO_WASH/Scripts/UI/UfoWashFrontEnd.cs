@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
@@ -10,6 +11,7 @@ namespace UFOWASH
     /// Keeps the existing service bay as the 3D title backdrop, then hands control
     /// to the first-person game only after the player has read the briefing/tutorial.
     /// </summary>
+    [DefaultExecutionOrder(1000)]
     public sealed class UfoWashFrontEnd : MonoBehaviour
     {
         static readonly Color Ink = new Color(0.025f, 0.045f, 0.075f, 0.96f);
@@ -24,6 +26,11 @@ namespace UFOWASH
         UfoWashFirstPersonController playerController;
         UfoWashPlayerInteraction playerInteraction;
         UfoWashSprayTool sprayTool;
+        UfoWashHUD hud;
+        UfoWashCustomerNpc customerNpc;
+        readonly List<Renderer> hiddenWorldSigns = new List<Renderer>();
+        bool hudWasActive;
+        bool customerNpcWasEnabled;
         bool gameplayStarted;
 
         void Awake()
@@ -32,12 +39,34 @@ namespace UFOWASH
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
 
-            playerController = FindFirstObjectByType<UfoWashFirstPersonController>();
-            playerInteraction = FindFirstObjectByType<UfoWashPlayerInteraction>();
-            sprayTool = FindFirstObjectByType<UfoWashSprayTool>();
+            playerController = FindAnyObjectByType<UfoWashFirstPersonController>();
+            playerInteraction = FindAnyObjectByType<UfoWashPlayerInteraction>();
+            sprayTool = FindAnyObjectByType<UfoWashSprayTool>();
+            hud = FindAnyObjectByType<UfoWashHUD>();
+            customerNpc = FindAnyObjectByType<UfoWashCustomerNpc>();
             if (playerController != null) playerController.enabled = false;
             if (playerInteraction != null) playerInteraction.enabled = false;
             if (sprayTool != null) sprayTool.enabled = false;
+            if (hud != null)
+            {
+                hudWasActive = hud.gameObject.activeSelf;
+                hud.gameObject.SetActive(false);
+            }
+            if (customerNpc != null)
+            {
+                customerNpcWasEnabled = customerNpc.enabled;
+                customerNpc.SetDialogueVisible(false);
+                customerNpc.enabled = false;
+            }
+
+            TextMesh[] worldSigns = FindObjectsByType<TextMesh>();
+            for (int i = 0; i < worldSigns.Length; i++)
+            {
+                Renderer signRenderer = worldSigns[i].GetComponent<Renderer>();
+                if (signRenderer == null || !signRenderer.enabled) continue;
+                hiddenWorldSigns.Add(signRenderer);
+                signRenderer.enabled = false;
+            }
 
             EnsureEventSystem();
             BuildCanvas();
@@ -143,6 +172,14 @@ namespace UFOWASH
             gameplayStarted = true;
             if (pageRoot != null) Destroy(pageRoot.gameObject);
             Time.timeScale = 1f;
+            for (int i = 0; i < hiddenWorldSigns.Count; i++)
+                if (hiddenWorldSigns[i] != null) hiddenWorldSigns[i].enabled = true;
+            if (hud != null && hudWasActive) hud.gameObject.SetActive(true);
+            if (customerNpc != null)
+            {
+                customerNpc.enabled = customerNpcWasEnabled;
+                customerNpc.SetDialogueVisible(true);
+            }
             if (sprayTool != null) sprayTool.enabled = true;
             if (playerInteraction != null) playerInteraction.enabled = true;
             if (playerController != null)
@@ -171,7 +208,7 @@ namespace UFOWASH
             rect.anchorMin = Vector2.zero; rect.anchorMax = Vector2.one;
             rect.offsetMin = Vector2.zero; rect.offsetMax = Vector2.zero;
             var image = page.GetComponent<Image>();
-            image.color = new Color(.012f,.025f,.045f,.90f);
+            image.color = new Color(.012f,.025f,.045f,.96f);
             pageRoot = page.transform;
         }
 

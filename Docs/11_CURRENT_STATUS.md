@@ -70,3 +70,11 @@
 ## Next action
 
 Complete UW-102 in NEXT_TASK.md. Use the owner's Console and screenshots to fix any compile/runtime defects before the next environment-art and core-loop production pass.
+
+
+## Local Unity verification (2026-11-23)
+
+- Unity 6.6.10f1 imported the stabilization changes; latest compilation has no C# errors after its log entry. Obsolete API warnings remain.
+- Observed the title screen in Play Mode with HUD/signs/dialogue suppressed; stopped the run cleanly.
+- Split scene-attached MonoBehaviours into matching files and repaired Power Slice serialized references.
+- Foam/gameplay loop still needs fresh end-to-end verification. The station is procedural greybox and needs an art direction pass.
