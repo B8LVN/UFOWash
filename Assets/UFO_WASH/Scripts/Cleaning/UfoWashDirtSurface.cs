@@ -23,7 +23,7 @@ namespace UFOWASH
         Color[] originalColors;
         int[] colorProperties;
         readonly List<Renderer> foamPatches = new List<Renderer>(32);
-        static readonly MaterialPropertyBlock FoamBlock = new MaterialPropertyBlock();
+        static MaterialPropertyBlock foamBlock;
         float foamPatchTimer;
         Color contaminationTint = new Color(0.48f, 0.30f, 0.16f, 1f);
 
@@ -192,11 +192,14 @@ namespace UFOWASH
 
         static void SetPatchOpacity(Renderer patch, float amount)
         {
-            FoamBlock.Clear();
+            // UnityEngine.Object-backed rendering helpers must be constructed after
+            // Unity has entered its runtime lifecycle, never in a static field initializer.
+            if (foamBlock == null) foamBlock = new MaterialPropertyBlock();
+            foamBlock.Clear();
             Color color = new Color(0.82f, 0.97f, 1f, Mathf.Clamp01(amount) * 0.94f);
-            FoamBlock.SetColor(BaseColorId, color);
-            FoamBlock.SetColor(ColorId, color);
-            patch.SetPropertyBlock(FoamBlock);
+            foamBlock.SetColor(BaseColorId, color);
+            foamBlock.SetColor(ColorId, color);
+            patch.SetPropertyBlock(foamBlock);
         }
 
         void ClearFoamPatches()
