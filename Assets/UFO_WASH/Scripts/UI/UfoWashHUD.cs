@@ -123,9 +123,16 @@ namespace UFOWASH
                 stateText.text = career.LastMessage + "  //  CONTRACT COMPLETE  //  NEXT JOB AT TERMINAL";
                 stateText.color = new Color(.35f,1f,.62f);
             }
+            else if (!career.CanAcceptJob)
+            {
+                stateText.text = "CUSTOMER SHIP IN TRANSIT  //  STAND BY FOR DOCKING";
+                stateText.color = new Color(.35f,.78f,1f);
+            }
             else
             {
-                stateText.text = "NEW CONTRACT AVAILABLE  //  FIND THE TERMINAL AND PRESS E";
+                stateText.text = JobComplete
+                    ? "VESSEL CERTIFIED  //  NEXT CUSTOMER DOCKED  //  ACCEPT AT TERMINAL"
+                    : "NEW CONTRACT AVAILABLE  //  ACCEPT AT THE CONTRACT TERMINAL";
                 stateText.color = new Color(1f,.72f,.28f);
             }
         }
