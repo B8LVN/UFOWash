@@ -107,9 +107,12 @@ namespace UFOWASH.Editor
             player.transform.position = new Vector3(0,0,-12.5f);
             var cc=player.AddComponent<CharacterController>(); cc.height=1.8f; cc.radius=.34f; cc.center=new Vector3(0,.9f,0);
             BuildPlayerCharacter(player.transform);
-            var pivot=new GameObject("Over Shoulder Camera Pivot"); pivot.transform.SetParent(player.transform); pivot.transform.localPosition=new Vector3(0,1.52f,0); pivot.transform.localRotation=Quaternion.Euler(5f,0f,0f);
-            var camGo=new GameObject("Main Camera"); camGo.tag="MainCamera"; camGo.transform.SetParent(pivot.transform); camGo.transform.localPosition=new Vector3(0,.42f,-4.6f);
-            var cam=camGo.AddComponent<Camera>(); cam.fieldOfView=62; cam.nearClipPlane=.05f; cam.farClipPlane=120;
+            var pivot=new GameObject("First Person Camera Pivot"); pivot.transform.SetParent(player.transform); pivot.transform.localPosition=new Vector3(0,1.62f,0); pivot.transform.localRotation=Quaternion.identity;
+            var camGo=new GameObject("Main Camera"); camGo.tag="MainCamera"; camGo.transform.SetParent(pivot.transform); camGo.transform.localPosition=Vector3.zero;
+            var cam=camGo.AddComponent<Camera>(); cam.fieldOfView=76; cam.nearClipPlane=.05f; cam.farClipPlane=120;
+            // Hide the temporary third-person body mesh in first-person view and show a dedicated tool viewmodel.
+            foreach (var bodyRenderer in player.GetComponentsInChildren<Renderer>(true)) bodyRenderer.enabled = false;
+            BuildFirstPersonTool(camGo.transform);
             var cameraData=camGo.GetComponent<UniversalAdditionalCameraData>(); if(cameraData==null) cameraData=camGo.AddComponent<UniversalAdditionalCameraData>(); cameraData.renderPostProcessing=true;
             camGo.AddComponent<AudioListener>();
             var controller=player.AddComponent<UfoWashFirstPersonController>(); Set(controller,"cameraPivot",pivot);
@@ -298,6 +301,21 @@ R: reset the active contract",
             // Disable decorative suit-part colliders only. Keep the root CharacterController active.
             foreach (var collider in root.GetComponentsInChildren<Collider>(true))
                 if (!(collider is CharacterController)) collider.enabled = false;
+        }
+
+        static void BuildFirstPersonTool(Transform cameraRoot)
+        {
+            var root = new GameObject("FIRST PERSON ION WASHER VIEWMODEL");
+            root.transform.SetParent(cameraRoot, false);
+            root.transform.localPosition = Vector3.zero;
+            Part(root, "Washer body", PrimitiveType.Cube, new Vector3(.36f,-.30f,.58f), new Vector3(.19f,.16f,.42f), matBlue);
+            Part(root, "Washer upper housing", PrimitiveType.Cube, new Vector3(.36f,-.205f,.60f), new Vector3(.14f,.045f,.28f), matMetal);
+            Part(root, "Washer grip", PrimitiveType.Cube, new Vector3(.36f,-.405f,.48f), new Vector3(.11f,.19f,.13f), matDark);
+            Part(root, "Washer barrel", PrimitiveType.Cylinder, new Vector3(.36f,-.29f,.88f), new Vector3(.055f,.22f,.055f), matMetal);
+            root.transform.Find("Washer barrel").localRotation = Quaternion.Euler(90f,0f,0f);
+            Part(root, "Washer nozzle", PrimitiveType.Sphere, new Vector3(.36f,-.29f,1.00f), new Vector3(.105f,.105f,.105f), matGlow);
+            Part(root, "Washer pressure gauge", PrimitiveType.Cylinder, new Vector3(.43f,-.205f,.56f), new Vector3(.045f,.025f,.045f), matOrange);
+            foreach (var collider in root.GetComponentsInChildren<Collider>(true)) collider.enabled = false;
         }
 
         static void EnsureFoldersAndMaterials() {
