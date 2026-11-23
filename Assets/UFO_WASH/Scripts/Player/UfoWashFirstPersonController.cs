@@ -19,6 +19,7 @@ namespace UFOWASH
         float pitch, verticalVelocity;
         bool inputSuspended;
         bool isCleaningView;
+        bool discardMouseDelta;
 
         public bool IsCleaningView => isCleaningView;
 
@@ -28,6 +29,7 @@ namespace UFOWASH
             Cursor.lockState = suspended ? CursorLockMode.None : CursorLockMode.Locked;
             Cursor.visible = suspended;
             if (suspended) ApplyView(false);
+            else discardMouseDelta = true;
         }
 
         void Awake()
@@ -80,7 +82,8 @@ namespace UFOWASH
             }
             if (Cursor.lockState != CursorLockMode.Locked) return;
 
-            Vector2 mouse = Mouse.current.delta.ReadValue() * mouseSensitivity;
+            Vector2 mouse = discardMouseDelta ? Vector2.zero : Mouse.current.delta.ReadValue() * mouseSensitivity;
+            discardMouseDelta = false;
             pitch = Mathf.Clamp(pitch - mouse.y, -72f, 72f);
             cameraPivot.localRotation = Quaternion.Euler(pitch, 0f, 0f);
             transform.Rotate(Vector3.up * mouse.x);
@@ -131,4 +134,7 @@ namespace UFOWASH
         }
     }
 }
+
+
+
 
