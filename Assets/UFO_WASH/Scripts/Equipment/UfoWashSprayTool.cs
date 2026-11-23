@@ -10,6 +10,7 @@ namespace UFOWASH
         public float cleanPerSecond = 0.38f;
         public float sprayRadius = 0.35f;
         public bool spraying;
+        public UfoWashToolMode selectedMode = UfoWashToolMode.PreRinse;
 
         ParticleSystem sprayParticles;
         ParticleSystem impactParticles;
@@ -24,6 +25,13 @@ namespace UFOWASH
 
         void Update()
         {
+            if (Keyboard.current != null)
+            {
+                if (Keyboard.current.digit1Key.wasPressedThisFrame) selectedMode = UfoWashToolMode.PreRinse;
+                if (Keyboard.current.digit2Key.wasPressedThisFrame) selectedMode = UfoWashToolMode.Foam;
+                if (Keyboard.current.digit3Key.wasPressedThisFrame) selectedMode = UfoWashToolMode.FinalRinse;
+            }
+
             spraying = Mouse.current != null &&
                 Mouse.current.leftButton.isPressed &&
                 Cursor.lockState == CursorLockMode.Locked;
@@ -49,7 +57,12 @@ namespace UFOWASH
                     hit.collider.transform.IsChildOf(transform)) continue;
 
                 var dirt = hit.collider.GetComponentInParent<UfoWashDirtSurface>();
-                if (dirt != null) dirt.Clean(cleanPerSecond * Time.deltaTime);
+                if (dirt != null)
+                {
+                    var loop = UfoWashCareerLoop.Instance;
+                    if (loop != null) loop.ApplyTool(dirt, selectedMode, Time.deltaTime);
+                    else dirt.Process(selectedMode, Time.deltaTime);
+                }
 
                 if (impactParticles != null && Time.time >= nextImpactTime)
                 {
