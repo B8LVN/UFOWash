@@ -1,45 +1,80 @@
 # UFO WASH — Current Project Status
 
 **Last updated:** 2026-11-23  
-**Overall state:** Documentation baseline created; existing Unity implementation is UNVERIFIED.  
-**Current milestone:** M0 — Audit & Pre-production.  
-**Current task:** UW-000 — Audit Existing UFO WASH Unity Project and Establish a Verified Baseline.
+**Overall state:** Core gameplay recovery pass committed to GitHub; Unity compile and Play Mode verification still outstanding.  
+**Current milestone:** M2 — Core Cleaning Loop Recovery.  
+**Current task:** UW-101 — Owner playtest of foam, contract board and customer interaction.
 
-## Verified from owner-provided conversation context
+## Verified repository baseline
 
-- The project concept is UFO WASH and must remain UFO WASH.
-- The intended experience is an immersive first-person alien spacecraft cleaning/service business simulation.
-- The desired progression includes manual work, earning and reinvesting money, equipment/facility upgrades, hiring, automation and business expansion.
-- Moon Sweepers and Schedule I are high-level design references for tactile work, progression, reinvestment, business growth and automation.
-- Hardware: AMD Ryzen 5 5600, NVIDIA RTX 3060 12GB, 16GB RAM.
-- Owner reported installing Unity 6.6, Visual Studio, Git and GitHub. Exact Unity patch and module/workload status still need local verification.
+- Repository: `B8LVN/UFOWash`, default branch `main`.
+- Unity Editor version: **6000.6.10f1**.
+- Packages: URP **17.6.0**, Input System **1.20.1**, uGUI **2.6.0**.
+- Scenes present: `UFO_WASH_Playable`, `UFO_WASH_PowerSlice`, `UFO_WASH_Prototype`.
+- Kenney Space Kit 2.0 model and sprite files are committed under `Assets/UFO_WASH/Art/Imported/KenneySpaceKit`.
+- Included `License.txt` states CC0 and permits commercial use.
+- Scene builder selects imported `craft_speederA` spacecraft and `alien` customer when available.
+- Main systems exist for first-person movement, cleaning, customer ship movement, contracts, supplies, HUD and washer upgrades.
+
+## Owner-reported state
+
+- The UFO model is now visible in Play Mode.
+- The prior foam implementation was not visibly coating the UFO.
+- The contract selector looked poor and offered no satisfying job choice.
+- The customer model was present but did not meaningfully participate.
+- The overall gameplay loop still felt unclear and unsatisfying.
+
+These are owner playtest observations, not inferences from code.
+
+## Source changes in the latest recovery pass
+
+- Added persistent local foam patches at spray impact points; final rinse fades/removes them.
+- Added three contract offers with distinct briefs, contamination profiles and payouts.
+- Added a full-screen contract selection board with mouse UI input.
+- Added an interactive customer NPC with idle attention, dialogue and job-state reactions.
+- Paused player movement and world interaction while the contract board is open.
+- Added the interactive customer to the generated scene and validator.
+
+## Current implementation status
+
+| Area | Status |
+|---|---|
+| Imported UFO model | Owner confirms visible |
+| First-person controller | Source exists; feel not independently tested |
+| Ship arrival/docking | Source exists; runtime behaviour unverified |
+| Local foam patches | Implemented in source; visual result unverified |
+| Contract board | Implemented in source; button input/layout unverified |
+| Customer NPC interaction | Implemented in source; collider/dialogue presentation unverified |
+| Job completion and payout | Source exists; full loop unverified |
+| Save/load | Not implemented in inspected gameplay source |
+| Employees/automation | Not implemented in inspected gameplay source |
+| Audio pass | Not implemented in inspected gameplay source |
+| Production-ready art pass | Not accepted; builder still creates much of the station from procedural primitive geometry |
 
 ## Not yet verified
 
-- Current Unity project repository contents and branch.
-- Exact Unity Editor patch.
-- URP project configuration.
-- Android modules (not immediately required for the PC vertical slice).
-- Visual Studio Unity workload/integration.
-- Current scenes, prefabs, scripts and packages.
-- Actual screenshots/builds/gameplay and current defects.
-- Whether GitHub repository has been initialized and pushed.
-- Current level of functional gameplay, save system, economy or automation.
-
-## User-reported quality concerns
-
-The owner described previous output as too poor/primitive and not sufficiently playable. This is a verified user-reported concern, but the technical root causes are unknown until the audit.
+- Unity compilation after the latest commits.
+- Automatic scene refresh after builder script import.
+- Foam patch rendering on the imported spacecraft in Play Mode.
+- Contract board mouse input and cursor restoration.
+- NPC raycast interaction, speech bubble readability and reactions.
+- Complete job loop from offer selection through inspection and payout.
+- Console cleanliness, Windows build and performance.
+- Visual quality at actual gameplay camera height.
 
 ## Current blockers
 
-1. Need access to the actual Unity project/repository or a project ZIP.
-2. Need current screenshots or a gameplay recording to assess visual/playability concerns.
-3. Need Console errors/logs if present.
+1. Owner must pull latest `main` and run `Docs/QA_TEST_PLAN.md`.
+2. Need screenshots/recording of the UFO with foam applied and the contract board open.
+3. Need the first Unity Console compile/runtime error if any.
 
-## Do not assume
+## Working rules
 
-Do not assume any feature is implemented, broken or working until inspected. Do not rewrite existing code or discard scenes/assets before the audit.
+- GitHub repository is the canonical project memory.
+- Distinguish code committed from code compiled, runtime-tested and owner-accepted.
+- Do not add more disconnected systems before the owner tests this recovery pass.
+- Keep UFO WASH; improve execution rather than changing the concept.
 
 ## Next action
 
-Complete UW-000 as defined in `NEXT_TASK.md` and create `docs/reports/PROJECT_AUDIT_001.md`.
+Complete UW-101 in `NEXT_TASK.md`; report test evidence and update this status before starting another feature.
