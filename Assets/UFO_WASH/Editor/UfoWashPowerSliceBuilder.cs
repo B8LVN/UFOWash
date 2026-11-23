@@ -142,7 +142,7 @@ namespace UFOWASH.Editor
             var scenes=new List<EditorBuildSettingsScene>(EditorBuildSettings.scenes);
             scenes.RemoveAll(s=>s.path==ScenePath); scenes.Insert(0,new EditorBuildSettingsScene(ScenePath,true)); EditorBuildSettings.scenes=scenes.ToArray();
             Selection.activeObject=AssetDatabase.LoadAssetAtPath<SceneAsset>(ScenePath);
-            EditorUtility.DisplayDialog("UFO WASH POWER SLICE BUILT","A new full art-pass scene was created. Open UFO_WASH_PowerSlice and press Play.\n\nWASD + mouse: move/look\nHold left mouse: wash UFO\nAim at upgrade console + E: buy upgrade\nR: reset job","LET'S PLAY");
+            EditorUtility.DisplayDialog("UFO WASH POWER SLICE BUILT","A new full art-pass scene was created. Open UFO_WASH_PowerSlice and press Play.\n\nWASD + mouse: move/look\nFind the CONTRACTS terminal and press E to accept a customer\nHold left mouse: spray and clean the UFO\nAim at upgrade console + E: buy sprayer upgrades\nR: reset the active contract","LET'S PLAY");
         }
 
         static GameObject SpawnImportedModel(string assetName, Vector3 position, Quaternion rotation, float scale, bool washable) {
