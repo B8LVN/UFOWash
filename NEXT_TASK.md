@@ -75,3 +75,7 @@ Do not mark this task complete until the owner has tested and accepted it.
 
 ## Current verification note (2026-11-23)
 Unity compile and title-menu Play Mode smoke check passed. Next task UW-103: art-direct Bay 01 and verify the full first cleaning job. Foam rendering, end-to-end payout and Windows build remain unverified.
+
+
+## Current implementation note (2026-11-23)
+Camera/NPC readability source pass compiled; title and third-person opening observed. Next: verify first-person spray transition and alien appearance, remove oversized world signage, then deliver one complete cleaning job. The scene remains an unfinished prototype; do not mark done.

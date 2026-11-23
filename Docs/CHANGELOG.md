@@ -82,3 +82,11 @@
 - Observed a clean title screen in Unity 6.6.10f1 Play Mode; stopped cleanly.
 
 **QA:** latest compile has no errors after its log entry. Obsolete API warnings remain; full job loop and foam rendering are unverified; hangar is still greybox.
+
+
+## 2026-11-23 — Camera and NPC readability pass
+- Set the player camera to third-person for station exploration and gated first-person view on an accepted wash job while aiming at a washable hull.
+- Hide camera-mounted washer model in third-person and restore the spacer body; show the washer only in cleaning view.
+- Apply safe teal/dark materials to imported alien renderer slots and lower/enlarge customer dialogue for easier reading.
+
+**QA:** Unity compilation completed without C# errors; title/briefing/tutorial flow and third-person gameplay were observed. First-person transition, NPC final materials/dialogue in scene, full cleaning job and visuals need further verification.

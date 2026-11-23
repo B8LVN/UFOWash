@@ -49,3 +49,9 @@ Do not promote P2/P3 work before the manual job loop is understood, enjoyable an
 ## UW-102 local verification follow-up (2026-11-23)
 
 Compile and menu Play Mode smoke check passed in Unity 6.6.10f1. Full cleaning job needs fresh end-to-end verification. Next priority: UW-103 art-directed hangar and complete first job. Scene remains greybox.
+
+
+## UW-103 camera/NPC follow-up (2026-11-23)
+- Implemented conditional station third-person and washer first-person mode; hide tool in third-person.
+- Attempted alien material and bubble readability fixes.
+- Unity compile and opening/third-person view checked. First-person and alien result still unverified; environment/UI remain greybox. Continue with focused visual validation and first-job gameplay.

@@ -68,7 +68,7 @@ namespace UFOWASH
                 {
                     Vector3 toCamera = playerCamera.position - bubbleRoot.position;
                     if (toCamera.sqrMagnitude > 0.01f)
-                        bubbleRoot.rotation = Quaternion.LookRotation(toCamera.normalized);
+                        bubbleRoot.rotation = Quaternion.LookRotation(toCamera.normalized, Vector3.up);
                 }
             }
         }
@@ -115,14 +115,14 @@ namespace UFOWASH
             var canvasObject = new GameObject("CUSTOMER SPEECH // WORLD SPACE", typeof(RectTransform), typeof(Canvas), typeof(CanvasScaler));
             canvasObject.transform.SetParent(transform, false);
             bubbleRoot = canvasObject.transform;
-            canvasObject.transform.localPosition = Vector3.up * 3.0f;
-            canvasObject.transform.localScale = Vector3.one * 0.01f;
+            canvasObject.transform.localPosition = Vector3.up * 2.55f;
+            canvasObject.transform.localScale = Vector3.one * 0.008f;
 
             var canvas = canvasObject.GetComponent<Canvas>();
             canvas.renderMode = RenderMode.WorldSpace;
             canvas.sortingOrder = 30;
             var canvasRect = canvasObject.GetComponent<RectTransform>();
-            canvasRect.sizeDelta = new Vector2(520f, 130f);
+            canvasRect.sizeDelta = new Vector2(440f, 116f);
 
             var backgroundObject = new GameObject("Speech Bubble Panel", typeof(RectTransform), typeof(Image));
             backgroundObject.transform.SetParent(canvasObject.transform, false);
@@ -139,16 +139,17 @@ namespace UFOWASH
             var textRect = textObject.GetComponent<RectTransform>();
             textRect.anchorMin = Vector2.zero;
             textRect.anchorMax = Vector2.one;
-            textRect.offsetMin = new Vector2(18f, 12f);
-            textRect.offsetMax = new Vector2(-18f, -12f);
+            textRect.offsetMin = new Vector2(24f, 16f);
+            textRect.offsetMax = new Vector2(-24f, -16f);
             bubbleText = textObject.GetComponent<Text>();
             bubbleText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
-            bubbleText.fontSize = 26;
+            bubbleText.fontSize = 30;
             bubbleText.fontStyle = FontStyle.Bold;
             bubbleText.color = new Color(0.78f, 0.95f, 1f);
-            bubbleText.alignment = TextAnchor.MiddleCenter;
+            bubbleText.alignment = TextAnchor.MiddleLeft;
             bubbleText.horizontalOverflow = HorizontalWrapMode.Wrap;
             bubbleText.verticalOverflow = VerticalWrapMode.Overflow;
         }
     }
 }
+

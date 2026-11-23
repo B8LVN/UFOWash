@@ -71,3 +71,7 @@ Append one entry at the end of every meaningful development session. This is a c
 - **Not tested:** Unity compilation, scene generation, UI event routing, Play Mode, cursor transition, foam rendering or Windows build.
 - **Defects/risks:** Verify default Input System UI actions in Unity; verify front-end font availability and UI scaling; verify hierarchy groups preserve world transforms; confirm the original exception no longer occurs.
 - **Next task:** UW-102 — Owner playtest of runtime fix, title menu, story/tutorial and hierarchy.
+
+
+## 2026-11-23 — Camera and presentation stabilization
+Pulled origin/main (already current). Updated third-person exploration camera, conditional first-person washer mode, player/tool visibility, alien material assignment and dialogue placement. Unity compile succeeded; observed title/briefing/tutorial and third-person gameplay. The working scene still has obvious oversized labels and greybox environment; the complete loop and first-person transition remain unverified. Do not mark the demo complete.

@@ -38,10 +38,14 @@ namespace UFOWASH.Editor
             RenderSettings.ambientLight = new Color(.38f,.43f,.52f);
             RenderSettings.fog = true; RenderSettings.fogColor = new Color(.075f,.095f,.13f); RenderSettings.fogDensity = .006f;
             SetupPostProcessing();
+            BuildOuterRimVista();
 
             // Main industrial hangar shell
             Cube("Polished graphite floor", new Vector3(0,-.25f,3), new Vector3(26,.5f,34), matFloor);
-            Cube("Rear bulkhead", new Vector3(0,6,19.5f), new Vector3(26,12,.7f), matWall);
+            Cube("Rear bulkhead left", new Vector3(-11,6,19.5f), new Vector3(4,12,.7f), matWall);
+            Cube("Rear bulkhead right", new Vector3(11,6,19.5f), new Vector3(4,12,.7f), matWall);
+            Cube("Rear bulkhead lintel", new Vector3(0,11,19.5f), new Vector3(18,2,.7f), matWall);
+            Cube("Bay 01 outer shield sill", new Vector3(0,1,19.5f), new Vector3(18,2,.7f), matMetal);
             Cube("Left bulkhead", new Vector3(-13,6,3), new Vector3(.7f,12,33), matWall);
             Cube("Right bulkhead", new Vector3(13,6,3), new Vector3(.7f,12,33), matWall);
             Cube("Ceiling", new Vector3(0,12,3), new Vector3(26,.5f,33), matDark);
@@ -135,7 +139,7 @@ namespace UFOWASH.Editor
             }
             // Player starts facing the UFO; tool and interaction
             var player = new GameObject("PLAYER // CUSTOM SPACER SUIT");
-            player.transform.position = new Vector3(0,0,-12.5f);
+            player.transform.position = new Vector3(0,0,-9.5f);
             var cc=player.AddComponent<CharacterController>(); cc.height=1.8f; cc.radius=.34f; cc.center=new Vector3(0,.9f,0);
             BuildPlayerCharacter(player.transform);
             var pivot=new GameObject("First Person Camera Pivot"); pivot.transform.SetParent(player.transform); pivot.transform.localPosition=new Vector3(0,1.62f,0); pivot.transform.localRotation=Quaternion.identity;
@@ -314,7 +318,7 @@ Left mouse: operate washer",
                 instance.transform.localScale = Vector3.one * scale;
             }
 
-            if (assetName != "alien") {
+            {
                 foreach (var renderer in renderers) {
                     // Imported meshes can have several material slots. Replacing only
                     // sharedMaterial fixes slot zero and leaves the remaining slots magenta.
@@ -329,7 +333,8 @@ Left mouse: operate washer",
                         string partName = renderer.gameObject.name.ToLowerInvariant();
                         string semantic = materialName + " " + partName;
 
-                        if (semantic.Contains("glass") || semantic.Contains("window") ||
+                        if (assetName == "alien") safeMaterials[slot] = semantic.Contains("eye") ? matDark : matCyan;
+                        else if (semantic.Contains("glass") || semantic.Contains("window") ||
                             semantic.Contains("canopy") || semantic.Contains("cockpit"))
                             safeMaterials[slot] = matGlass;
                         else if (semantic.Contains("light") || semantic.Contains("engine") ||
@@ -430,6 +435,51 @@ Left mouse: operate washer",
             foreach (var collider in root.GetComponentsInChildren<Collider>(true)) collider.enabled = false;
         }
 
+        static void BuildOuterRimVista()
+        {
+            // The service bay opens onto a settlement carved into the Vesper Belt.
+            // Keep the skyline beyond the bay opening so the station reads as one place in a larger world.
+            var ground = Cube("VESPER BELT // BASALT APRON", new Vector3(0,-1.3f,30), new Vector3(90,1.4f,80), matDark);
+            ground.GetComponent<Renderer>().sharedMaterial = matWall;
+            for (int i = 0; i < 13; i++)
+            {
+                float x = -34 + i * 5.7f;
+                float height = 8f + Mathf.PerlinNoise(i * .41f, .73f) * 15f;
+                float depth = 5f + Mathf.PerlinNoise(.24f, i * .39f) * 8f;
+                var mesa = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                mesa.name = "VESPER BELT // DISTANT BASALT MESA";
+                mesa.transform.position = new Vector3(x, height * .45f - .6f, 43f + (i % 3) * 5f);
+                mesa.transform.localScale = new Vector3(4.2f + (i % 4), height, depth);
+                mesa.transform.rotation = Quaternion.Euler(0, (i * 37) % 360, (i % 2 == 0 ? 1 : -1) * (3 + i % 5));
+                mesa.GetComponent<Renderer>().sharedMaterial = (i % 3 == 0) ? matBlue : matWall;
+                Object.DestroyImmediate(mesa.GetComponent<Collider>());
+            }
+            var planet = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            planet.name = "VESPER // RINGED GAS GIANT";
+            planet.transform.position = new Vector3(-23, 29, 72);
+            planet.transform.localScale = new Vector3(29, 29, 5);
+            planet.GetComponent<Renderer>().sharedMaterial = matBlue;
+            Object.DestroyImmediate(planet.GetComponent<Collider>());
+            var ring = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+            ring.name = "VESPER // PLANETARY RING";
+            ring.transform.position = planet.transform.position + Vector3.forward * 2.8f;
+            ring.transform.localScale = new Vector3(21, .035f, 21);
+            ring.transform.rotation = Quaternion.Euler(18, 0, 18);
+            ring.GetComponent<Renderer>().sharedMaterial = matOrange;
+            Object.DestroyImmediate(ring.GetComponent<Collider>());
+            for (int i = 0; i < 24; i++)
+            {
+                float x = -38 + (i * 13 % 76);
+                float y = 2 + (i * 17 % 24);
+                float z = 25 + (i * 19 % 48);
+                var beacon = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                beacon.name = "VESPER SETTLEMENT // DISTANT BEACON";
+                beacon.transform.position = new Vector3(x,y,z);
+                beacon.transform.localScale = Vector3.one * (.12f + (i % 3) * .05f);
+                beacon.GetComponent<Renderer>().sharedMaterial = (i % 4 == 0) ? matOrange : matGlow;
+                Object.DestroyImmediate(beacon.GetComponent<Collider>());
+            }
+        }
         static void EnsureFoldersAndMaterials() {
             foreach(string f in new[]{"Assets/UFO_WASH/Art/Materials","Assets/UFO_WASH/Scenes"}) if(!AssetDatabase.IsValidFolder(f)) System.IO.Directory.CreateDirectory(f);
             matFloor=MakeMat("PS_Floor",new Color(.055f,.075f,.105f),.82f);
@@ -600,3 +650,9 @@ Left mouse: operate washer",
     }
 }
 #endif
+
+
+
+
+
+

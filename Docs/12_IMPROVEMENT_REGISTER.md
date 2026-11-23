@@ -32,3 +32,9 @@ Use this file to track recurring quality gaps, what must improve, what has chang
 ## Completion rule
 
 Keep original rows and update status/evidence; do not erase failed attempts. Record meaningful changes in `Docs/CHANGELOG.md` and `Docs/13_SESSION_LOG.md`.
+
+
+## 2026-11-23 — Camera/NPC readability follow-up
+- Issue: player camera could enter first-person on any mouse hold and the camera child tool stayed visible in third-person; alien materials and speech placement were poor.
+- Change: gate close-up on accepted-job washable-surface aim; toggle body and tool renderers by mode; normalize alien materials; lower and enlarge dialogue canvas.
+- Verification: compiled in Unity; observed opening and third-person player. First-person transition, alien material and dialogue final appearance still need focused visual verification.

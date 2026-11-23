@@ -78,3 +78,11 @@ Complete UW-102 in NEXT_TASK.md. Use the owner's Console and screenshots to fix 
 - Observed the title screen in Play Mode with HUD/signs/dialogue suppressed; stopped the run cleanly.
 - Split scene-attached MonoBehaviours into matching files and repaired Power Slice serialized references.
 - Foam/gameplay loop still needs fresh end-to-end verification. The station is procedural greybox and needs an art direction pass.
+
+
+## Camera/dialogue stabilization (2026-11-23)
+- Unity compiled the controller, NPC presentation and scene-builder changes without C# errors after the latest compile.
+- In Play Mode, verified the opening flow and observed the astronaut in third-person station mode.
+- The gun remains hidden in third-person by code; first-person while aiming at a washable hull is not yet verified in Play Mode.
+- Alien material fix and dialogue readability change compiled; their final in-game appearance still requires a focused verification pass.
+- The world and oversized signage remain greybox quality; this is not a finished demo.
