@@ -148,6 +148,7 @@ namespace UFOWASH
 
             var patch = GameObject.CreatePrimitive(PrimitiveType.Sphere);
             patch.name = "FOAM PATCH // LIVE APPLICATION";
+            patch.layer = 2; // Ignore Raycast: foam must not become a spray obstruction.
             var collider = patch.GetComponent<Collider>();
             if (collider != null) Destroy(collider);
 
