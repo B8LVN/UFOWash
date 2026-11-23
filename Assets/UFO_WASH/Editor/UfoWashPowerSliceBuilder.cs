@@ -186,6 +186,10 @@ namespace UFOWASH.Editor
             Sign("SUPPLIES // 65 CR", new Vector3(-3.5f,2.42f,-10.75f), .24f, matWhite);
 
             var hud=new GameObject("GAME HUD"); hud.AddComponent<UfoWashHUD>();
+            var frontEnd = new GameObject("GAME FRONT END // STORY + TUTORIAL");
+            frontEnd.AddComponent<UfoWashFrontEnd>();
+
+            OrganizeHierarchy(scene);
             EditorSceneManager.SaveScene(scene,ScenePath);
             var scenes=new List<EditorBuildSettingsScene>(EditorBuildSettings.scenes);
             scenes.RemoveAll(s=>s.path==ScenePath); scenes.Insert(0,new EditorBuildSettingsScene(ScenePath,true)); EditorBuildSettings.scenes=scenes.ToArray();
@@ -201,6 +205,46 @@ Left mouse: operate washer",
                     "PLAY");
             else
                 Debug.Log("UFO WASH: generated scene rebuilt and opened automatically after builder changes.");
+        }
+
+        static void OrganizeHierarchy(Scene scene)
+        {
+            // Keep the generated scene readable in the Hierarchy. Preserve world transforms
+            // while moving every generated root into a named, stable subsystem container.
+            var roots = scene.GetRootGameObjects();
+            Transform world = CreateGroup("00 // HANGAR ARCHITECTURE");
+            Transform equipment = CreateGroup("01 // SERVICE EQUIPMENT & STORAGE");
+            Transform vessel = CreateGroup("02 // CUSTOMER VESSEL");
+            Transform customers = CreateGroup("03 // CUSTOMERS & NPC");
+            Transform player = CreateGroup("04 // PLAYER");
+            Transform systems = CreateGroup("05 // GAMEPLAY SYSTEMS");
+            Transform lighting = CreateGroup("06 // LIGHTING & POST PROCESSING");
+            Transform interfaceRoot = CreateGroup("07 // UI & FRONT END");
+
+            foreach (var root in roots)
+            {
+                if (root == null) continue;
+                string n = root.name.ToLowerInvariant();
+                Transform target = world;
+                if (n.StartsWith("player")) target = player;
+                else if (n.Contains("global volume") || n.Contains("light")) target = lighting;
+                else if (n.Contains("imported 3d model // craft") || n.Contains("customer ufo")) target = vessel;
+                else if (n.Contains("alien customer") || n.Contains("imported 3d model // alien") || n.Contains("sign // customer")) target = customers;
+                else if (n.Contains("game front end") || n.Contains("game hud") || n.Contains("front end")) target = interfaceRoot;
+                else if (n.Contains("career loop") || n.Contains("contract terminal")) target = systems;
+                else if (n.Contains("terminal") || n.Contains("supply") || n.Contains("upgrade") ||
+                    n.Contains("chemical drum") || n.Contains("drum lid") || n.Contains("drum hazard") ||
+                    n.Contains("gantry") || n.Contains("spray nozzle") || n.Contains("nozzle hose") ||
+                    n.Contains("washer") || n.Contains("hose reel")) target = equipment;
+
+                root.transform.SetParent(target, true);
+            }
+        }
+
+        static Transform CreateGroup(string groupName)
+        {
+            var group = new GameObject(groupName);
+            return group.transform;
         }
 
         static GameObject SpawnImportedModel(string assetName, Vector3 position, Quaternion rotation, float scale, bool washable) {
