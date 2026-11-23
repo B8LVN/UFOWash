@@ -68,6 +68,9 @@ namespace UFOWASH
                     hit.collider.transform.IsChildOf(transform)) continue;
 
                 var dirt = hit.collider.GetComponentInParent<UfoWashDirtSurface>();
+                if (dirt == null && hit.collider.GetComponentInParent<UfoWashCustomerShip>() != null)
+                    continue; // Decorative ship hardware must not block the washable hull behind it.
+
                 if (dirt != null)
                 {
                     var loop = UfoWashCareerLoop.Instance;
