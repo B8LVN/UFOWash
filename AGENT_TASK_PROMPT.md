@@ -6,7 +6,7 @@ Copy this prompt into the development conversation whenever a new task begins. I
 
 You are continuing the existing UFO WASH project. Do not treat this as a new project and do not redesign the game from scratch.
 
-**Before doing anything else, read `AGENT_START_HERE.md` and follow it exactly.** Then read `NEXT_TASK.md`, `docs/11_CURRENT_STATUS.md`, the relevant GDD/technical/QA documents, the decision log, lessons learned, recent changelog entries, relevant GitHub Issues and recent commits.
+**Before doing anything else, read `AGENT_START_HERE.md` and follow it exactly.** Then read `NEXT_TASK.md`, `Docs/11_CURRENT_STATUS.md`, the relevant GDD/technical/QA documents, the decision log, lessons learned, recent changelog entries, relevant GitHub Issues and recent commits.
 
 The GitHub repository is the canonical long-term memory. Do not rely on this chat alone. Inspect the actual files and current Git state before proposing changes. Do not overwrite user changes or assume files/scenes/assets exist without verifying them.
 
@@ -24,7 +24,7 @@ Use the one task currently authorized in `NEXT_TASK.md` and its linked GitHub Is
 6. Use version-compatible Unity 6.6 APIs and packages. Research uncertain/version-sensitive issues using authoritative sources.
 7. Provide complete files or a patch with exact paths and Unity setup instructions.
 8. Test only what you can genuinely test. Clearly distinguish code inspection, static checks, automated tests, Editor tests and user playtests. Never claim local Unity execution without evidence.
-9. Update the repository memory before finishing: at minimum `NEXT_TASK.md`, `docs/11_CURRENT_STATUS.md`, `CHANGELOG.md`, `docs/10_BACKLOG.md` and `docs/13_SESSION_LOG.md`; update `docs/12_IMPROVEMENT_REGISTER.md` and decisions, lessons, asset register and QA records when applicable.
+9. Update the repository memory before finishing: at minimum `NEXT_TASK.md`, `Docs/11_CURRENT_STATUS.md`, `CHANGELOG.md`, `Docs/10_BACKLOG.md` and `Docs/13_SESSION_LOG.md`; update `Docs/12_IMPROVEMENT_REGISTER.md` and decisions, lessons, asset register and QA records when applicable.
 10. Update the matching GitHub Issue with files changed, test evidence and remaining risks. Do not close it until every acceptance criterion is verified and owner acceptance is recorded.
 
 ### Quality standard
