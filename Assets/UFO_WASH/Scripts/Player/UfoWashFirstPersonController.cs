@@ -12,11 +12,28 @@ namespace UFOWASH
         [SerializeField] float gravity = -20f;
         CharacterController controller;
         float pitch, verticalVelocity;
+        bool inputSuspended;
+
+        public void SetInputSuspended(bool suspended)
+        {
+            inputSuspended = suspended;
+            if (suspended)
+            {
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
+            }
+            else
+            {
+                Cursor.lockState = CursorLockMode.Locked;
+                Cursor.visible = false;
+            }
+        }
 
         void Awake() { controller = GetComponent<CharacterController>(); }
         void Start() { if (cameraPivot != null) { pitch = cameraPivot.localEulerAngles.x; if (pitch > 180f) pitch -= 360f; } Cursor.lockState = CursorLockMode.Locked; Cursor.visible = false; }
         void Update()
         {
+            if (inputSuspended) return;
             if (!isActiveAndEnabled || !gameObject.activeInHierarchy || controller == null || !controller.enabled) return;
             if (cameraPivot == null || Keyboard.current == null || Mouse.current == null) return;
             if (Keyboard.current.escapeKey.wasPressedThisFrame) { Cursor.lockState = CursorLockMode.None; Cursor.visible = true; }
