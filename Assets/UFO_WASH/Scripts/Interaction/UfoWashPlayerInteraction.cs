@@ -16,6 +16,7 @@ namespace UFOWASH
 
         private void Update()
         {
+            if (UfoWashContractTerminalUI.IsOpen) { currentTarget = null; return; }
             currentTarget = null;
             if (viewCamera == null) return;
 
