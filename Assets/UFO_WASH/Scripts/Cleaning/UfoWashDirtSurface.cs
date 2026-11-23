@@ -13,9 +13,9 @@ namespace UFOWASH
         static readonly List<UfoWashDirtSurface> activeSurfaces = new List<UfoWashDirtSurface>(32);
 
         Renderer rend;
-        MaterialPropertyBlock propertyBlock;
-        Color originalColor = Color.white;
-        bool usesBaseColor;
+        MaterialPropertyBlock[] propertyBlocks;
+        Color[] originalColors;
+        int[] colorProperties;
         static readonly int BaseColorId = Shader.PropertyToID("_BaseColor");
         static readonly int ColorId = Shader.PropertyToID("_Color");
         static readonly Color dirtTint = new Color(0.48f, 0.30f, 0.16f, 1f);
@@ -24,19 +24,31 @@ namespace UFOWASH
         void Awake()
         {
             rend = GetComponent<Renderer>();
-            propertyBlock = new MaterialPropertyBlock();
-            if (rend != null && rend.sharedMaterial != null)
+            if (rend != null)
             {
-                var material = rend.sharedMaterial;
-                if (material.HasProperty(BaseColorId))
+                var materials = rend.sharedMaterials;
+                propertyBlocks = new MaterialPropertyBlock[materials.Length];
+                originalColors = new Color[materials.Length];
+                colorProperties = new int[materials.Length];
+
+                for (int i = 0; i < materials.Length; i++)
                 {
-                    originalColor = material.GetColor(BaseColorId);
-                    usesBaseColor = true;
-                }
-                else if (material.HasProperty(ColorId))
-                {
-                    originalColor = material.GetColor(ColorId);
-                    usesBaseColor = false;
+                    propertyBlocks[i] = new MaterialPropertyBlock();
+                    originalColors[i] = Color.white;
+                    colorProperties[i] = -1;
+                    var material = materials[i];
+                    if (material == null) continue;
+
+                    if (material.HasProperty(BaseColorId))
+                    {
+                        originalColors[i] = material.GetColor(BaseColorId);
+                        colorProperties[i] = BaseColorId;
+                    }
+                    else if (material.HasProperty(ColorId))
+                    {
+                        originalColors[i] = material.GetColor(ColorId);
+                        colorProperties[i] = ColorId;
+                    }
                 }
             }
             ApplyColor();
@@ -84,18 +96,21 @@ namespace UFOWASH
         void ApplyColor()
         {
             if (!rend) rend = GetComponent<Renderer>();
-            if (!rend || !usesBaseColor) return;
-            if (propertyBlock == null) propertyBlock = new MaterialPropertyBlock();
+            if (!rend || propertyBlocks == null) return;
 
-            // Tint the authored hull material instead of replacing it. This keeps
-            // the ship's metal/glass/accent identity visible throughout cleaning.
+            // Tint each authored material slot independently. The original hull
+            // palette remains intact while contamination and foam are layered on top.
             Color dirtLayer = Color.Lerp(Color.white, dirtTint, dirt * 0.72f);
             Color finalTint = Color.Lerp(dirtLayer, foamTint, foam * 0.82f);
-            Color result = originalColor * finalTint;
 
-            rend.GetPropertyBlock(propertyBlock);
-            propertyBlock.SetColor(rend.sharedMaterial.HasProperty(BaseColorId) ? BaseColorId : ColorId, result);
-            rend.SetPropertyBlock(propertyBlock);
+            for (int i = 0; i < propertyBlocks.Length; i++)
+            {
+                if (colorProperties[i] < 0) continue;
+                var block = propertyBlocks[i];
+                rend.GetPropertyBlock(block, i);
+                block.SetColor(colorProperties[i], originalColors[i] * finalTint);
+                rend.SetPropertyBlock(block, i);
+            }
         }
 
         public static float TotalDirt()
