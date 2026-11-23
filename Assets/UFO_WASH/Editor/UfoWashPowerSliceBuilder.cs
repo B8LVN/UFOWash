@@ -107,9 +107,9 @@ namespace UFOWASH.Editor
             // UFO: layered custom-looking saucer with ring, portholes, cockpit and engine glow
             var ufo = new GameObject("CUSTOMER UFO // MUDDY CLASS-IV SCOUT");
             ufo.transform.position = new Vector3(0,2.65f,3.4f);
-            CustomSaucerPart(ufo,"Primary hull - contaminated",new[]{new Vector2(0f,-.22f),new Vector2(1.0f,-.22f),new Vector2(2.7f,-.12f),new Vector2(3.35f,-.02f),new Vector2(3.45f,.12f),new Vector2(2.9f,.22f),new Vector2(2.1f,.34f),new Vector2(1.25f,.48f),new Vector2(.6f,.56f),new Vector2(0f,.58f)},1f,matDirt);
+            CustomSaucerPart(ufo,"Primary hull - contaminated",new[]{new Vector2(0f,-.22f),new Vector2(1.0f,-.22f),new Vector2(2.7f,-.12f),new Vector2(3.35f,-.02f),new Vector2(3.45f,.12f),new Vector2(2.9f,.22f),new Vector2(2.1f,.34f),new Vector2(1.25f,.48f),new Vector2(.6f,.56f),new Vector2(0f,.58f)},1f,matMetal);
             Part(ufo,"Lower rim",PrimitiveType.Cylinder,new Vector3(0,-.3f,0),new Vector3(6.1f,.18f,6.1f),matCyan);
-            CustomSaucerPart(ufo,"Upper saucer shell",new[]{new Vector2(0f,1.42f),new Vector2(.45f,1.38f),new Vector2(.95f,1.22f),new Vector2(1.35f,.94f),new Vector2(1.62f,.62f),new Vector2(1.7f,.42f),new Vector2(0f,.4f)},.92f,matDirt);
+            CustomSaucerPart(ufo,"Upper saucer shell",new[]{new Vector2(0f,1.42f),new Vector2(.45f,1.38f),new Vector2(.95f,1.22f),new Vector2(1.35f,.94f),new Vector2(1.62f,.62f),new Vector2(1.7f,.42f),new Vector2(0f,.4f)},.92f,matMetal);
             Part(ufo,"Cockpit collar",PrimitiveType.Cylinder,new Vector3(0,.95f,0),new Vector3(2.35f,.2f,2.35f),matMetal);
             Part(ufo,"Glass cockpit",PrimitiveType.Sphere,new Vector3(0,1.3f,0),new Vector3(2.05f,1.25f,2.05f),matGlass);
             Part(ufo,"Cockpit crown",PrimitiveType.Sphere,new Vector3(0,1.88f,0),new Vector3(.75f,.4f,.75f),matCyan);
@@ -125,7 +125,15 @@ namespace UFOWASH.Editor
             }
             // Replace the placeholder saucer with a real imported spacecraft when the CC0 pack is present.
             var importedShip = SpawnImportedModel("craft_speederA", new Vector3(0,2.65f,3.4f), Quaternion.Euler(0,180,0), 3.2f, true);
-            if (importedShip != null) ufo.SetActive(false);
+            if (importedShip != null)
+            {
+                ufo.SetActive(false);
+                importedShip.AddComponent<UfoWashCustomerShip>();
+            }
+            else
+            {
+                ufo.AddComponent<UfoWashCustomerShip>();
+            }
             // Alien customer waiting at reception marker
             var alien = new GameObject("ALIEN CUSTOMER // ZORP");
             alien.transform.position = new Vector3(7.5f,0,-3.5f);
