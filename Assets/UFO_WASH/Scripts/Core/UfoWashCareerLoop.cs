@@ -16,6 +16,11 @@ namespace UFOWASH
         public UfoWashToolMode CurrentStage { get; private set; } = UfoWashToolMode.PreRinse;
         public float Water { get; private set; } = 100f;
         public float Chemical { get; private set; } = 100f;
+        public float Quality => Mathf.Clamp01(1f - UfoWashDirtSurface.TotalDirt() - UfoWashDirtSurface.TotalFoam() * 0.18f);
+        public bool CanSubmit => JobAccepted && CurrentStage == UfoWashToolMode.FinalRinse &&
+            UfoWashDirtSurface.TotalDirt() <= 0.15f && UfoWashDirtSurface.TotalFoam() <= 0.10f;
+        public string QualityGrade => Quality >= 0.985f ? "S" : Quality >= 0.95f ? "A" :
+            Quality >= 0.90f ? "B" : Quality >= 0.85f ? "C" : "D";
 
         public string Client => Clients[CompletedJobs % Clients.Length];
         public string Ship => Ships[CompletedJobs % Ships.Length];
@@ -106,13 +111,19 @@ namespace UFOWASH
 
         public void CompleteJob()
         {
-            if (!JobAccepted || CurrentStage != UfoWashToolMode.FinalRinse) return;
-            int payout = Reward;
+            if (!CanSubmit) return;
+
+            int basePayout = Reward;
+            int qualityBonus = Mathf.RoundToInt(basePayout * Mathf.Clamp01((Quality - 0.85f) / 0.15f) * 0.25f);
+            int payout = basePayout + qualityBonus;
+            string grade = QualityGrade;
+
             JobAccepted = false;
             CompletedJobs++;
             UfoWashHUD.Credits += payout;
             UfoWashHUD.JobComplete = true;
-            LastMessage = "VESSEL CERTIFIED // PAYMENT +" + payout + " CR";
+            LastMessage = "INSPECTION PASSED // GRADE " + grade + " // BASE " +
+                basePayout + " + QUALITY BONUS " + qualityBonus + " CR";
         }
 
         public void ResetActiveJob()
@@ -130,6 +141,8 @@ namespace UFOWASH
         {
             var loop = UfoWashCareerLoop.Instance;
             if (loop == null) return "CONTRACT TERMINAL // OFFLINE";
+            if (loop.JobAccepted && loop.CanSubmit)
+                return "E  SUBMIT FOR INSPECTION  //  GRADE " + loop.QualityGrade;
             if (loop.JobAccepted) return "CONTRACT ACTIVE // " + loop.StageLabel;
             return "E  ACCEPT CONTRACT  //  " + loop.Reward + " CR";
         }
@@ -137,7 +150,9 @@ namespace UFOWASH
         public override void Interact(GameObject player)
         {
             var loop = UfoWashCareerLoop.Instance;
-            if (loop != null && !loop.JobAccepted) loop.AcceptJob();
+            if (loop == null) return;
+            if (loop.JobAccepted && loop.CanSubmit) loop.CompleteJob();
+            else if (!loop.JobAccepted) loop.AcceptJob();
         }
     }
 
