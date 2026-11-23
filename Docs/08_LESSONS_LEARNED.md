@@ -51,3 +51,26 @@ This file records observed failures and verified learning. Do not invent root ca
 ## Rule
 
 A lesson is not “verified” until the corrective action has been tested. Keep observations, hypotheses and confirmed root causes separate.
+
+
+### L-005 — A whole-renderer foam tint is not readable foam application
+
+- **Date:** 2026-11-23
+- **Observation:** Foam existed as a numeric scalar and broad colour blend, but the player could not see a convincing coating where the spray landed.
+- **Expected behaviour:** Foam should visibly appear at the nozzle contact point and be removed by final rinse.
+- **Root cause:** The previous implementation changed material tint but created no persistent local surface geometry/decals.
+- **Confidence:** High for the code-level cause; runtime appearance of the new patch prototype is unverified.
+- **Fix applied:** Added local foam patches at the hit point and fade them as foam state decreases.
+- **Regression test:** Spray a hull area, move to another area, confirm separate patches; final-rinse and confirm patches fade; verify patches do not block spray.
+- **Verification status:** Implemented — unverified.
+
+### L-006 — A character model is not an NPC system
+
+- **Date:** 2026-11-23
+- **Observation:** The alien was present in the scene but did not participate in the job.
+- **Expected behaviour:** The customer should communicate a request, acknowledge the player and react to job completion.
+- **Root cause:** The scene builder instantiated a model without a behaviour component or dialogue interaction.
+- **Confidence:** High from source inspection.
+- **Fix applied:** Added talk interaction, idle attention, speech bubble and contract-state reactions.
+- **Regression test:** Approach the NPC, use E, accept a job and complete it; confirm dialogue and reactions.
+- **Verification status:** Implemented — unverified.
