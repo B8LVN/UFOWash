@@ -29,32 +29,10 @@ namespace UFOWASH.Editor
 
         static void BuildScene(bool replaceCurrentScene, bool showDialog)
         {
-            Scene previousScene = SceneManager.GetActiveScene();
-            Scene scene;
-            bool closeGeneratedSceneAfterBuild = false;
-
-            if (replaceCurrentScene)
-            {
-                scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
-            }
-            else if (previousScene.IsValid() && previousScene.path == ScenePath)
-            {
-                scene = previousScene;
-                foreach (GameObject rootObject in scene.GetRootGameObjects())
-                    Object.DestroyImmediate(rootObject);
-            }
-            else if (System.IO.File.Exists(ScenePath))
-            {
-                scene = EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Additive);
-                closeGeneratedSceneAfterBuild = true;
-            }
-            else
-            {
-                scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Additive);
-                closeGeneratedSceneAfterBuild = true;
-            }
-
-            SceneManager.SetActiveScene(scene);
+            // This is the game's dedicated generated scene. Recreate it as the active
+            // scene only when this builder changes; ordinary gameplay script edits do
+            // not invoke this method and never require a rebuild click.
+            var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
             EnsureFoldersAndMaterials();
             RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Flat;
             RenderSettings.ambientLight = new Color(.38f,.43f,.52f);
@@ -203,28 +181,18 @@ namespace UFOWASH.Editor
             EditorSceneManager.SaveScene(scene,ScenePath);
             var scenes=new List<EditorBuildSettingsScene>(EditorBuildSettings.scenes);
             scenes.RemoveAll(s=>s.path==ScenePath); scenes.Insert(0,new EditorBuildSettingsScene(ScenePath,true)); EditorBuildSettings.scenes=scenes.ToArray();
-            if (replaceCurrentScene)
-            {
-                Selection.activeObject=AssetDatabase.LoadAssetAtPath<SceneAsset>(ScenePath);
-                if (showDialog)
-                    EditorUtility.DisplayDialog("UFO WASH SCENE BUILT",
-                        @"The UFO WASH scene is ready. Press Play.
+            Selection.activeObject=AssetDatabase.LoadAssetAtPath<SceneAsset>(ScenePath);
+            if (showDialog)
+                EditorUtility.DisplayDialog("UFO WASH SCENE BUILT",
+                    @"The UFO WASH scene is ready. Press Play.
 
 WASD + mouse: move/look
 E: interact / accept contract
 1 / 2 / 3: pre-rinse / foam / final rinse
 Left mouse: operate washer",
-                        "PLAY");
-            }
+                    "PLAY");
             else
-            {
-                EditorSceneManager.SaveScene(scene, ScenePath);
-                if (previousScene.IsValid() && previousScene != scene)
-                    SceneManager.SetActiveScene(previousScene);
-                if (closeGeneratedSceneAfterBuild)
-                    EditorSceneManager.CloseScene(scene, true);
-                Debug.Log("UFO WASH: generated scene automatically refreshed after builder changes.");
-            }
+                Debug.Log("UFO WASH: generated scene rebuilt and opened automatically after builder changes.");
         }
 
         static GameObject SpawnImportedModel(string assetName, Vector3 position, Quaternion rotation, float scale, bool washable) {
