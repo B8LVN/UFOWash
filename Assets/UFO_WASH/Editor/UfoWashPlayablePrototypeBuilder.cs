@@ -4,8 +4,6 @@ using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEditor.Build;
-using UnityEditor;
-using UnityEditor.SceneManagement;
 
 namespace UFOWASH.Editor
 {
@@ -17,12 +15,13 @@ namespace UFOWASH.Editor
             EditorApplication.delayCall += () =>
             {
                 if (!EditorApplication.isPlaying && !System.IO.File.Exists(ScenePath))
-                    BuildPrototype();
+                    BuildPrototypeInternal(false);
             };
         }
         const string ScenePath="Assets/UFO_WASH/Scenes/UFO_WASH_Playable.unity";
         [MenuItem("UFO WASH/BUILD PLAYABLE CLEANING PROTOTYPE")]
-        public static void BuildPrototype()
+        public static void BuildPrototype() { BuildPrototypeInternal(true); }
+        static void BuildPrototypeInternal(bool showDialog)
         {
             var scene=EditorSceneManager.NewScene(NewSceneSetup.EmptyScene,NewSceneMode.Single);
             RenderSettings.ambientLight=new Color(.28f,.31f,.38f);
@@ -48,7 +47,7 @@ namespace UFOWASH.Editor
             EditorSceneManager.SaveScene(scene,ScenePath);
             var list=new System.Collections.Generic.List<EditorBuildSettingsScene>(EditorBuildSettings.scenes);
             list.RemoveAll(s=>s.path==ScenePath);list.Insert(0,new EditorBuildSettingsScene(ScenePath,true));EditorBuildSettings.scenes=list.ToArray();
-            EditorUtility.DisplayDialog("UFO WASH","Playable prototype scene created and added to Build Settings:\n"+ScenePath+"\n\nPress Play. WASD + mouse. Hold left mouse to clean. R resets job.", "Let's go");
+            if(showDialog) EditorUtility.DisplayDialog("UFO WASH","Playable prototype scene created and added to Build Settings:\n"+ScenePath+"\n\nPress Play. WASD + mouse. Hold left mouse to clean. R resets job.", "Let's go");
             Debug.Log("UFO WASH: Playable cleaning prototype generated at "+ScenePath);
         }
         static void DirtPart(GameObject root,string name,PrimitiveType type,Vector3 pos,Vector3 scale,float dirt)
