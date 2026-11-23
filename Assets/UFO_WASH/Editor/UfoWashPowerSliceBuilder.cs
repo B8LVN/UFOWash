@@ -226,6 +226,18 @@ R: reset the active contract",
                 instance.transform.localScale = Vector3.one * scale;
             }
 
+            if (assetName != "alien") {
+                foreach (var renderer in renderers) {
+                    string partName = renderer.gameObject.name.ToLowerInvariant();
+                    if (partName.Contains("glass") || partName.Contains("window") || partName.Contains("canopy"))
+                        renderer.sharedMaterial = matGlass;
+                    else if (partName.Contains("light") || partName.Contains("engine") || partName.Contains("thruster"))
+                        renderer.sharedMaterial = matGlow;
+                    else
+                        renderer.sharedMaterial = matMetal;
+                }
+            }
+
             if (washable) {
                 foreach (var renderer in renderers) {
                     var go = renderer.gameObject;
