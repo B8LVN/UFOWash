@@ -14,20 +14,20 @@ namespace UFOWASH.Editor
         const string ScenePath = "Assets/UFO_WASH/Scenes/UFO_WASH_PowerSlice.unity";
         static Material matFloor, matWall, matDark, matMetal, matWhite, matCyan, matBlue, matOrange, matGlass, matDirt, matGlow;
 
-        [MenuItem("UFO WASH/BUILD POWER SLICE - FULL ART PASS", false, 0)]
+        [MenuItem("UFO WASH/REBUILD GENERATED SCENE (MANUAL FALLBACK)", false, 0)]
         public static void Build()
         {
-            BuildScene(true, true);
+            BuildScene(true);
         }
 
         // Called only when this dedicated generated-scene builder changes.
         // Gameplay script edits never require rebuilding the environment.
         internal static void AutoRebuildGeneratedScene()
         {
-            BuildScene(false, false);
+            BuildScene(false);
         }
 
-        static void BuildScene(bool replaceCurrentScene, bool showDialog)
+        static void BuildScene(bool showDialog)
         {
             // This is the game's dedicated generated scene. Recreate it as the active
             // scene only when this builder changes; ordinary gameplay script edits do
