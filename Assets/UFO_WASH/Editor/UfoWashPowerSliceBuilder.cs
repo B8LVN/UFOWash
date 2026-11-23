@@ -124,7 +124,15 @@ namespace UFOWASH.Editor
             Sign("CUSTOMER",new Vector3(7.5f,3.2f,-3.5f),.35f,matOrange);
             // Replace the capsule alien with Kenney's actual alien character model.
             var importedAlien = SpawnImportedModel("alien", new Vector3(7.5f,0,-3.5f), Quaternion.identity, 2.4f, false);
-            if (importedAlien != null) alien.SetActive(false);
+            if (importedAlien != null)
+            {
+                alien.SetActive(false);
+                AddCustomerInteraction(importedAlien, true);
+            }
+            else
+            {
+                AddCustomerInteraction(alien, false);
+            }
             // Player starts facing the UFO; tool and interaction
             var player = new GameObject("PLAYER // CUSTOM SPACER SUIT");
             player.transform.position = new Vector3(0,0,-12.5f);
@@ -316,6 +324,18 @@ Left mouse: operate washer",
 
             Debug.Log("UFO WASH: selected imported model " + selectedPath + " for " + assetName);
             return instance;
+        }
+
+        static void AddCustomerInteraction(GameObject customer, bool importedModel)
+        {
+            if (customer == null) return;
+            customer.AddComponent<UfoWashCustomerNpc>();
+            var capsule = customer.GetComponent<CapsuleCollider>();
+            if (capsule == null) capsule = customer.AddComponent<CapsuleCollider>();
+            capsule.direction = 1;
+            capsule.radius = importedModel ? 0.46f : 0.55f;
+            capsule.height = importedModel ? 2.15f : 2.5f;
+            capsule.center = importedModel ? Vector3.zero : new Vector3(0f, 1.25f, 0f);
         }
 
         static void BuildPlayerCharacter(Transform root) {
