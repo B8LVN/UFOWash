@@ -4,11 +4,22 @@ using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEditor.Build;
+using UnityEditor;
+using UnityEditor.SceneManagement;
 
 namespace UFOWASH.Editor
 {
     public static class UfoWashPlayablePrototypeBuilder
     {
+        [InitializeOnLoadMethod]
+        static void AutoCreatePlayablePrototype()
+        {
+            EditorApplication.delayCall += () =>
+            {
+                if (!EditorApplication.isPlaying && !System.IO.File.Exists(ScenePath))
+                    BuildPrototype();
+            };
+        }
         const string ScenePath="Assets/UFO_WASH/Scenes/UFO_WASH_Playable.unity";
         [MenuItem("UFO WASH/BUILD PLAYABLE CLEANING PROTOTYPE")]
         public static void BuildPrototype()
