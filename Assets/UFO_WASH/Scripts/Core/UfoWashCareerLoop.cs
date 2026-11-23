@@ -16,6 +16,8 @@ namespace UFOWASH
         public UfoWashToolMode CurrentStage { get; private set; } = UfoWashToolMode.PreRinse;
         public float Water { get; private set; } = 100f;
         public float Chemical { get; private set; } = 100f;
+        UfoWashCustomerShip customerShip;
+        public bool CanAcceptJob => !JobAccepted && (customerShip == null || customerShip.IsDocked);
         public float Quality => Mathf.Clamp01(1f - UfoWashDirtSurface.TotalDirt() - UfoWashDirtSurface.TotalFoam() * 0.18f);
         public bool CanSubmit => JobAccepted && CurrentStage == UfoWashToolMode.FinalRinse &&
             UfoWashDirtSurface.TotalDirt() <= 0.15f && UfoWashDirtSurface.TotalFoam() <= 0.10f;
@@ -32,6 +34,7 @@ namespace UFOWASH
         void Awake()
         {
             Instance = this;
+            customerShip = FindFirstObjectByType<UfoWashCustomerShip>();
             if (UfoWashHUD.Credits == 0) UfoWashHUD.Credits = 750;
         }
 
@@ -43,6 +46,11 @@ namespace UFOWASH
         public void AcceptJob()
         {
             if (JobAccepted) return;
+            if (!CanAcceptJob)
+            {
+                LastMessage = "CUSTOMER VESSEL INBOUND // WAIT FOR DOCKING";
+                return;
+            }
             JobAccepted = true;
             CurrentStage = UfoWashToolMode.PreRinse;
             UfoWashHUD.JobComplete = false;
@@ -121,6 +129,7 @@ namespace UFOWASH
             JobAccepted = false;
             CompletedJobs++;
             UfoWashHUD.Credits += payout;
+            if (customerShip != null) customerShip.DepartAndReturn();
             UfoWashHUD.JobComplete = true;
             LastMessage = "INSPECTION PASSED // GRADE " + grade + " // BASE " +
                 basePayout + " + QUALITY BONUS " + qualityBonus + " CR";
@@ -135,6 +144,64 @@ namespace UFOWASH
         }
     }
 
+    public sealed class UfoWashCustomerShip : MonoBehaviour
+    {
+        enum DockState { Arriving, Docked, Departing, Turnaround }
+        [SerializeField] float travelDistance = 12.5f;
+        [SerializeField] float travelSpeed = 6f;
+        [SerializeField] float turnaroundSeconds = 1.6f;
+
+        Vector3 dockPosition;
+        Vector3 approachPosition;
+        float turnaroundTimer;
+        DockState state;
+
+        public bool IsDocked { get; private set; }
+
+        void Awake()
+        {
+            dockPosition = transform.position;
+            approachPosition = dockPosition + Vector3.forward * travelDistance;
+            transform.position = approachPosition;
+            IsDocked = false;
+            state = DockState.Arriving;
+        }
+
+        void Update()
+        {
+            if (state == DockState.Turnaround)
+            {
+                turnaroundTimer -= Time.deltaTime;
+                if (turnaroundTimer <= 0f) state = DockState.Arriving;
+                return;
+            }
+
+            Vector3 target = state == DockState.Departing ? approachPosition : dockPosition;
+            transform.position = Vector3.MoveTowards(transform.position, target, travelSpeed * Time.deltaTime);
+
+            if ((transform.position - target).sqrMagnitude > 0.0025f) return;
+
+            if (state == DockState.Arriving)
+            {
+                IsDocked = true;
+                state = DockState.Docked;
+            }
+            else if (state == DockState.Departing)
+            {
+                IsDocked = false;
+                state = DockState.Turnaround;
+                turnaroundTimer = turnaroundSeconds;
+            }
+        }
+
+        public void DepartAndReturn()
+        {
+            if (!IsDocked || state != DockState.Docked) return;
+            IsDocked = false;
+            state = DockState.Departing;
+        }
+    }
+
     public sealed class UfoWashJobBoard : UfoWashInteractable
     {
         public override string GetPrompt()
@@ -144,6 +211,7 @@ namespace UFOWASH
             if (loop.JobAccepted && loop.CanSubmit)
                 return "E  SUBMIT FOR INSPECTION  //  GRADE " + loop.QualityGrade;
             if (loop.JobAccepted) return "CONTRACT ACTIVE // " + loop.StageLabel;
+            if (!loop.CanAcceptJob) return "CUSTOMER VESSEL INBOUND // WAIT FOR DOCKING";
             return "E  ACCEPT CONTRACT  //  " + loop.Reward + " CR";
         }
 
