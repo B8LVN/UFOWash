@@ -57,7 +57,9 @@ Run after pulling the latest main branch. The dedicated game scene should open a
 - [ ] Empty supplies block the matching operation and display a clear message.
 - [ ] E at supply station charges 65 credits once and refills both resources.
 - [ ] Insufficient credits do not refill supplies.
+- [ ] Sprayer upgrade increases cleaning rate, spray radius and range; costs rise by level.
 - [ ] A second contract can be accepted after the next customer docks.
+- [ ] Contract 2/3 visibly changes contamination tint (plasma soot / bio residue) while the hull returns to clean base materials.
 
 ## G. Automated structural validation
 Run UFO WASH > QA > VALIDATE ACTIVE GAME SCENE.
