@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace UFOWASH
@@ -9,6 +10,7 @@ namespace UFOWASH
         [Range(0f,1f)] public float dirt = 1f;
         [Range(0f,1f)] public float foam;
         public static int RewardCredits = 250;
+        static readonly List<UfoWashDirtSurface> activeSurfaces = new List<UfoWashDirtSurface>(32);
 
         Renderer rend;
         MaterialPropertyBlock propertyBlock;
@@ -38,6 +40,16 @@ namespace UFOWASH
                 }
             }
             ApplyColor();
+        }
+
+        void OnEnable()
+        {
+            if (!activeSurfaces.Contains(this)) activeSurfaces.Add(this);
+        }
+
+        void OnDisable()
+        {
+            activeSurfaces.Remove(this);
         }
 
         public void Process(UfoWashToolMode mode, float seconds)
@@ -88,28 +100,26 @@ namespace UFOWASH
 
         public static float TotalDirt()
         {
-            var surfaces = FindObjectsByType<UfoWashDirtSurface>(FindObjectsSortMode.None);
-            if (surfaces.Length == 0) return 0f;
+            if (activeSurfaces.Count == 0) return 0f;
             float sum = 0f;
-            foreach (var surface in surfaces) sum += surface.dirt;
-            return sum / surfaces.Length;
+            for (int i = 0; i < activeSurfaces.Count; i++) sum += activeSurfaces[i].dirt;
+            return sum / activeSurfaces.Count;
         }
 
         public static float TotalFoam()
         {
-            var surfaces = FindObjectsByType<UfoWashDirtSurface>(FindObjectsSortMode.None);
-            if (surfaces.Length == 0) return 0f;
+            if (activeSurfaces.Count == 0) return 0f;
             float sum = 0f;
-            foreach (var surface in surfaces) sum += surface.foam;
-            return sum / surfaces.Length;
+            for (int i = 0; i < activeSurfaces.Count; i++) sum += activeSurfaces[i].foam;
+            return sum / activeSurfaces.Count;
         }
 
         public static void ResetJob()
         {
             UfoWashHUD.JobComplete = false;
-            var surfaces = FindObjectsByType<UfoWashDirtSurface>(FindObjectsSortMode.None);
-            foreach (var surface in surfaces)
+            for (int i = 0; i < activeSurfaces.Count; i++)
             {
+                var surface = activeSurfaces[i];
                 surface.dirt = 1f;
                 surface.foam = 0f;
                 surface.ApplyColor();
