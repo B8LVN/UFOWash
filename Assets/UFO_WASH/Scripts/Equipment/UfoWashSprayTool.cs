@@ -56,7 +56,10 @@ namespace UFOWASH
 
             if (!active) return;
 
-            RaycastHit[] hits = Physics.RaycastAll(viewCamera.transform.position, viewCamera.transform.forward, range);
+            // A small sphere cast gives the spray a usable footprint instead of
+            // requiring pixel-perfect aiming at one triangle.
+            RaycastHit[] hits = Physics.SphereCastAll(viewCamera.transform.position,
+                sprayRadius, viewCamera.transform.forward, range);
             System.Array.Sort(hits, (a, b) => a.distance.CompareTo(b.distance));
             for (int i = 0; i < hits.Length; i++)
             {
