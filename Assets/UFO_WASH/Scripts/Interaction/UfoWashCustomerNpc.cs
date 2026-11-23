@@ -26,6 +26,7 @@ namespace UFOWASH
         Image bubbleBackground;
         int conversationIndex;
         float messageUntil;
+        string currentMessage;
         string idleMessage = "My scout needs a proper wash. Can you help?";
 
         void Awake()
@@ -48,6 +49,8 @@ namespace UFOWASH
             if (playerCamera == null && Camera.main != null) playerCamera = Camera.main.transform;
 
             transform.position = homePosition + Vector3.up * (Mathf.Sin(Time.time * idleBobSpeed) * idleBobHeight);
+            if (Time.time >= messageUntil && currentMessage != idleMessage)
+                SetMessage(idleMessage, float.MaxValue);
 
             if (playerCamera != null)
             {
@@ -96,6 +99,7 @@ namespace UFOWASH
 
         void SetMessage(string message, float seconds)
         {
+            currentMessage = message;
             if (bubbleText != null) bubbleText.text = message;
             messageUntil = Time.time + seconds;
             if (bubbleBackground != null) bubbleBackground.enabled = true;
