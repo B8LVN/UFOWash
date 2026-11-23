@@ -43,7 +43,9 @@ Run after pulling the latest main branch. The dedicated game scene should open a
 - [ ] Stage advances only after adequate foam coverage.
 - [ ] Mode 3 removes dirt and foam.
 - [ ] Incorrect tool mode does not advance service.
-- [ ] Every required hull surface can be reached with the spray.
+- [ ] Every required hull surface can be reached with the spray, including the cockpit.
+- [ ] Decorative ship details do not prevent the spray from reaching an adjacent washable hull panel.
+- [ ] Hangar walls and floor still block the spray.
 - [ ] Dirt/foam changes preserve the hull's original material identity.
 
 ## F. Inspection and economy
