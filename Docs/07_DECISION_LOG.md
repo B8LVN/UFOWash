@@ -4,6 +4,8 @@ Record decisions that affect scope, architecture, design or production. Newest f
 
 | ID | Date | Decision | Status | Rationale / notes |
 |---|---|---|---|---|
+| D-012 | 2026-11-23 | Establish a title menu, Story entry, first-shift briefing and accessible How to Play tutorial before gameplay. | Implemented — unverified | Owner explicitly requested a game opening and onboarding instead of dropping directly into an unexplained demo scene. Current narrative is a draft for feedback. |
+| D-013 | 2026-11-23 | Generated gameplay scenes must use named top-level Hierarchy groups for world, equipment, vessel, customers, player, systems, lighting and UI. | Implemented — unverified | Scene organization is a maintainability requirement, not optional editor tidiness. Preserve world transforms when grouping roots. |
 | D-010 | 2026-11-23 | Prioritize a coherent, playable first customer job over adding disconnected features. | Approved by owner request | Owner explicitly asked for a substantial development pass and a testable result; stop expanding until this pass is playtested. |
 | D-011 | 2026-11-23 | Prototype local foam patches, a selectable three-offer contract board and a reactive customer NPC. | Implemented — unverified | These changes directly address owner feedback; visual feel and interaction quality must be accepted in Play Mode. |
 | D-001 | 2026-11-23 | The game remains UFO WASH; do not replace it with another simulator. | Approved | Owner explicitly reaffirmed the UFO Wash concept. The production problem is execution quality, depth, progression and automation—not the game's identity. |
