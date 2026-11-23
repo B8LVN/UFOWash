@@ -69,6 +69,18 @@ The player owns a small spacecraft wash station serving alien pilots, couriers, 
 
 The player is not a distant menu-only manager. They can move through the station, interact with machinery, inspect UFOs, use tools, carry supplies, operate controls, place equipment and observe workers.
 
+### Opening chapter — Bay 01 (narrative draft)
+
+**Setting:** Year 2189, the Vesper Belt. Independent pilots depend on small service stations between long-haul routes, while corporate docking and repair fees squeeze the operators who keep those routes alive.
+
+**Player role:** The player inherits the keys to Bay 01, a neglected spacecraft wash station with failing equipment, overdue bills and no staff. The first objective is simple: keep the lights on by completing the first customer contract. The longer ambition is to rebuild the station into a trusted interstellar service business.
+
+**First customer:** Zorp of Orion Traders arrives in a Class-IV scout with asteroid dust and ion residue across the hull. The first shift teaches the player to accept a contract, pre-rinse, apply foam, final-rinse, request inspection and collect payment.
+
+**Opening flow:** Title menu → Story → first-shift briefing → How to Play / field manual → Clock In → playable service bay. The Story and tutorial must remain accessible from the title menu; the first shift should never depend on an external explanation.
+
+This is the first narrative direction introduced for the prototype. Character names, tone and longer story arcs remain subject to owner feedback.
+
 ## 5. Core gameplay loops
 
 ### 5.1 Job loop (minutes)
