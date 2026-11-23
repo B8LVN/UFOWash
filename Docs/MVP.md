@@ -1,48 +1,53 @@
-# UFO WASH — Minimum Viable Product
+# UFO WASH — MVP VERTICAL SLICE
 
-**Version:** 0.1 · **Status:** Scope baseline
+**Version:** 0.2  
+**Objective:** Prove one satisfying, repeatable UFO service job in one bay.
 
-## Objective
-Prove one satisfying end-to-end loop: player enters a wash bay, approaches one dirty UFO, uses a spray tool, sees dirt visibly reduce, completes service and earns credits.
+## Player experience
+
+1. Enter a compact sci-fi wash bay in first person.
+2. Read the contract terminal and accept the waiting vessel.
+3. Use tool modes in order: pre-rinse, foam, final rinse.
+4. Move around the ship and treat its separate serviceable panels.
+5. Watch contamination and foam coverage change on the actual surfaces.
+6. Monitor water and chemical reserves.
+7. Refill at the supply station for a visible credit cost.
+8. Complete the service, receive payment and accept another contract.
 
 ## Included
-- One compact navigable wash facility.
-- First-person movement and mouse-look.
-- Basic collision and interaction.
-- One UFO with a dirt state.
-- One spray tool with aim and range.
-- Dirt reduction from tool use.
-- Immediate visual cleaning feedback (simple material/overlay feedback is acceptable in prototype).
-- Job completion criteria and credit reward.
-- Minimal HUD and interaction prompt.
-- One upgrade with a measurable effect.
-- Reliable launch in Unity.
 
-## Excluded
-Employees/AI staffing; multiple maps/open world; complex customer traffic; large vehicle catalog; advanced construction; automation/idle systems; multiplayer; monetization/premium currency; final art and extensive customization.
+- Stable first-person movement, camera and interaction.
+- One readable UFO silhouette with multiple cleanable surface zones.
+- Contract acceptance and state.
+- Three distinct cleaning stages with stage gating.
+- Water and foam chemical consumption.
+- Paid supply refill interaction.
+- Surface-level dirt and foam feedback.
+- Cleanliness and supply HUD.
+- Completion and credit payout.
+- One meaningful equipment upgrade.
+- Repeated contract reset/accept cycle.
 
-## Acceptance criteria
-1. Play Mode starts without critical errors.
-2. Movement and camera work.
-3. Interaction prompt appears in range and disappears out of range.
-4. Spray affects only valid targets in range and aim.
-5. Dirt value decreases with visible feedback.
-6. Job completion triggers once at threshold.
-7. Reward grants exactly once and is displayed.
-8. Upgrade validates funds and applies its effect.
-9. Core loop can be repeated/reset.
-10. No known blocking console errors.
+## Explicitly excluded
 
-## Implementation order
-A. Project audit and baseline scene
-B. Player controller
-C. Interaction framework
-D. UFO dirt model
-E. Spray tool/feedback
-F. Jobs and economy
-G. HUD
-H. Upgrade
-I. Playtest, bug fixes and build validation
+Employees, automation, multiple bays, construction, multiple locations, open world, multiplayer, procedural ships, Android, advanced save/load and final production art.
 
-## Success metric
-A first-time tester understands the interaction without external explanation and chooses to clean a second UFO because the action/feedback/reward loop is satisfying.
+## Acceptance tests
+
+1. Play Mode starts without blocking Console errors.
+2. WASD/mouse movement and E interaction work.
+3. Contract cannot be cleaned before acceptance.
+4. Pre-rinse reduces contamination and advances the contract at the defined threshold.
+5. Foam mode applies visible foam and advances only after adequate coverage.
+6. Final rinse removes remaining contamination; wrong stage does not progress the job.
+7. Water and chemical levels decrease only when the correct tool is used on a valid surface.
+8. Empty supplies prevent further work and display a clear message.
+9. Supply station charges the stated price once and restores both resources.
+10. Completing the final stage grants the reward exactly once.
+11. The next contract can be accepted and completed.
+12. No ship or generated material is magenta; all materials use supported URP shaders.
+13. A first-time tester can discover the process from the HUD and in-world prompts without developer coaching.
+
+## Validation status
+
+Code is committed to GitHub in incremental changes. Unity compilation, Play Mode behavior, visual quality and Windows build are **not yet verified** by the developer environment. These remain required local QA gates, not implied successes.
