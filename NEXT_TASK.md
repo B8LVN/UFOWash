@@ -24,7 +24,7 @@ Verify the latest integrated gameplay recovery pass in the owner's local Unity 6
 
 1. Pull latest `main`:
    ```powershell
-   git -C "C:\\UnityProjects\\UFOWash-Repo" pull origin main
+   git -C "C:\UnityProjects\UFOWash-Repo" pull origin main
    ```
 2. Wait for Unity to finish importing and compiling. Do not press the manual scene rebuild command unless the Console reports the automatic builder failed.
 3. Press Play in `UFO_WASH_PowerSlice`.
