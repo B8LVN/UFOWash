@@ -51,10 +51,14 @@ namespace UFOWASH
 
         void EnsureEventSystem()
         {
-            if (EventSystem.current != null) return;
-            var events = new GameObject("EVENT SYSTEM // UI INPUT");
-            events.AddComponent<EventSystem>();
-            events.AddComponent<InputSystemUIInputModule>();
+            var eventSystem = EventSystem.current;
+            if (eventSystem == null)
+                eventSystem = new GameObject("EVENT SYSTEM // UI INPUT", typeof(EventSystem))
+                    .GetComponent<EventSystem>();
+            var inputModule = eventSystem.GetComponent<InputSystemUIInputModule>();
+            if (inputModule == null)
+                inputModule = eventSystem.gameObject.AddComponent<InputSystemUIInputModule>();
+            if (inputModule.actionsAsset == null) inputModule.AssignDefaultActions();
         }
 
         void BuildCanvas()
@@ -69,7 +73,7 @@ namespace UFOWASH
             scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
             scaler.referenceResolution = new Vector2(1920, 1080);
             scaler.matchWidthOrHeight = 0.5f;
-            font = Resources.GetBuiltinResource<Font>("Arial.ttf");
+            font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
         }
 
         void ShowMainMenu()
