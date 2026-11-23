@@ -103,12 +103,13 @@ namespace UFOWASH.Editor
             var importedAlien = SpawnImportedModel("alien", new Vector3(7.5f,0,-3.5f), Quaternion.identity, 2.4f, false);
             if (importedAlien != null) alien.SetActive(false);
             // Player starts facing the UFO; tool and interaction
-            var player = new GameObject("PLAYER // FIRST PERSON");
-            player.transform.position = new Vector3(0,1,-12.5f);
-            var cc=player.AddComponent<CharacterController>(); cc.height=1.8f; cc.radius=.32f; cc.center=new Vector3(0,.9f,0);
-            var pivot=new GameObject("Camera Pivot"); pivot.transform.SetParent(player.transform); pivot.transform.localPosition=new Vector3(0,1.05f,0); pivot.transform.localRotation=Quaternion.Euler(-3f,0f,0f);
-            var camGo=new GameObject("Main Camera"); camGo.tag="MainCamera"; camGo.transform.SetParent(pivot.transform); camGo.transform.localPosition=Vector3.zero;
-            var cam=camGo.AddComponent<Camera>(); cam.fieldOfView=78; cam.nearClipPlane=.05f; cam.farClipPlane=120;
+            var player = new GameObject("PLAYER // CUSTOM SPACER SUIT");
+            player.transform.position = new Vector3(0,0,-12.5f);
+            var cc=player.AddComponent<CharacterController>(); cc.height=1.8f; cc.radius=.34f; cc.center=new Vector3(0,.9f,0);
+            BuildPlayerCharacter(player.transform);
+            var pivot=new GameObject("Over Shoulder Camera Pivot"); pivot.transform.SetParent(player.transform); pivot.transform.localPosition=new Vector3(0,1.52f,0); pivot.transform.localRotation=Quaternion.Euler(5f,0f,0f);
+            var camGo=new GameObject("Main Camera"); camGo.tag="MainCamera"; camGo.transform.SetParent(pivot.transform); camGo.transform.localPosition=new Vector3(0,.42f,-4.6f);
+            var cam=camGo.AddComponent<Camera>(); cam.fieldOfView=62; cam.nearClipPlane=.05f; cam.farClipPlane=120;
             var cameraData=camGo.GetComponent<UniversalAdditionalCameraData>(); if(cameraData==null) cameraData=camGo.AddComponent<UniversalAdditionalCameraData>(); cameraData.renderPostProcessing=true;
             camGo.AddComponent<AudioListener>();
             var controller=player.AddComponent<UfoWashFirstPersonController>(); Set(controller,"cameraPivot",pivot);
@@ -244,6 +245,33 @@ R: reset the active contract",
 
             Debug.Log("UFO WASH: selected imported model " + selectedPath + " for " + assetName);
             return instance;
+        }
+
+        static void BuildPlayerCharacter(Transform root) {
+            var suit = matWhite;
+            var armor = matBlue;
+            var visor = matGlass;
+            var glow = matGlow;
+
+            Part(root.gameObject,"Astronaut torso",PrimitiveType.Capsule,new Vector3(0,1.12f,0),new Vector3(.62f,.78f,.38f),suit);
+            Part(root.gameObject,"Chest armor",PrimitiveType.Cube,new Vector3(0,1.22f,.205f),new Vector3(.43f,.48f,.12f),armor);
+            Part(root.gameObject,"Helmet",PrimitiveType.Sphere,new Vector3(0,1.82f,.015f),new Vector3(.57f,.58f,.52f),suit);
+            Part(root.gameObject,"Dark panoramic visor",PrimitiveType.Sphere,new Vector3(0,1.85f,.225f),new Vector3(.46f,.35f,.16f),visor);
+            Part(root.gameObject,"Helmet comm left",PrimitiveType.Cylinder,new Vector3(-.3f,1.82f,0),new Vector3(.09f,.055f,.09f),glow);
+            Part(root.gameObject,"Helmet comm right",PrimitiveType.Cylinder,new Vector3(.3f,1.82f,0),new Vector3(.09f,.055f,.09f),glow);
+            Part(root.gameObject,"Life support backpack",PrimitiveType.Cube,new Vector3(0,1.12f,-.29f),new Vector3(.52f,.72f,.28f),armor);
+            Part(root.gameObject,"Backpack status light",PrimitiveType.Cube,new Vector3(0,1.25f,-.445f),new Vector3(.25f,.12f,.025f),glow);
+            Part(root.gameObject,"Left upper arm",PrimitiveType.Capsule,new Vector3(-.43f,1.2f,0),new Vector3(.22f,.48f,.23f),suit);
+            Part(root.gameObject,"Right upper arm",PrimitiveType.Capsule,new Vector3(.43f,1.2f,0),new Vector3(.22f,.48f,.23f),suit);
+            Part(root.gameObject,"Left glove",PrimitiveType.Sphere,new Vector3(-.46f,.83f,.08f),new Vector3(.23f,.2f,.23f),armor);
+            Part(root.gameObject,"Right glove",PrimitiveType.Sphere,new Vector3(.46f,.83f,.08f),new Vector3(.23f,.2f,.23f),armor);
+            Part(root.gameObject,"Left leg",PrimitiveType.Capsule,new Vector3(-.17f,.43f,0),new Vector3(.25f,.55f,.27f),suit);
+            Part(root.gameObject,"Right leg",PrimitiveType.Capsule,new Vector3(.17f,.43f,0),new Vector3(.25f,.55f,.27f),suit);
+            Part(root.gameObject,"Left boot",PrimitiveType.Cube,new Vector3(-.17f,.13f,.08f),new Vector3(.29f,.2f,.4f),armor);
+            Part(root.gameObject,"Right boot",PrimitiveType.Cube,new Vector3(.17f,.13f,.08f),new Vector3(.29f,.2f,.4f),armor);
+            Part(root.gameObject,"Chest insignia",PrimitiveType.Cube,new Vector3(0,1.34f,.275f),new Vector3(.16f,.09f,.025f),glow);
+
+            foreach (var collider in root.GetComponentsInChildren<Collider>(true)) collider.enabled = false;
         }
 
         static void EnsureFoldersAndMaterials() {
