@@ -9,17 +9,8 @@ namespace UFOWASH.Editor
 {
     public static class UfoWashPlayablePrototypeBuilder
     {
-        [InitializeOnLoadMethod]
-        static void AutoCreatePlayablePrototype()
-        {
-            EditorApplication.delayCall += () =>
-            {
-                if (!EditorApplication.isPlaying && !System.IO.File.Exists(ScenePath))
-                    BuildPrototypeInternal(false);
-            };
-        }
         const string ScenePath="Assets/UFO_WASH/Scenes/UFO_WASH_Playable.unity";
-        [MenuItem("UFO WASH/BUILD PLAYABLE CLEANING PROTOTYPE")]
+        [MenuItem("UFO WASH/LEGACY/BUILD OLD BLOCKOUT PROTOTYPE")]
         public static void BuildPrototype() { BuildPrototypeInternal(true); }
         static void BuildPrototypeInternal(bool showDialog)
         {
