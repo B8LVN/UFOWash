@@ -77,3 +77,32 @@ A build is not accepted until:
 Evidence can include Unity Console screenshots, Editor screenshots, gameplay recordings, build version, commit hash, automated test reports and reproduction notes. Always date evidence and tie it to a specific build or commit when possible.
 
 Do not infer playability or visual quality from source code alone.
+
+
+## 9. Recovery-pass regression tests
+
+### Contract board
+- Open the board only after the UFO docks.
+- Confirm three distinct offers, descriptions, contamination profiles and payouts.
+- Select each offer and confirm selection feedback.
+- Accept one offer; verify the UI closes, cursor relocks and player controls resume.
+- Press Escape; verify the board closes without accepting a job.
+- Confirm world interaction and movement remain suspended while the board is open.
+
+### Foam application
+- Spray one hull area in foam mode.
+- Confirm persistent local patches appear at hit locations, not as a full-renderer colour wash.
+- Move the nozzle to another panel and confirm coverage appears there too.
+- Final-rinse; confirm patches fade/disappear as foam decreases.
+- Confirm foam patches do not intercept or block later spray hits.
+- Check appearance from normal gameplay distance and close range.
+
+### Customer NPC
+- Approach the imported alien/fallback character.
+- Confirm the NPC can be targeted and interacted with using E.
+- Confirm speech bubble is readable and faces the player.
+- Accept a contract and confirm customer acknowledgement.
+- Complete inspection and confirm customer reaction.
+
+### Verification status
+These tests are required in the owner's Unity Editor. Source changes and static inspection do not count as passing them.
