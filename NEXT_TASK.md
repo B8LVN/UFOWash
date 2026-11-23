@@ -1,65 +1,68 @@
 # Next Authorized Task
 
-**Task ID:** UW-000  
-**Title:** Audit the Existing UFO WASH Unity Project and Establish a Verified Baseline  
-**Priority:** P0 — blocking  
-**Status:** Ready for audit  
-**Owner:** Lead Developer  
-**Implementation authorization:** Audit only. Do not begin major feature work until the audit report is delivered and reviewed.
+**Task ID:** UW-101  
+**Title:** Owner Playtest — Foam Application, Contract Board and Customer Interaction  
+**Priority:** P0 — blocking verification  
+**Status:** Ready for owner playtest  
+**Owner:** Game Director / Product Owner  
+**Developer:** Lead Developer  
+**Implementation authorization:** No new feature expansion until this recovery pass is compiled and playtested. Fix only blocking regressions found during the test.
 
 ## Objective
 
-Establish what actually exists in the current Unity project, why the current result has been judged too poor/primitive/unplayable, and what must be improved. This is an evidence-based audit, not a concept rewrite.
+Verify the latest integrated gameplay recovery pass in the owner's local Unity 6.6.10f1 project. The goal is to establish whether the player can understand and enjoy one customer job, not to add more disconnected systems.
 
-## Required inputs
+## What changed
 
-- Current Unity project repository or a ZIP of the project (excluding Library/Temp/Logs/Obj).
-- Current screenshots or gameplay recording, if available.
-- Current Console errors/warnings, if available.
-- Existing relevant GitHub Issues and recent commits.
+- Persistent foam patches are spawned at the spray contact point and fade during final rinse.
+- The contract terminal opens a three-offer selection board.
+- The alien customer idles, faces the player, displays dialogue, can be spoken to and reacts to job acceptance/completion.
+- Player movement and world interaction pause while the contract board is open.
+- The generated scene attaches the customer interaction to the imported alien or fallback character.
 
-If any input is unavailable, list it as missing. Do not invent findings.
+## Owner test procedure
 
-## Scope
-
-1. Verify Unity Editor version and packages.
-2. Inspect project structure, scenes, prefabs, scripts, materials, models, lighting, UI and input.
-3. Identify what is functional, partially functional, broken, placeholder-only or unknown.
-4. Evaluate first-person controller, camera, interaction feel, UFO arrival/servicing, cleaning feedback, economy, progression and automation against the GDD.
-5. Evaluate visual quality and asset cohesion against `docs/04_VISUAL_AUDIO_QUALITY_BIBLE.md`.
-6. Review code architecture, maintainability, errors, performance risks and save/data design.
-7. Identify the root causes of poor results where evidence permits; assign confidence (High/Medium/Low).
-8. Separate critical fixes from redesign, polish and future scope.
-9. Recommend the smallest sequence of changes that can produce a convincing playable vertical slice.
-
-## Deliverable
-
-Create `docs/reports/PROJECT_AUDIT_001.md` containing:
-
-- Evidence reviewed and missing evidence.
-- Verified project baseline.
-- Feature-by-feature implementation status.
-- Visual quality assessment.
-- Gameplay quality assessment.
-- Technical/code assessment.
-- Bugs and blockers ranked by severity.
-- Root-cause hypotheses with confidence and evidence.
-- Keep / improve / replace recommendations.
-- Proposed vertical-slice recovery plan.
-- Exact next implementation task and acceptance criteria.
+1. Pull latest `main`:
+   ```powershell
+   git -C "C:\\UnityProjects\\UFOWash-Repo" pull origin main
+   ```
+2. Wait for Unity to finish importing and compiling. Do not press the manual scene rebuild command unless the Console reports the automatic builder failed.
+3. Press Play in `UFO_WASH_PowerSlice`.
+4. Wait for the UFO to dock.
+5. Walk to the contract terminal and press E. Confirm the three offers appear.
+6. Select each offer and confirm the selected card changes. Accept one offer.
+7. Spray the UFO in foam mode (2). Confirm persistent foam patches appear exactly where the spray hits.
+8. Switch to final rinse (3). Confirm the foam patches fade/disappear as the surface rinses.
+9. Walk to the alien customer and press E. Confirm dialogue appears and the customer reacts to accepting/completing the contract.
+10. Complete the rinse/inspection flow and verify payout happens once.
+11. Check the Unity Console for compile errors, exceptions and relevant warnings.
 
 ## Acceptance criteria
 
-- No unverified claim is presented as fact.
-- Findings link to relevant files, screenshots, logs or scenes wherever possible.
-- Every major issue has impact, evidence and recommended action.
-- Existing working functionality is identified and protected.
-- The report does not replace or change the UFO WASH concept.
-- The next task is clearly recorded in `NEXT_TASK.md` and `docs/10_BACKLOG.md`.
+- No C# compile errors after import.
+- Contract board opens, all three offers can be selected, and Accept closes the board and starts the chosen contract.
+- Mouse clicks work while the board is open; player movement/look remain suspended until it closes.
+- Foam is clearly visible on the hull at spray impact points from normal gameplay distance.
+- Final rinse visibly removes/fades the foam.
+- Foam patches do not block subsequent spray hits.
+- Customer can be targeted and spoken to; dialogue is readable and customer reactions match job state.
+- Existing UFO arrival, spray, stage progression, inspection and payout still work.
+- No new Console exceptions.
+
+## Evidence to return
+
+- Screenshot of the contract board.
+- Screenshot of foam visibly applied to the UFO.
+- Screenshot or short clip of customer dialogue/reaction.
+- First Console error/exception if any.
+- Brief verdict: what worked, what felt bad, and what should be changed next.
 
 ## Out of scope
 
-- Rewriting the project before the audit.
-- Replacing UFO WASH with another game.
-- Building unrelated features.
-- Claiming a fix has been tested without evidence.
+- New ship classes.
+- Employee hiring or automation.
+- Save/load expansion.
+- More tool modes.
+- Major environment rewrite.
+
+Do not mark this task complete until the owner has tested and accepted the result.
