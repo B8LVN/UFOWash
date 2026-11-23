@@ -47,9 +47,14 @@ namespace UFOWASH
 
         public bool ApplyTool(UfoWashDirtSurface surface, UfoWashToolMode mode, float seconds)
         {
-            if (!JobAccepted || surface == null || seconds <= 0f || mode != CurrentStage) return false;
+            if (!JobAccepted || surface == null || seconds <= 0f) return false;
+            if (mode != CurrentStage)
+            {
+                LastMessage = "WRONG SERVICE STEP // " + StageLabel;
+                return false;
+            }
 
-            float supplyCost = seconds * (mode == UfoWashToolMode.Foam ? 7f : 4f);
+            float supplyCost = seconds * (mode == UfoWashToolMode.Foam ? 1.5f : 0.8f);
             if (mode == UfoWashToolMode.Foam)
             {
                 if (Chemical <= 0f) { LastMessage = "CHEMICAL EMPTY // REFILL AT SUPPLY STATION"; return false; }
