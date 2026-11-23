@@ -1,56 +1,100 @@
-# UFO WASH — Technical Design Document (TDD)
+# UFO WASH — Technical Design Document
 
-**Version:** 0.1 · **Status:** Initial architecture
+**Version:** 0.2  
+**Target:** Unity 6000.6.10f1 / URP 17.6 / Input System 1.20.1 / Windows x64
 
-## Verified baseline (audit reported)
-- Unity Editor: 6000.6.10f1
-- URP: 17.6.0
-- Input System: 1.20.1 installed
-- Platform: Windows Standalone x64
-- Color space: Linear
-- Scripting backend (current target): Mono
-- Graphics asset: PC_RPAsset
-- Quality profiles: Mobile and PC
-- Project path reported: C:\\UnityProjects\\UFOWash
+## 1. Technical principles
 
-Audit values are settings snapshots, not build verification.
+- Keep gameplay state separate from scene presentation.
+- Prefer small components with explicit responsibilities.
+- Author content as ScriptableObjects; do not mutate shared definitions at runtime.
+- Avoid hidden scene dependencies and avoidable per-frame allocations.
+- Make every system inspectable in the Editor and testable in isolation.
+- A commit is not a test result. Record compile, Play Mode and build status separately.
 
-## Goals
-Maintainable modular systems; short iteration times; PC-first quality; later Android scalability; minimal external dependencies; safe serialized data; measurable performance.
+## 2. Runtime architecture
 
-## Proposed runtime architecture
-- **Bootstrap/Core:** initialization, game state and shared services.
-- **Player:** movement, camera and input abstraction.
-- **Interaction:** ray-based interaction interface and prompt state.
-- **Vehicles:** UFO definitions, state and presentation.
-- **Cleaning:** dirt state, tool logic and feedback.
-- **Economy/Jobs:** job definition, completion evaluation and rewards.
-- **Progression:** upgrade definitions and effects.
-- **UI:** HUD, prompts, job progress and currency.
-- **Persistence:** versioned save data when MVP state requires it.
+### Core and bootstrap
+Owns game state, session lifecycle, time, save version and shared service access. No gameplay component should directly own unrelated systems.
 
-## Folder convention
-Assets/UFO_WASH/{Scenes, Scripts/{Core,Player,Interaction,Vehicles,Cleaning,Economy,UI,Save},Prefabs,Materials,Art,Audio,ScriptableObjects,Documentation}. Inspect existing assets before relocating or overwriting anything.
+### Player
+First-person controller, camera, interaction ray, tool selection and input mapping. Tool behavior is separated from input so rebinding and controller support remain possible.
 
-## Coding conventions
-- C#; PascalCase types/methods, camelCase private fields, serialized private fields using [SerializeField].
-- Composition and single-responsibility components.
-- ScriptableObjects for authored definitions; runtime state must not mutate shared definitions.
-- Avoid unjustified singleton dependencies.
-- Avoid expensive work and avoidable allocations in per-frame loops.
-- No unexplained package additions.
+### Vehicles
+UfoDefinition data describes ship class, scale, surface zones, fragility, service ports and visual prefab. Runtime UfoInstance owns contamination and service state. Vehicle presentation must not be responsible for economy logic.
 
-## Input
-Use the installed Input System. Isolate input from gameplay logic to support remapping and devices.
+### Jobs and customers
+ServiceContractDefinition contains customer, vessel, required service recipe, quality target, deadline, consumable estimate and reward formula. ServiceContractRuntime tracks acceptance, stage, quality and completion. Customer profiles provide preferences, patience, reputation and repeat-business behavior.
 
-## Rendering/performance
-URP; establish PC baseline first. Profile before optimizing. Scale shadows, render scale and effects for Mobile. Prefer simple geometry and reusable materials during blockout.
+### Cleaning and equipment
+UfoWashDirtSurface is a panel-level contamination/treatment state. Equipment implements a tool contract with mode, range, coverage, pressure, resource consumption and surface compatibility. The current vertical slice uses three stages: pre-rinse, foam and final rinse. Later stages are added as authored recipe steps, not hard-coded branches across unrelated scripts.
 
-## QA gates
-A feature is complete only after compilation, defined test steps and behavior validation. Editor automation must fail safely and avoid destructive overwrite. Runtime/build claims require actual execution.
+### Economy and inventory
+Wallet transactions are centralized. Jobs produce a revenue breakdown; consumables, wages, maintenance and utilities are explicit costs. Inventory tracks quantity, capacity, reorder thresholds and supplier lead times.
 
-## Dependency order
-Scene foundation → player movement/camera → interaction → UFO/dirt model → spray feedback → job completion/reward → HUD → upgrade → save/load.
+### Facility and construction
+A Facility owns bays, stations, storage and utility capacity. Construction placement validates footprint, access, power and service connections before purchase.
 
-## Build targets
-Primary Windows 64-bit. Android secondary after gameplay and performance review. Mono for iteration; evaluate IL2CPP for deployment.
+### Employees and automation
+Workers are role-based task agents. A task board assigns priorities and constraints. Machines consume inputs, process a recipe and produce outputs at measurable throughput. Staff and machines use the same work-order/task interfaces where practical.
+
+### UI
+HUD shows only immediate operational information. Contract terminal, inventory, staff board, machine configuration and financial reports are separate interfaces. UI reads state and issues commands; it does not own authoritative game state.
+
+### Persistence
+Versioned save DTOs serialize player, wallet, unlocked content, facility layout, contracts, inventory, workers and machine state. ScriptableObject definitions are referenced by stable IDs, never serialized as mutable runtime assets.
+
+## 3. Current vertical-slice implementation
+
+Existing classes:
+- UfoWashFirstPersonController: movement and camera.
+- UfoWashPlayerInteraction / UfoWashInteractable: contextual interaction.
+- UfoWashSprayTool: spray presentation, raycast and tool-mode selection.
+- UfoWashDirtSurface: panel contamination and foam response.
+- UfoWashCareerLoop: current contract stage, supplies and payout.
+- UfoWashJobBoard: contract acceptance.
+- UfoWashSupplyStation: paid refill interaction.
+- UfoWashHUD: service stage, cleanliness and supply display.
+- UfoWashPowerSliceBuilder: Editor-only scene assembly.
+
+This is transitional prototype architecture. Before content scales, migrate contract, inventory and equipment values to data definitions and separate wallet transactions from UI statics.
+
+## 4. Rendering and asset pipeline
+
+- URP 17.6 is the only supported render pipeline for this project.
+- Generated project materials must use Universal Render Pipeline/Lit or a verified URP shader.
+- Do not silently fall back to Built-in Standard when URP/Lit cannot be found.
+- Imported models must be checked for embedded/read-only material shader compatibility, mesh scale, normals, colliders, pivot and licensing.
+- Magenta means the assigned shader is unsupported, missing or failed compilation; changing only material color is not a fix.
+- Keep source assets and converted project materials separate where practical.
+
+## 5. Performance targets
+
+Initial PC target: 1080p, stable 60 FPS on Ryzen 5 5600 / RTX 3060 / 16 GB RAM. This is a target, not a verified result. Use URP renderer features conservatively; avoid excessive real-time point lights and transparent particle overdraw. Profile before optimizing.
+
+## 6. QA and acceptance gates
+
+- Compile: no errors; warnings reviewed.
+- Play Mode: launch, movement, interaction, one complete contract, second contract, refill and upgrade.
+- Rendering: no magenta materials, missing textures or broken normals.
+- Physics: player cannot pass through bay walls or become trapped; tool raycast ignores player colliders.
+- Economy: all payouts and costs occur once; failed purchase leaves wallet unchanged.
+- Performance: profile a representative scene and record frame time, memory and draw calls.
+- Build: create and launch a Windows Development Build before calling the slice validated.
+
+## 7. Dependency order
+
+1. Reliable rendering/material pipeline and scene baseline.
+2. Player movement and interaction.
+3. Surface-level cleaning and feedback.
+4. Multi-stage contract and consumables.
+5. Payout, quality and repeat jobs.
+6. Tool/equipment upgrades.
+7. Data-driven contracts and ship variants.
+8. Facility capacity, inventory and suppliers.
+9. Employees and task assignment.
+10. Automation, expansion and save/load.
+
+## 8. Explicit non-goals for the first slice
+
+No multiplayer, open-world travel, multi-location simulation, full employee AI, conveyor logistics, procedural ship generation or Android port. These depend on a fun, stable single-bay loop.
