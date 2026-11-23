@@ -156,7 +156,7 @@ namespace UFOWASH
     public sealed class UfoWashCustomerShip : MonoBehaviour
     {
         enum DockState { Arriving, Docked, Departing, Turnaround }
-        [SerializeField] float travelDistance = 12.5f;
+        [SerializeField] float travelDistance = 10.5f;
         [SerializeField] float travelSpeed = 6f;
         [SerializeField] float turnaroundSeconds = 1.6f;
 
