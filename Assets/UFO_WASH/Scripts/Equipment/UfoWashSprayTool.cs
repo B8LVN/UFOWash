@@ -74,8 +74,8 @@ namespace UFOWASH
                 if (dirt != null)
                 {
                     var loop = UfoWashCareerLoop.Instance;
-                    if (loop != null) loop.ApplyTool(dirt, selectedMode, Time.deltaTime);
-                    else dirt.Process(selectedMode, Time.deltaTime);
+                    if (loop != null) loop.ApplyTool(dirt, selectedMode, Time.deltaTime, hit.point, hit.normal, sprayRadius);
+                    else dirt.Process(selectedMode, Time.deltaTime, hit.point, hit.normal, sprayRadius);
                 }
 
                 if (impactParticles != null && Time.time >= nextImpactTime)
