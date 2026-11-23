@@ -167,7 +167,7 @@ namespace UFOWASH.Editor
             Part(root,n,t,p,s,m);var g=root.transform.Find(n).gameObject;var d=g.AddComponent<UfoWashDirtSurface>();d.dirt=dirt;
         }
         static void Sign(string text,Vector3 p,float size,Material m) {
-            var g=new GameObject("SIGN // "+text);g.transform.position=p;var tm=g.AddComponent<TextMesh>();tm.text=text;tm.fontSize=64;tm.characterSize=size/4f;tm.anchor=TextAnchor.MiddleCenter;tm.alignment=TextAlignment.Center;tm.color=m.color;tm.fontStyle=FontStyles.Bold;
+            var g=new GameObject("SIGN // "+text);g.transform.position=p;g.transform.rotation=Quaternion.Euler(0,180,0);var tm=g.AddComponent<TextMesh>();tm.text=text;tm.fontSize=64;tm.characterSize=size/4f;tm.anchor=TextAnchor.MiddleCenter;tm.alignment=TextAlignment.Center;tm.color=m.color;tm.fontStyle=FontStyle.Bold;
         }
         static void DisplayPanel(string label,Vector3 p) {
             Cube(label+" housing",p,new Vector3(3.2f,2.1f,.3f),matDark);
