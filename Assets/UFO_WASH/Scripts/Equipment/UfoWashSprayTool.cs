@@ -40,9 +40,14 @@ namespace UFOWASH
 
             if (!active) return;
 
-            if (Physics.Raycast(viewCamera.transform.position, viewCamera.transform.forward,
-                out RaycastHit hit, range))
+            RaycastHit[] hits = Physics.RaycastAll(viewCamera.transform.position, viewCamera.transform.forward, range);
+            System.Array.Sort(hits, (a, b) => a.distance.CompareTo(b.distance));
+            for (int i = 0; i < hits.Length; i++)
             {
+                RaycastHit hit = hits[i];
+                if (hit.collider == null || hit.collider.transform == transform ||
+                    hit.collider.transform.IsChildOf(transform)) continue;
+
                 var dirt = hit.collider.GetComponentInParent<UfoWashDirtSurface>();
                 if (dirt != null) dirt.Clean(cleanPerSecond * Time.deltaTime);
 
@@ -59,6 +64,7 @@ namespace UFOWASH
                     impactParticles.Emit(emit, 5);
                     nextImpactTime = Time.time + .075f;
                 }
+                break;
             }
         }
 
