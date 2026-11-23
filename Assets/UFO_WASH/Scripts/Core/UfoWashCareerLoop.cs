@@ -43,7 +43,7 @@ namespace UFOWASH
             Quality >= 0.90f ? "B" : Quality >= 0.85f ? "C" : "D";
 
         public int OfferCount => OfferTitles.Length;
-        public string Client => activeOfferIndex >= 0 ? OfferClients[activeOfferIndex] : OfferClients[CompletedJobs % OfferClients.Length];
+        public string Client => activeOfferIndex >= 0 ? OfferClients[(CompletedJobs + activeOfferIndex) % OfferClients.Length] : OfferClients[CompletedJobs % OfferClients.Length];
         public string Ship => "CLASS-IV SCOUT";
         public string ContaminationType => activeOfferIndex >= 0 ? OfferContamination[activeOfferIndex] : OfferContamination[CompletedJobs % OfferContamination.Length];
         public int Reward => activeOfferIndex >= 0 ? OfferPayouts[activeOfferIndex] : OfferPayouts[0];
