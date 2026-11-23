@@ -153,9 +153,9 @@ namespace UFOWASH
 
         void Header(string eyebrow, string headline)
         {
+            PanelAt(new Vector2(.10f,.22f), new Vector2(.82f,.91f), new Color(.025f,.055f,.085f,.94f));
             AddText(pageRoot, eyebrow, 16, Cyan, new Vector2(.12f,.82f), new Vector2(.76f,.88f), TextAnchor.MiddleLeft, FontStyle.Bold);
             AddText(pageRoot, headline, 31, White, new Vector2(.12f,.73f), new Vector2(.80f,.81f), TextAnchor.MiddleLeft, FontStyle.Bold);
-            PanelAt(new Vector2(.10f,.22f), new Vector2(.82f,.91f), new Color(.025f,.055f,.085f,.94f));
         }
 
         void NewPage()
