@@ -3,6 +3,8 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 using System.Collections.Generic;
 
 namespace UFOWASH.Editor
@@ -19,7 +21,7 @@ namespace UFOWASH.Editor
             var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
             RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Flat;
             RenderSettings.ambientLight = new Color(.38f,.43f,.52f);
-            RenderSettings.fog = true; RenderSettings.fogColor = new Color(.075f,.095f,.13f); RenderSettings.fogDensity = .006f;
+            RenderSettings.fog = true; RenderSettings.fogColor = new Color(.075f,.095f,.13f); RenderSettings.fogDensity = .006f;\n            SetupPostProcessing();
 
             // Main industrial hangar shell
             Cube("Polished graphite floor", new Vector3(0,-.25f,3), new Vector3(26,.5f,34), matFloor);
@@ -248,11 +250,65 @@ namespace UFOWASH.Editor
             matGlow=MakeMat("PS_EmissiveCyan",new Color(.02f,.8f,1f),.3f);
             matGlow.EnableKeyword("_EMISSION"); matGlow.SetColor("_EmissionColor",new Color(.02f,1.2f,1.8f));
         }
+        static void SetupPostProcessing() {
+            const string profilePath = "Assets/UFO_WASH/Art/Materials/UfoWash_CinematicVolume.asset";
+            var profile = AssetDatabase.LoadAssetAtPath<VolumeProfile>(profilePath);
+            if (profile == null) {
+                profile = ScriptableObject.CreateInstance<VolumeProfile>();
+                AssetDatabase.CreateAsset(profile, profilePath);
+            }
+
+            if (!profile.TryGet<Bloom>(out var bloom)) bloom = profile.Add<Bloom>(true);
+            bloom.active = true;
+            bloom.threshold.Override(1.05f);
+            bloom.intensity.Override(.72f);
+            bloom.scatter.Override(.68f);
+
+            if (!profile.TryGet<Vignette>(out var vignette)) vignette = profile.Add<Vignette>(true);
+            vignette.active = true;
+            vignette.intensity.Override(.22f);
+            vignette.smoothness.Override(.72f);
+            vignette.rounded.Override(true);
+
+            if (!profile.TryGet<ColorAdjustments>(out var grade)) grade = profile.Add<ColorAdjustments>(true);
+            grade.active = true;
+            grade.postExposure.Override(.18f);
+            grade.contrast.Override(14f);
+            grade.saturation.Override(8f);
+
+            if (!profile.TryGet<Tonemapping>(out var tone)) tone = profile.Add<Tonemapping>(true);
+            tone.active = true;
+            tone.mode.Override(TonemappingMode.ACES);
+
+            EditorUtility.SetDirty(profile);
+            var volumeObject = new GameObject("GLOBAL VOLUME // SCI-FI CINEMA");
+            var volume = volumeObject.AddComponent<Volume>();
+            volume.isGlobal = true;
+            volume.priority = 10f;
+            volume.weight = 1f;
+            volume.sharedProfile = profile;
+        }
+
         static Material MakeMat(string name,Color c,float smooth) {
             string path="Assets/UFO_WASH/Art/Materials/"+name+".mat";
             var m=AssetDatabase.LoadAssetAtPath<Material>(path);
             if(m==null){var shader=Shader.Find("Universal Render Pipeline/Lit"); if(shader==null)shader=Shader.Find("Standard"); m=new Material(shader); AssetDatabase.CreateAsset(m,path);}
-            m.color=c; if(m.HasProperty("_Smoothness"))m.SetFloat("_Smoothness",smooth); EditorUtility.SetDirty(m); return m;
+            m.color=c;
+            if(m.HasProperty("_Smoothness")) m.SetFloat("_Smoothness",smooth);
+            if(m.HasProperty("_Metallic")) m.SetFloat("_Metallic", name=="PS_Floor" ? .52f : (name=="PS_BrushedSteel" ? .68f : .08f));
+            if(name=="PS_CockpitGlass") {
+                Color glassColor = new Color(c.r,c.g,c.b,.38f);
+                if(m.HasProperty("_BaseColor")) m.SetColor("_BaseColor",glassColor);
+                else m.color=glassColor;
+                if(m.HasProperty("_Surface")) m.SetFloat("_Surface",1f);
+                if(m.HasProperty("_Blend")) m.SetFloat("_Blend",0f);
+                if(m.HasProperty("_ZWrite")) m.SetFloat("_ZWrite",0f);
+                if(m.HasProperty("_SrcBlend")) m.SetFloat("_SrcBlend",(float)BlendMode.SrcAlpha);
+                if(m.HasProperty("_DstBlend")) m.SetFloat("_DstBlend",(float)BlendMode.OneMinusSrcAlpha);
+                m.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");
+                m.renderQueue=(int)RenderQueue.Transparent;
+            }
+            EditorUtility.SetDirty(m); return m;
         }
         static GameObject Cube(string n,Vector3 p,Vector3 s,Material m) {
             var g=GameObject.CreatePrimitive(PrimitiveType.Cube);g.name=n;g.transform.position=p;g.transform.localScale=s;g.GetComponent<Renderer>().sharedMaterial=m;return g;
