@@ -17,8 +17,45 @@ namespace UFOWASH.Editor
         [MenuItem("UFO WASH/BUILD POWER SLICE - FULL ART PASS", false, 0)]
         public static void Build()
         {
+            BuildScene(true, true);
+        }
+
+        // Called only when this dedicated generated-scene builder changes.
+        // Gameplay script edits never require rebuilding the environment.
+        internal static void AutoRebuildGeneratedScene()
+        {
+            BuildScene(false, false);
+        }
+
+        static void BuildScene(bool replaceCurrentScene, bool showDialog)
+        {
+            Scene previousScene = SceneManager.GetActiveScene();
+            Scene scene;
+            bool closeGeneratedSceneAfterBuild = false;
+
+            if (replaceCurrentScene)
+            {
+                scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
+            }
+            else if (previousScene.IsValid() && previousScene.path == ScenePath)
+            {
+                scene = previousScene;
+                foreach (GameObject rootObject in scene.GetRootGameObjects())
+                    Object.DestroyImmediate(rootObject);
+            }
+            else if (System.IO.File.Exists(ScenePath))
+            {
+                scene = EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Additive);
+                closeGeneratedSceneAfterBuild = true;
+            }
+            else
+            {
+                scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Additive);
+                closeGeneratedSceneAfterBuild = true;
+            }
+
+            SceneManager.SetActiveScene(scene);
             EnsureFoldersAndMaterials();
-            var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
             RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Flat;
             RenderSettings.ambientLight = new Color(.38f,.43f,.52f);
             RenderSettings.fog = true; RenderSettings.fogColor = new Color(.075f,.095f,.13f); RenderSettings.fogDensity = .006f;
@@ -158,16 +195,28 @@ namespace UFOWASH.Editor
             EditorSceneManager.SaveScene(scene,ScenePath);
             var scenes=new List<EditorBuildSettingsScene>(EditorBuildSettings.scenes);
             scenes.RemoveAll(s=>s.path==ScenePath); scenes.Insert(0,new EditorBuildSettingsScene(ScenePath,true)); EditorBuildSettings.scenes=scenes.ToArray();
-            Selection.activeObject=AssetDatabase.LoadAssetAtPath<SceneAsset>(ScenePath);
-            EditorUtility.DisplayDialog("UFO WASH POWER SLICE BUILT",
-                @"A new full art-pass scene was created. Open UFO_WASH_PowerSlice and press Play.
+            if (replaceCurrentScene)
+            {
+                Selection.activeObject=AssetDatabase.LoadAssetAtPath<SceneAsset>(ScenePath);
+                if (showDialog)
+                    EditorUtility.DisplayDialog("UFO WASH SCENE BUILT",
+                        @"The UFO WASH scene is ready. Press Play.
 
 WASD + mouse: move/look
-Find the CONTRACTS terminal and press E to accept a customer
-Hold left mouse: spray and clean the UFO
-Aim at upgrade console + E: buy sprayer upgrades
-R: reset the active contract",
-                "LET'S PLAY");
+E: interact / accept contract
+1 / 2 / 3: pre-rinse / foam / final rinse
+Left mouse: operate washer",
+                        "PLAY");
+            }
+            else
+            {
+                EditorSceneManager.SaveScene(scene, ScenePath);
+                if (previousScene.IsValid() && previousScene != scene)
+                    SceneManager.SetActiveScene(previousScene);
+                if (closeGeneratedSceneAfterBuild)
+                    EditorSceneManager.CloseScene(scene, true);
+                Debug.Log("UFO WASH: generated scene automatically refreshed after builder changes.");
+            }
         }
 
         static GameObject SpawnImportedModel(string assetName, Vector3 position, Quaternion rotation, float scale, bool washable) {
@@ -239,13 +288,36 @@ R: reset the active contract",
 
             if (assetName != "alien") {
                 foreach (var renderer in renderers) {
-                    string partName = renderer.gameObject.name.ToLowerInvariant();
-                    if (partName.Contains("glass") || partName.Contains("window") || partName.Contains("canopy"))
-                        renderer.sharedMaterial = matGlass;
-                    else if (partName.Contains("light") || partName.Contains("engine") || partName.Contains("thruster"))
-                        renderer.sharedMaterial = matGlow;
-                    else
-                        renderer.sharedMaterial = matMetal;
+                    // Imported meshes can have several material slots. Replacing only
+                    // sharedMaterial fixes slot zero and leaves the remaining slots magenta.
+                    Material[] sourceMaterials = renderer.sharedMaterials;
+                    if (sourceMaterials == null || sourceMaterials.Length == 0)
+                        sourceMaterials = new Material[] { matMetal };
+
+                    var safeMaterials = new Material[sourceMaterials.Length];
+                    for (int slot = 0; slot < sourceMaterials.Length; slot++) {
+                        string materialName = sourceMaterials[slot] != null
+                            ? sourceMaterials[slot].name.ToLowerInvariant() : string.Empty;
+                        string partName = renderer.gameObject.name.ToLowerInvariant();
+                        string semantic = materialName + " " + partName;
+
+                        if (semantic.Contains("glass") || semantic.Contains("window") ||
+                            semantic.Contains("canopy") || semantic.Contains("cockpit"))
+                            safeMaterials[slot] = matGlass;
+                        else if (semantic.Contains("light") || semantic.Contains("engine") ||
+                            semantic.Contains("thruster") || semantic.Contains("glow"))
+                            safeMaterials[slot] = matGlow;
+                        else if (semantic.Contains("orange") || semantic.Contains("warning") ||
+                            semantic.Contains("red") || semantic.Contains("hazard"))
+                            safeMaterials[slot] = matOrange;
+                        else if (semantic.Contains("blue") || semantic.Contains("navy"))
+                            safeMaterials[slot] = matBlue;
+                        else if (semantic.Contains("dark") || semantic.Contains("black"))
+                            safeMaterials[slot] = matDark;
+                        else
+                            safeMaterials[slot] = matMetal;
+                    }
+                    renderer.sharedMaterials = safeMaterials;
                 }
             }
 
@@ -447,6 +519,43 @@ R: reset the active contract",
         }
         static void Set(Object obj,string field,Object value) {
             var so=new SerializedObject(obj);var prop=so.FindProperty(field);if(prop!=null){prop.objectReferenceValue=value;so.ApplyModifiedProperties();}
+        }
+    }
+
+    // A generated environment is a build artifact, not a manual daily task.
+    // When this specific builder file is reimported after Git pull, refresh its
+    // dedicated scene once. Other C# changes do not rebuild or replace the scene.
+    public sealed class UfoWashSceneAutoBuilder : AssetPostprocessor
+    {
+        const string BuilderPath = "Assets/UFO_WASH/Editor/UfoWashPowerSliceBuilder.cs";
+        static bool rebuildQueued;
+
+        static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets,
+            string[] movedAssets, string[] movedFromAssetPaths)
+        {
+            if (rebuildQueued) return;
+            for (int i = 0; i < importedAssets.Length; i++)
+            {
+                if (importedAssets[i] != BuilderPath) continue;
+                rebuildQueued = true;
+                EditorApplication.delayCall += RebuildAfterImport;
+                break;
+            }
+        }
+
+        static void RebuildAfterImport()
+        {
+            rebuildQueued = false;
+            if (EditorApplication.isCompiling || EditorApplication.isPlayingOrWillChangePlaymode)
+            {
+                EditorApplication.delayCall += RebuildAfterImport;
+                return;
+            }
+            try { UfoWashPowerSliceBuilder.AutoRebuildGeneratedScene(); }
+            catch (System.Exception exception)
+            {
+                Debug.LogError("UFO WASH automatic scene refresh failed. Use the manual Build command once and report this error. " + exception);
+            }
         }
     }
 }
