@@ -8,16 +8,16 @@ Read these files in this order:
 
 1. `PROJECT_CHARTER.md`
 2. `NEXT_TASK.md`
-3. `docs/11_CURRENT_STATUS.md`
-4. `docs/01_GAME_DESIGN_DOCUMENT.md`
-5. `docs/02_PRODUCTION_PLAN.md`
-6. `docs/03_TECHNICAL_DESIGN.md`
-7. `docs/04_VISUAL_AUDIO_QUALITY_BIBLE.md`
-8. `docs/05_QA_TEST_STRATEGY.md`
-9. `docs/06_PROJECT_MEMORY_AND_WORKFLOW.md`
-10. `docs/07_DECISION_LOG.md`
-11. `docs/08_LESSONS_LEARNED.md`
-12. `docs/10_BACKLOG.md`
+3. `Docs/11_CURRENT_STATUS.md`
+4. `Docs/01_GAME_DESIGN_DOCUMENT.md`
+5. `Docs/02_PRODUCTION_PLAN.md`
+6. `Docs/03_TECHNICAL_DESIGN.md`
+7. `Docs/04_VISUAL_AUDIO_QUALITY_BIBLE.md`
+8. `Docs/05_QA_TEST_STRATEGY.md`
+9. `Docs/06_PROJECT_MEMORY_AND_WORKFLOW.md`
+10. `Docs/07_DECISION_LOG.md`
+11. `Docs/08_LESSONS_LEARNED.md`
+12. `Docs/10_BACKLOG.md`
 13. Relevant GitHub Issues, recent commits, changelog entries and files related to the assigned task.
 
 Do not rely on ChatGPT conversation history as the only source of truth. The repository is the canonical project memory.
@@ -63,18 +63,18 @@ Do not start a second feature while a P0 bug or a blocked acceptance criterion a
 
 Before calling a task complete, update the relevant repository records:
 
-- `docs/11_CURRENT_STATUS.md` — current verified state and blockers.
+- `Docs/11_CURRENT_STATUS.md` — current verified state and blockers.
 - `NEXT_TASK.md` — one clear next task, owner and dependencies.
 - `CHANGELOG.md` — meaningful changes and test status.
-- `docs/10_BACKLOG.md` — status, priority and next work.
-- `docs/12_IMPROVEMENT_REGISTER.md` — problems and verified improvements.
-- `docs/13_SESSION_LOG.md` — session history and handover.
-- `docs/07_DECISION_LOG.md` — only when a decision was made or changed.
-- `docs/08_LESSONS_LEARNED.md` — when a mistake, root cause or reusable lesson was discovered.
-- `docs/09_ASSET_REGISTER.md` — when assets are added, removed or replaced.
+- `Docs/10_BACKLOG.md` — status, priority and next work.
+- `Docs/12_IMPROVEMENT_REGISTER.md` — problems and verified improvements.
+- `Docs/13_SESSION_LOG.md` — session history and handover.
+- `Docs/07_DECISION_LOG.md` — only when a decision was made or changed.
+- `Docs/08_LESSONS_LEARNED.md` — when a mistake, root cause or reusable lesson was discovered.
+- `Docs/09_ASSET_REGISTER.md` — when assets are added, removed or replaced.
 - QA reports / test cases / bug records — when relevant.
 
-Update the GitHub Issue with implementation summary, files changed, evidence, test results and remaining risks. Append a session entry to `docs/13_SESSION_LOG.md` and update relevant rows in `docs/12_IMPROVEMENT_REGISTER.md`. Close it only when all acceptance criteria are verified and the project owner accepts it. Otherwise leave it open or move it to Review/Blocked.
+Update the GitHub Issue with implementation summary, files changed, evidence, test results and remaining risks. Append a session entry to `Docs/13_SESSION_LOG.md` and update relevant rows in `Docs/12_IMPROVEMENT_REGISTER.md`. Close it only when all acceptance criteria are verified and the project owner accepts it. Otherwise leave it open or move it to Review/Blocked.
 
 ## Step 6 — Final handover
 
@@ -97,4 +97,4 @@ Finish with a concise handover:
 - Do not call primitive greybox art “polished.”
 - Do not claim a build, test, GitHub upload, commit or issue update happened unless it actually happened.
 - Do not let chat memory replace repository memory.
-- Do not finish a task without updating `NEXT_TASK.md` and `docs/11_CURRENT_STATUS.md`.
+- Do not finish a task without updating `NEXT_TASK.md` and `Docs/11_CURRENT_STATUS.md`.
