@@ -17,7 +17,8 @@ namespace UFOWASH
         void Start() { if (cameraPivot != null) { pitch = cameraPivot.localEulerAngles.x; if (pitch > 180f) pitch -= 360f; } Cursor.lockState = CursorLockMode.Locked; Cursor.visible = false; }
         void Update()
         {
-            if (Keyboard.current == null || Mouse.current == null) return;
+            if (!isActiveAndEnabled || !gameObject.activeInHierarchy || controller == null || !controller.enabled) return;
+            if (cameraPivot == null || Keyboard.current == null || Mouse.current == null) return;
             if (Keyboard.current.escapeKey.wasPressedThisFrame) { Cursor.lockState = CursorLockMode.None; Cursor.visible = true; }
             if (Mouse.current.leftButton.wasPressedThisFrame && Cursor.lockState != CursorLockMode.Locked) { Cursor.lockState = CursorLockMode.Locked; Cursor.visible = false; }
             if (Cursor.lockState != CursorLockMode.Locked) return;
