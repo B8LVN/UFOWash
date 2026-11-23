@@ -146,7 +146,7 @@ namespace UFOWASH
             rect.anchoredPosition = position;
             rect.sizeDelta = dimensions;
             var text = go.GetComponent<Text>();
-            text.font = Resources.GetBuiltinResource<Font>("Arial.ttf");
+            text.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
             text.fontSize = size;
             text.color = color;
             text.text = value;
