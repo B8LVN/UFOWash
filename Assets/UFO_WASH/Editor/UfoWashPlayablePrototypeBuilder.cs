@@ -23,7 +23,9 @@ namespace UFOWASH.Editor
         public static void BuildPrototype() { BuildPrototypeInternal(true); }
         static void BuildPrototypeInternal(bool showDialog)
         {
-            var scene=EditorSceneManager.NewScene(NewSceneSetup.EmptyScene,NewSceneMode.Single);
+            var previousScene=SceneManager.GetActiveScene();
+            var scene=EditorSceneManager.NewScene(NewSceneSetup.EmptyScene,NewSceneMode.Additive);
+            SceneManager.SetActiveScene(scene);
             RenderSettings.ambientLight=new Color(.28f,.31f,.38f);
             Make("Floor",PrimitiveType.Cube,new Vector3(0,-.15f,2),new Vector3(22,.3f,28),new Color(.12f,.16f,.2f));
             Make("Back Wall",PrimitiveType.Cube,new Vector3(0,4,15),new Vector3(22,8,.5f),new Color(.07f,.1f,.16f));
@@ -48,6 +50,11 @@ namespace UFOWASH.Editor
             var list=new System.Collections.Generic.List<EditorBuildSettingsScene>(EditorBuildSettings.scenes);
             list.RemoveAll(s=>s.path==ScenePath);list.Insert(0,new EditorBuildSettingsScene(ScenePath,true));EditorBuildSettings.scenes=list.ToArray();
             if(showDialog) EditorUtility.DisplayDialog("UFO WASH","Playable prototype scene created and added to Build Settings:\n"+ScenePath+"\n\nPress Play. WASD + mouse. Hold left mouse to clean. R resets job.", "Let's go");
+            if(!showDialog)
+            {
+                if(previousScene.IsValid()) SceneManager.SetActiveScene(previousScene);
+                EditorSceneManager.CloseScene(scene,true);
+            }
             Debug.Log("UFO WASH: Playable cleaning prototype generated at "+ScenePath);
         }
         static void DirtPart(GameObject root,string name,PrimitiveType type,Vector3 pos,Vector3 scale,float dirt)
