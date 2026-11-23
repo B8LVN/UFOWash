@@ -287,7 +287,9 @@ R: reset the active contract",
             Part(root.gameObject,"Right boot",PrimitiveType.Cube,new Vector3(.17f,.13f,.08f),new Vector3(.29f,.2f,.4f),armor);
             Part(root.gameObject,"Chest insignia",PrimitiveType.Cube,new Vector3(0,1.34f,.275f),new Vector3(.16f,.09f,.025f),glow);
 
-            foreach (var collider in root.GetComponentsInChildren<Collider>(true)) collider.enabled = false;
+            // Disable decorative suit-part colliders only. Keep the root CharacterController active.
+            foreach (var collider in root.GetComponentsInChildren<Collider>(true))
+                if (!(collider is CharacterController)) collider.enabled = false;
         }
 
         static void EnsureFoldersAndMaterials() {
