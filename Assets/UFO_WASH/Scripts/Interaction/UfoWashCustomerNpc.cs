@@ -66,7 +66,7 @@ namespace UFOWASH
                 if (bubbleRoot != null) bubbleRoot.gameObject.SetActive(nearby);
                 if (nearby && bubbleRoot != null)
                 {
-                    Vector3 toCamera = bubbleRoot.position - playerCamera.position;
+                    Vector3 toCamera = playerCamera.position - bubbleRoot.position;
                     if (toCamera.sqrMagnitude > 0.01f)
                         bubbleRoot.rotation = Quaternion.LookRotation(toCamera.normalized);
                 }
