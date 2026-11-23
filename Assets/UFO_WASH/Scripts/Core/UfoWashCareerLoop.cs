@@ -40,9 +40,10 @@ namespace UFOWASH
         public void CompleteJob()
         {
             if (!JobAccepted) return;
+            int payout = Reward;
             JobAccepted = false;
             CompletedJobs++;
-            UfoWashHUD.Credits += Reward;
+            UfoWashHUD.Credits += payout;
             UfoWashHUD.JobComplete = true;
             LastMessage = "VESSEL CERTIFIED // PAYMENT TRANSFERRED";
         }
