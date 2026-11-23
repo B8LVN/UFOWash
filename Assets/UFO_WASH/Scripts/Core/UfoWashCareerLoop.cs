@@ -7,7 +7,14 @@ namespace UFOWASH
         public static UfoWashCareerLoop Instance { get; private set; }
 
         static readonly string[] Clients = { "ZORP // ORION TRADERS", "NYX-7 // DEEP SPACE COURIER", "CAPTAIN VEX // OUTER RIM" };
-        static readonly string[] Ships = { "CLASS-IV SCOUT", "NEBULA RUNNER", "VOID SKIMMER" };
+        // The first vertical slice contains one authored hull. New ship names
+        // are not advertised until their actual prefabs and surface layouts exist.
+        static readonly string[] Ships = { "CLASS-IV SCOUT" };
+        static readonly Color[] ContaminationColors = {
+            new Color(0.68f, 0.36f, 0.16f),
+            new Color(0.30f, 0.25f, 0.48f),
+            new Color(0.24f, 0.52f, 0.30f)
+        };
         static readonly string[] Contamination = { "ASTEROID DUST + IONIC SLUDGE", "PLASMA SOOT + ENGINE RESIDUE", "BIO-LUMINESCENT SPACE MOLD" };
 
         public bool JobAccepted { get; private set; }
@@ -54,7 +61,8 @@ namespace UFOWASH
             JobAccepted = true;
             CurrentStage = UfoWashToolMode.PreRinse;
             UfoWashHUD.JobComplete = false;
-            UfoWashDirtSurface.ResetJob();
+            UfoWashDirtSurface.SetJobProfile(
+                ContaminationColors[CompletedJobs % ContaminationColors.Length], 1f);
             LastMessage = "CONTRACT ACCEPTED // PRE-RINSE THE HULL";
         }
 
@@ -139,7 +147,8 @@ namespace UFOWASH
         {
             if (!JobAccepted) return;
             CurrentStage = UfoWashToolMode.PreRinse;
-            UfoWashDirtSurface.ResetJob();
+            UfoWashDirtSurface.SetJobProfile(
+                ContaminationColors[CompletedJobs % ContaminationColors.Length], 1f);
             LastMessage = "CONTRACT RESET // ALL CONTAMINATION RESTORED";
         }
     }
