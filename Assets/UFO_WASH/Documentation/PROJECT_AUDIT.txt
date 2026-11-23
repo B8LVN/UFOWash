@@ -1,0 +1,24 @@
+﻿UFO WASH — AUTOMATED PROJECT AUDIT
+Generated: 2026-11-23 11:29:02
+Unity version: 6000.6.10f1
+Project path: C:\UnityProjects\UFOWash
+Platform: StandaloneWindows64
+Scripting backend (current target): Mono2x
+Color space: Linear
+Active Input Handling: inspect ProjectSettings.asset (API varies by Unity version) 
+Product name: UFOWash
+Company name: DefaultCompany
+Graphics pipeline asset: PC_RPAsset
+Quality levels:
+ - Mobile
+ - PC
+Packages (selected):
+ - com.unity.inputsystem 1.20.1
+ - com.unity.render-pipelines.universal 17.6.0
+ - com.unity.modules.androidjni 1.0.0
+ - com.unity.render-pipelines.core 17.6.0
+ - com.unity.render-pipelines.universal-config 17.6.0
+ - com.unity.test-framework 1.8.0
+ - com.unity.test-framework.performance 6.6.0
+
+NOTE: This audit is a snapshot of editor settings, not a full build or runtime test.
