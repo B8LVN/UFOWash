@@ -349,8 +349,15 @@ R: reset the active contract",
         static Material MakeMat(string name,Color c,float smooth) {
             string path="Assets/UFO_WASH/Art/Materials/"+name+".mat";
             var m=AssetDatabase.LoadAssetAtPath<Material>(path);
-            if(m==null){var shader=Shader.Find("Universal Render Pipeline/Lit"); if(shader==null)shader=Shader.Find("Standard"); m=new Material(shader); AssetDatabase.CreateAsset(m,path);}
-            m.color=c;
+            // Existing generated materials may have been created with Built-in/Standard shaders.
+            // Reassign URP/Lit every build; changing only the color does not repair a pink shader.
+            var shader=Shader.Find("Universal Render Pipeline/Lit");
+            if(shader==null)
+                throw new System.InvalidOperationException("URP/Lit shader is unavailable. Check that URP 17.6 is installed and assigned in Project Settings > Graphics.");
+            if(m==null){m=new Material(shader); AssetDatabase.CreateAsset(m,path);}
+            else if(m.shader != shader){m.shader=shader; Debug.Log("UFO WASH: repaired incompatible material shader: "+name);}
+            if(m.HasProperty("_BaseColor")) m.SetColor("_BaseColor",c);
+            else m.color=c;
             if(m.HasProperty("_Smoothness")) m.SetFloat("_Smoothness",smooth);
             if(m.HasProperty("_Metallic")) m.SetFloat("_Metallic", name=="PS_Floor" ? .52f : (name=="PS_BrushedSteel" ? .68f : .08f));
             if(name=="PS_CockpitGlass") {
