@@ -61,3 +61,15 @@
 - Extended the structural validator to require the interactive customer.
 
 **QA status:** source committed to main. Static source review only; Unity compilation, Play Mode, foam visibility, UI input, NPC interaction and Windows build remain unverified. Owner playtest is the next gate.
+
+
+## 2026-11-23 — Opening experience and scene organization
+
+- Fixed the Unity exception caused by constructing a MaterialPropertyBlock in a static field initializer. The shared block is now lazily created from the runtime rendering path.
+- Added a title menu over the paused 3D station, with Story, Start First Shift and How to Play entry points.
+- Added a first-shift narrative briefing introducing Bay 01, the Vesper Belt, the station's financial situation and the first customer dispatch.
+- Added a field manual covering movement, interaction, washer modes and the first service sequence.
+- Clock In starts the simulation, restores the first-person controls and hides the menu.
+- Organized generated scene roots into eight named Hierarchy groups to make the project navigable.
+
+**QA status:** source committed only. Unity compile, scene regeneration, UI clicks, pause/resume, hierarchy output and Play Mode remain unverified. The environment is still a greybox/temporary art pass and is not being represented as finished.
