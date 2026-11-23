@@ -106,3 +106,22 @@ Do not infer playability or visual quality from source code alone.
 
 ### Verification status
 These tests are required in the owner's Unity Editor. Source changes and static inspection do not count as passing them.
+
+
+## 10. Opening experience and scene structure
+
+Before accepting the first playable chapter, verify the complete entry flow:
+
+- Title menu appears before the player receives control.
+- Story and How to Play are accessible without starting a shift.
+- First-shift briefing establishes the immediate customer objective.
+- UI navigation works through the Input System UI module at the target resolutions.
+- Time remains paused until the player explicitly clocks in.
+- Clock In closes the front end, restores time and enables player input.
+- The generated scene uses named top-level Hierarchy groups and preserves world transforms.
+
+The first narrative and tutorial are draft content. Owner feedback is required before treating the story as final.
+
+## 11. Unity native-object lifecycle regression
+
+Unity native rendering objects such as MaterialPropertyBlock must not be constructed from static field initializers or MonoBehaviour constructors. Create them from a valid Unity runtime/editor lifecycle method or lazily at the point of use. When a static-initialization exception is reported, add a regression check that enters Play Mode and exercises the affected rendering path, not merely a source-text check.
