@@ -107,14 +107,20 @@ namespace UFOWASH
             stageText.text = "SERVICE PROCESS // " + career.StageLabel;
             supplyText.text = "WATER " + Mathf.RoundToInt(career.Water) + "%  //  FOAM CHEMICAL " + Mathf.RoundToInt(career.Chemical) + "%";
 
-            if (career.JobAccepted)
+            if (career.JobAccepted && career.CanSubmit)
+            {
+                stateText.text = "INSPECTION READY // GRADE " + career.QualityGrade +
+                    " // RETURN TO CONTRACT TERMINAL AND PRESS E";
+                stateText.color = new Color(1f,.78f,.32f);
+            }
+            else if (career.JobAccepted)
             {
                 stateText.text = career.LastMessage + "  //  " + career.StageLabel + "  //  HOLD LEFT MOUSE";
                 stateText.color = new Color(.25f,.9f,1f);
             }
             else if (JobComplete)
             {
-                stateText.text = "VESSEL CERTIFIED  //  CONTRACT COMPLETE  //  RETURN TO TERMINAL";
+                stateText.text = career.LastMessage + "  //  CONTRACT COMPLETE  //  NEXT JOB AT TERMINAL";
                 stateText.color = new Color(.35f,1f,.62f);
             }
             else
