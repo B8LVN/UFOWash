@@ -46,6 +46,14 @@ namespace UFOWASH
                 else if (!active && sprayParticles.isPlaying) sprayParticles.Stop(true, ParticleSystemStopBehavior.StopEmitting);
             }
 
+            if (sprayParticles != null)
+            {
+                var main = sprayParticles.main;
+                main.startColor = selectedMode == UfoWashToolMode.Foam
+                    ? new Color(0.88f, 0.97f, 1f, 0.9f)
+                    : new Color(0.38f, 0.84f, 1f, 0.84f);
+            }
+
             if (!active) return;
 
             RaycastHit[] hits = Physics.RaycastAll(viewCamera.transform.position, viewCamera.transform.forward, range);
@@ -71,7 +79,9 @@ namespace UFOWASH
                     {
                         position = hit.point,
                         velocity = hit.normal * Random.Range(.8f, 2f) + Random.insideUnitSphere * 1.2f,
-                        startColor = new Color(.35f,.88f,1f,.9f),
+                        startColor = selectedMode == UfoWashToolMode.Foam
+                            ? new Color(0.88f, 0.97f, 1f, 0.95f)
+                            : new Color(0.35f, 0.88f, 1f, 0.9f),
                         startSize = Random.Range(.035f,.085f)
                     };
                     impactParticles.Emit(emit, 5);
