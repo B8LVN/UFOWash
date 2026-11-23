@@ -14,7 +14,7 @@ namespace UFOWASH
         float pitch, verticalVelocity;
 
         void Awake() { controller = GetComponent<CharacterController>(); }
-        void Start() { Cursor.lockState = CursorLockMode.Locked; Cursor.visible = false; }
+        void Start() { if (cameraPivot != null) { pitch = cameraPivot.localEulerAngles.x; if (pitch > 180f) pitch -= 360f; } Cursor.lockState = CursorLockMode.Locked; Cursor.visible = false; }
         void Update()
         {
             if (Keyboard.current == null || Mouse.current == null) return;
