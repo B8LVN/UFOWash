@@ -47,3 +47,17 @@
 - Made the cockpit an actual washable surface in the procedural fallback ship.
 - Changed spray hit handling so decorative ship hardware does not block the washable hull behind it.
 - Kept environment colliders as physical blockers; the washer still cannot clean through the hangar.
+
+
+## 2026-11-23 — Core gameplay recovery pass
+
+- Added local persistent foam patches at the actual spray contact point; final rinse fades and removes the patches.
+- Passed spray hit position, normal and radius into the surface treatment so foam follows nozzle contact rather than tinting the entire renderer.
+- Added three selectable service offers with different briefs, contamination profiles and payouts.
+- Added a full-screen contract selection board built with uGUI and the Input System UI module.
+- Suspended first-person movement and world interaction while the contract board is open; Escape closes the board.
+- Added an interactive customer NPC with idle attention, a world-space speech bubble, talk interaction and reactions to contract acceptance/completion.
+- Attached the customer behaviour to the imported Kenney alien or procedural fallback.
+- Extended the structural validator to require the interactive customer.
+
+**QA status:** source committed to main. Static source review only; Unity compilation, Play Mode, foam visibility, UI input, NPC interaction and Windows build remain unverified. Owner playtest is the next gate.
