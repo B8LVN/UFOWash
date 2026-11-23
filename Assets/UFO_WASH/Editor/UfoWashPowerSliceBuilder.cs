@@ -21,7 +21,8 @@ namespace UFOWASH.Editor
             var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
             RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Flat;
             RenderSettings.ambientLight = new Color(.38f,.43f,.52f);
-            RenderSettings.fog = true; RenderSettings.fogColor = new Color(.075f,.095f,.13f); RenderSettings.fogDensity = .006f;\n            SetupPostProcessing();
+            RenderSettings.fog = true; RenderSettings.fogColor = new Color(.075f,.095f,.13f); RenderSettings.fogDensity = .006f;
+            SetupPostProcessing();
 
             // Main industrial hangar shell
             Cube("Polished graphite floor", new Vector3(0,-.25f,3), new Vector3(26,.5f,34), matFloor);
@@ -136,7 +137,8 @@ namespace UFOWASH.Editor
             career.AddComponent<UfoWashCareerLoop>();
             var contractTerminal = Cube("CONTRACT TERMINAL // ACCEPT JOB", new Vector3(2.2f,1.25f,-10.2f), new Vector3(1.55f,2.5f,1.0f), matBlue);
             contractTerminal.AddComponent<UfoWashJobBoard>();
-            var contractScreen = Cube("Contract terminal screen", new Vector3(2.2f,1.75f,-10.73f), new Vector3(1.25f,.82f,.045f), matGlow);\n            contractScreen.GetComponent<Collider>().enabled = false;
+            var contractScreen = Cube("Contract terminal screen", new Vector3(2.2f,1.75f,-10.73f), new Vector3(1.25f,.82f,.045f), matGlow);
+            contractScreen.GetComponent<Collider>().enabled = false;
             Sign("ACCEPT JOB", new Vector3(2.2f,2.42f,-10.75f), .27f, matWhite);
             Sign("CONTRACTS", new Vector3(2.2f,3.05f,-10.2f), .32f, matCyan);
 
@@ -145,7 +147,13 @@ namespace UFOWASH.Editor
             var scenes=new List<EditorBuildSettingsScene>(EditorBuildSettings.scenes);
             scenes.RemoveAll(s=>s.path==ScenePath); scenes.Insert(0,new EditorBuildSettingsScene(ScenePath,true)); EditorBuildSettings.scenes=scenes.ToArray();
             Selection.activeObject=AssetDatabase.LoadAssetAtPath<SceneAsset>(ScenePath);
-            EditorUtility.DisplayDialog("UFO WASH POWER SLICE BUILT","A new full art-pass scene was created. Open UFO_WASH_PowerSlice and press Play.\n\nWASD + mouse: move/look\nFind the CONTRACTS terminal and press E to accept a customer\nHold left mouse: spray and clean the UFO\nAim at upgrade console + E: buy sprayer upgrades\nR: reset the active contract","LET'S PLAY");
+            EditorUtility.DisplayDialog("UFO WASH POWER SLICE BUILT","A new full art-pass scene was created. Open UFO_WASH_PowerSlice and press Play.
+
+WASD + mouse: move/look
+Find the CONTRACTS terminal and press E to accept a customer
+Hold left mouse: spray and clean the UFO
+Aim at upgrade console + E: buy sprayer upgrades
+R: reset the active contract","LET'S PLAY");
         }
 
         static GameObject SpawnImportedModel(string assetName, Vector3 position, Quaternion rotation, float scale, bool washable) {
