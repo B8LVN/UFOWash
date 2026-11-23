@@ -83,6 +83,9 @@ namespace UFOWASH.Editor
                 float a=i*Mathf.PI/3;
                 Part(ufo,"Engine thruster "+i,PrimitiveType.Cylinder,new Vector3(Mathf.Cos(a)*2.1f,-.48f,Mathf.Sin(a)*2.1f),new Vector3(.48f,.18f,.48f),matGlow);
             }
+            // Replace the placeholder saucer with a real imported spacecraft when the CC0 pack is present.
+            var importedShip = SpawnImportedModel("craft_speederA", new Vector3(0,2.65f,3.4f), Quaternion.Euler(0,180,0), 3.2f, true);
+            if (importedShip != null) ufo.SetActive(false);
             // Alien customer waiting at reception marker
             var alien = new GameObject("ALIEN CUSTOMER // ZORP");
             alien.transform.position = new Vector3(7.5f,0,-3.5f);
@@ -93,6 +96,9 @@ namespace UFOWASH.Editor
             Part(alien,"Left arm",PrimitiveType.Capsule,new Vector3(-.62f,1.2f,0),new Vector3(.2f,.75f,.2f),matCyan);
             Part(alien,"Right arm",PrimitiveType.Capsule,new Vector3(.62f,1.2f,0),new Vector3(.2f,.75f,.2f),matCyan);
             Sign("CUSTOMER",new Vector3(7.5f,3.2f,-3.5f),.35f,matOrange);
+            // Replace the capsule alien with Kenney's actual alien character model.
+            var importedAlien = SpawnImportedModel("alien", new Vector3(7.5f,0,-3.5f), Quaternion.identity, 2.4f, false);
+            if (importedAlien != null) alien.SetActive(false);
             // Player starts facing the UFO; tool and interaction
             var player = new GameObject("PLAYER // FIRST PERSON");
             player.transform.position = new Vector3(0,1,-12.5f);
@@ -128,6 +134,39 @@ namespace UFOWASH.Editor
             scenes.RemoveAll(s=>s.path==ScenePath); scenes.Insert(0,new EditorBuildSettingsScene(ScenePath,true)); EditorBuildSettings.scenes=scenes.ToArray();
             Selection.activeObject=AssetDatabase.LoadAssetAtPath<SceneAsset>(ScenePath);
             EditorUtility.DisplayDialog("UFO WASH POWER SLICE BUILT","A new full art-pass scene was created. Open UFO_WASH_PowerSlice and press Play.\n\nWASD + mouse: move/look\nHold left mouse: wash UFO\nAim at upgrade console + E: buy upgrade\nR: reset job","LET'S PLAY");
+        }
+
+        static GameObject SpawnImportedModel(string assetName, Vector3 position, Quaternion rotation, float scale, bool washable) {
+            string[] guids = AssetDatabase.FindAssets(assetName + " t:Model", new[] { "Assets/UFO_WASH/Art/Imported/KenneySpaceKit" });
+            if (guids.Length == 0) {
+                Debug.LogWarning("UFO WASH: imported model not found: " + assetName + ". Run UFO WASH/1 - IMPORT REAL CC0 3D ASSETS first.");
+                return null;
+            }
+            string path = AssetDatabase.GUIDToAssetPath(guids[0]);
+            var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(path);
+            if (prefab == null) return null;
+            var instance = (GameObject)PrefabUtility.InstantiatePrefab(prefab);
+            instance.name = "KENNEY CC0 MODEL // " + assetName;
+            instance.transform.position = position;
+            instance.transform.rotation = rotation;
+            instance.transform.localScale = Vector3.one * scale;
+            if (washable) {
+                foreach (var renderer in instance.GetComponentsInChildren<Renderer>(true)) {
+                    var go = renderer.gameObject;
+                    if (go.GetComponent<Collider>() == null) {
+                        var filter = go.GetComponent<MeshFilter>();
+                        if (filter != null && filter.sharedMesh != null) {
+                            var meshCollider = go.AddComponent<MeshCollider>();
+                            meshCollider.sharedMesh = filter.sharedMesh;
+                        }
+                    }
+                    if (go.GetComponent<UfoWashDirtSurface>() == null) {
+                        var dirt = go.AddComponent<UfoWashDirtSurface>();
+                        dirt.dirt = 1f;
+                    }
+                }
+            }
+            return instance;
         }
 
         static void EnsureFoldersAndMaterials() {
