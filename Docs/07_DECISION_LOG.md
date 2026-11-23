@@ -11,7 +11,7 @@ Record decisions that affect scope, architecture, design or production. Newest f
 | D-005 | 2026-11-23 | Single-player first; multiplayer is not part of initial scope. | Approved baseline | Protect the first playable scope and technical budget. |
 | D-006 | 2026-11-23 | Unity 6.6 (6000.6), URP and C# are the current technical baseline. | Approved baseline | Use the exact installed patch and verify package compatibility. Do not upgrade/downgrade without approval. |
 | D-007 | 2026-11-23 | Git + GitHub is the canonical version control and project memory system; do not use Unity Version Control in parallel. | Approved | The user selected Git/GitHub. |
-| D-008 | 2026-11-23 | Audit the current Unity implementation before major rewrites or new feature development. | Approved | Current implementation has been reported as poor/primitive/unplayable, but actual project evidence must be inspected before assigning root causes. |
+| D-008 | 2026-11-23 | Audit the current Unity implementation before major rewrites or new feature development. | Completed for source audit | Repository source was audited before this focused recovery pass. Runtime and visual verification remain outstanding. |
 | D-009 | 2026-11-23 | The first vertical slice must prove a satisfying manual cleaning loop, meaningful reinvestment and one small automation payoff. | Proposed baseline | To be approved after current-project audit and prototype scoping. |
 
 ## Open decisions
