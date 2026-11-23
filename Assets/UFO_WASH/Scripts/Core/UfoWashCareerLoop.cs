@@ -6,16 +6,25 @@ namespace UFOWASH
     {
         public static UfoWashCareerLoop Instance { get; private set; }
 
-        static readonly string[] Clients = { "ZORP // ORION TRADERS", "NYX-7 // DEEP SPACE COURIER", "CAPTAIN VEX // OUTER RIM" };
-        // The first vertical slice contains one authored hull. New ship names
-        // are not advertised until their actual prefabs and surface layouts exist.
-        static readonly string[] Ships = { "CLASS-IV SCOUT" };
+        static readonly string[] OfferTitles = { "QUICK DECONTAMINATION", "DEEP HULL CLEAN", "VIP SHOWROOM FINISH" };
+        static readonly string[] OfferClients = { "ZORP // ORION TRADERS", "NYX-7 // DEEP SPACE COURIER", "CAPTAIN VEX // OUTER RIM" };
+        static readonly string[] OfferBriefs = {
+            "A routine route has left a dusty film across the scout. Standard foam treatment and a clean rinse will do.",
+            "Engine residue and asteroid sludge have baked onto the hull. Thorough coverage is required before inspection.",
+            "A VIP pilot needs a spotless finish before departure. Take your time and leave no residue behind."
+        };
+        static readonly string[] OfferContamination = {
+            "ASTEROID DUST + IONIC SLUDGE",
+            "PLASMA SOOT + ENGINE RESIDUE",
+            "BIO-LUMINESCENT SPACE MOLD"
+        };
         static readonly Color[] ContaminationColors = {
             new Color(0.68f, 0.36f, 0.16f),
             new Color(0.30f, 0.25f, 0.48f),
             new Color(0.24f, 0.52f, 0.30f)
         };
-        static readonly string[] Contamination = { "ASTEROID DUST + IONIC SLUDGE", "PLASMA SOOT + ENGINE RESIDUE", "BIO-LUMINESCENT SPACE MOLD" };
+        static readonly float[] OfferStartingDirt = { 0.72f, 0.9f, 1f };
+        static readonly int[] OfferPayouts = { 250, 420, 600 };
 
         public bool JobAccepted { get; private set; }
         public int CompletedJobs { get; private set; }
@@ -24,6 +33,8 @@ namespace UFOWASH
         public float Water { get; private set; } = 100f;
         public float Chemical { get; private set; } = 100f;
         UfoWashCustomerShip customerShip;
+        UfoWashCustomerNpc customerNpc;
+        int activeOfferIndex = -1;
         public bool CanAcceptJob => !JobAccepted && (customerShip == null || customerShip.IsDocked);
         public float Quality => Mathf.Clamp01(1f - UfoWashDirtSurface.TotalDirt() - UfoWashDirtSurface.TotalFoam() * 0.18f);
         public bool CanSubmit => JobAccepted && CurrentStage == UfoWashToolMode.FinalRinse &&
@@ -31,10 +42,16 @@ namespace UFOWASH
         public string QualityGrade => Quality >= 0.985f ? "S" : Quality >= 0.95f ? "A" :
             Quality >= 0.90f ? "B" : Quality >= 0.85f ? "C" : "D";
 
-        public string Client => Clients[CompletedJobs % Clients.Length];
-        public string Ship => Ships[CompletedJobs % Ships.Length];
-        public string ContaminationType => Contamination[CompletedJobs % Contamination.Length];
-        public int Reward => 250 + (CompletedJobs % 3) * 100;
+        public int OfferCount => OfferTitles.Length;
+        public string Client => activeOfferIndex >= 0 ? OfferClients[activeOfferIndex] : OfferClients[CompletedJobs % OfferClients.Length];
+        public string Ship => "CLASS-IV SCOUT";
+        public string ContaminationType => activeOfferIndex >= 0 ? OfferContamination[activeOfferIndex] : OfferContamination[CompletedJobs % OfferContamination.Length];
+        public int Reward => activeOfferIndex >= 0 ? OfferPayouts[activeOfferIndex] : OfferPayouts[0];
+        public string GetOfferTitle(int index) => OfferTitles[Mathf.Clamp(index, 0, OfferTitles.Length - 1)];
+        public string GetOfferClient(int index) => OfferClients[(CompletedJobs + Mathf.Clamp(index, 0, OfferClients.Length - 1)) % OfferClients.Length];
+        public string GetOfferBrief(int index) => OfferBriefs[Mathf.Clamp(index, 0, OfferBriefs.Length - 1)];
+        public string GetOfferContamination(int index) => OfferContamination[Mathf.Clamp(index, 0, OfferContamination.Length - 1)];
+        public int GetOfferReward(int index) => OfferPayouts[Mathf.Clamp(index, 0, OfferPayouts.Length - 1)];
         public string StageLabel => CurrentStage == UfoWashToolMode.PreRinse ? "01 / PRE-RINSE" :
             CurrentStage == UfoWashToolMode.Foam ? "02 / FOAM COVERAGE" : "03 / FINAL RINSE";
 
@@ -42,6 +59,7 @@ namespace UFOWASH
         {
             Instance = this;
             customerShip = FindFirstObjectByType<UfoWashCustomerShip>();
+            customerNpc = FindFirstObjectByType<UfoWashCustomerNpc>();
             if (UfoWashHUD.Credits == 0) UfoWashHUD.Credits = 750;
         }
 
@@ -50,7 +68,9 @@ namespace UFOWASH
             if (Instance == this) Instance = null;
         }
 
-        public void AcceptJob()
+        public void AcceptJob() => AcceptJob(0);
+
+        public void AcceptJob(int offerIndex)
         {
             if (JobAccepted) return;
             if (!CanAcceptJob)
@@ -58,15 +78,19 @@ namespace UFOWASH
                 LastMessage = "CUSTOMER VESSEL INBOUND // WAIT FOR DOCKING";
                 return;
             }
+
+            activeOfferIndex = Mathf.Clamp(offerIndex, 0, OfferTitles.Length - 1);
             JobAccepted = true;
             CurrentStage = UfoWashToolMode.PreRinse;
             UfoWashHUD.JobComplete = false;
             UfoWashDirtSurface.SetJobProfile(
-                ContaminationColors[CompletedJobs % ContaminationColors.Length], 1f);
-            LastMessage = "CONTRACT ACCEPTED // PRE-RINSE THE HULL";
+                ContaminationColors[activeOfferIndex], OfferStartingDirt[activeOfferIndex]);
+            if (customerNpc != null) customerNpc.OnContractAccepted();
+            LastMessage = "CONTRACT ACCEPTED // " + OfferTitles[activeOfferIndex] + " // PRE-RINSE THE HULL";
         }
 
-        public bool ApplyTool(UfoWashDirtSurface surface, UfoWashToolMode mode, float seconds)
+        public bool ApplyTool(UfoWashDirtSurface surface, UfoWashToolMode mode, float seconds,
+            Vector3 hitPoint, Vector3 hitNormal, float sprayRadius)
         {
             if (!JobAccepted || surface == null || seconds <= 0f) return false;
             if (mode != CurrentStage)
@@ -87,9 +111,15 @@ namespace UFOWASH
                 Water = Mathf.Max(0f, Water - supplyCost);
             }
 
-            surface.Process(mode, seconds);
+            surface.Process(mode, seconds, hitPoint, hitNormal, sprayRadius);
             AdvanceStageIfReady();
             return true;
+        }
+
+        public bool ApplyTool(UfoWashDirtSurface surface, UfoWashToolMode mode, float seconds)
+        {
+            return ApplyTool(surface, mode, seconds, surface != null ? surface.transform.position : Vector3.zero,
+                surface != null ? surface.transform.up : Vector3.up, 0.3f);
         }
 
         void AdvanceStageIfReady()
@@ -137,7 +167,9 @@ namespace UFOWASH
             JobAccepted = false;
             CompletedJobs++;
             UfoWashHUD.Credits += payout;
+            if (customerNpc != null) customerNpc.OnContractCompleted(grade);
             if (customerShip != null) customerShip.DepartAndReturn();
+            activeOfferIndex = -1;
             UfoWashHUD.JobComplete = true;
             LastMessage = "INSPECTION PASSED // GRADE " + grade + " // BASE " +
                 basePayout + " + QUALITY BONUS " + qualityBonus + " CR";
@@ -147,8 +179,8 @@ namespace UFOWASH
         {
             if (!JobAccepted) return;
             CurrentStage = UfoWashToolMode.PreRinse;
-            UfoWashDirtSurface.SetJobProfile(
-                ContaminationColors[CompletedJobs % ContaminationColors.Length], 1f);
+            int profile = activeOfferIndex >= 0 ? activeOfferIndex : 0;
+            UfoWashDirtSurface.SetJobProfile(ContaminationColors[profile], OfferStartingDirt[profile]);
             LastMessage = "CONTRACT RESET // ALL CONTAMINATION RESTORED";
         }
     }
@@ -229,6 +261,7 @@ namespace UFOWASH
             var loop = UfoWashCareerLoop.Instance;
             if (loop == null) return;
             if (loop.JobAccepted && loop.CanSubmit) loop.CompleteJob();
+            else if (!loop.JobAccepted && loop.CanAcceptJob) UfoWashContractTerminalUI.Open(loop);
             else if (!loop.JobAccepted) loop.AcceptJob();
         }
     }
