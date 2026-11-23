@@ -15,7 +15,7 @@ Run after pulling the latest main branch. The dedicated game scene should open a
 - [ ] Ship, bay and washer have no magenta materials.
 - [ ] Every imported ship renderer material slot uses a supported URP shader.
 - [ ] The ship retains metal, glass and accent material differences after cleaning.
-- [ ] Dirt and foam tint the surface without replacing the original material.
+- [ ] Dirt changes preserve the original material palette.
 - [ ] No missing scripts, meshes or textures.
 
 ## C. Player and tool
@@ -25,30 +25,43 @@ Run after pulling the latest main branch. The dedicated game scene should open a
 - [ ] Player collides with floor and bay geometry.
 - [ ] Reticle and spray direction align with the washer muzzle.
 - [ ] Spray has a forgiving coverage radius and does not clean through walls.
-- [ ] Escape unlocks the cursor; click relocks it.
+- [ ] Escape unlocks the cursor; click relocks it outside UI.
 
-## D. Customer arrival and contracts
-- [ ] Customer UFO arrives from the hangar approach and docks at Bay 01.
-- [ ] Contract terminal does not accept the job before docking.
-- [ ] E at the contract terminal accepts one contract after docking.
-- [ ] Contract cannot be accepted twice while active.
-- [ ] Contract data shows client, vessel class, contamination and payout.
-- [ ] The ship departs after inspection and returns for the next booking.
+## D. Contract board
+- [ ] Customer UFO arrives and docks before offers can be accepted.
+- [ ] E at the contract terminal opens a full-screen board with three offers.
+- [ ] Each offer has a distinct brief, contamination profile and payout.
+- [ ] Clicking a card changes the selected state.
+- [ ] Accept starts the selected contract and closes the board.
+- [ ] Escape closes the board without accepting.
+- [ ] Cursor is visible/unlocked while the board is open.
+- [ ] Player movement/look and world interactions are paused while the board is open.
+- [ ] Controls resume and cursor relocks after closing.
 
-## E. Cleaning process
+## E. Customer interaction
+- [ ] Alien customer model is visible.
+- [ ] Customer turns toward the player and has subtle idle movement.
+- [ ] E while aiming at the customer displays dialogue.
+- [ ] Speech bubble faces the player and is readable.
+- [ ] Customer acknowledges contract acceptance.
+- [ ] Customer reacts to successful inspection/completion.
+
+## F. Cleaning process
 - [ ] Spray before accepting a contract does not clean the ship.
 - [ ] Mode 1 pre-rinse reduces contamination across individual hull panels.
 - [ ] Stage advances only after the pre-rinse threshold.
-- [ ] Mode 2 applies visible foam to separate ship panels.
+- [ ] Mode 2 creates persistent local foam patches where the nozzle hits.
+- [ ] Foam patches are visible at normal gameplay distance and close range.
+- [ ] Moving the nozzle creates new patches on separate hull areas.
 - [ ] Stage advances only after adequate foam coverage.
-- [ ] Mode 3 removes dirt and foam.
+- [ ] Mode 3 removes dirt and fades/removes foam patches.
+- [ ] Foam patches do not block subsequent spray hits.
 - [ ] Incorrect tool mode does not advance service.
 - [ ] Every required hull surface can be reached with the spray, including the cockpit.
-- [ ] Decorative ship details do not prevent the spray from reaching an adjacent washable hull panel.
-- [ ] Hangar walls and floor still block the spray.
-- [ ] Dirt/foam changes preserve the hull's original material identity.
+- [ ] Decorative ship details do not prevent spray reaching an adjacent washable panel.
+- [ ] Hangar walls and floor still block spray.
 
-## F. Inspection and economy
+## G. Inspection and economy
 - [ ] Final rinse does not automatically submit the job.
 - [ ] Contract terminal offers inspection only when dirt and foam are below thresholds.
 - [ ] Player can choose when to submit after meeting the minimum standard.
@@ -61,14 +74,13 @@ Run after pulling the latest main branch. The dedicated game scene should open a
 - [ ] Insufficient credits do not refill supplies.
 - [ ] Sprayer upgrade increases cleaning rate, spray radius and range; costs rise by level.
 - [ ] A second contract can be accepted after the next customer docks.
-- [ ] Contract 2/3 visibly changes contamination tint (plasma soot / bio residue) while the hull returns to clean base materials.
 
-## G. Automated structural validation
+## H. Automated structural validation
 Run UFO WASH > QA > VALIDATE ACTIVE GAME SCENE.
-- [ ] Validator reports the expected player, washer, interaction, contract, supply, ship and HUD components.
+- [ ] Validator reports expected player, washer, interaction, contract, supply, ship, NPC and HUD components.
 - [ ] Validator finds at least two washable surfaces.
 - [ ] Validator reports no missing materials or missing scripts.
 - [ ] Review any non-URP shader warnings.
 
 ## Report back
-Attach one Play Mode screenshot showing the ship and HUD, plus the first Console error if any. Do not manually change code before reporting a blocking error.
+Attach a screenshot of the contract board, a screenshot showing foam on the UFO, a customer dialogue screenshot/clip, and the first Console error/exception if any. Do not manually change code before reporting a blocking error.
