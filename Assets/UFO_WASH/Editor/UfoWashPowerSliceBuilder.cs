@@ -89,7 +89,7 @@ namespace UFOWASH.Editor
             Part(ufo,"Lower rim",PrimitiveType.Cylinder,new Vector3(0,-.3f,0),new Vector3(6.1f,.18f,6.1f),matCyan);
             CustomSaucerPart(ufo,"Upper saucer shell",new[]{new Vector2(0f,1.42f),new Vector2(.45f,1.38f),new Vector2(.95f,1.22f),new Vector2(1.35f,.94f),new Vector2(1.62f,.62f),new Vector2(1.7f,.42f),new Vector2(0f,.4f)},.92f,matMetal);
             Part(ufo,"Cockpit collar",PrimitiveType.Cylinder,new Vector3(0,.95f,0),new Vector3(2.35f,.2f,2.35f),matMetal);
-            Part(ufo,"Glass cockpit",PrimitiveType.Sphere,new Vector3(0,1.3f,0),new Vector3(2.05f,1.25f,2.05f),matGlass);
+            DirtPart(ufo,"Glass cockpit",PrimitiveType.Sphere,new Vector3(0,1.3f,0),new Vector3(2.05f,1.25f,2.05f),.72f,matGlass);
             Part(ufo,"Cockpit crown",PrimitiveType.Sphere,new Vector3(0,1.88f,0),new Vector3(.75f,.4f,.75f),matCyan);
             for(int i=0;i<12;i++) {
                 float a=i*Mathf.PI/6;
