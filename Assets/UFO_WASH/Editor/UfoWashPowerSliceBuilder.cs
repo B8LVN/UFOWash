@@ -108,6 +108,7 @@ namespace UFOWASH.Editor
             var pivot=new GameObject("Camera Pivot"); pivot.transform.SetParent(player.transform); pivot.transform.localPosition=new Vector3(0,1.05f,0); pivot.transform.localRotation=Quaternion.Euler(-3f,0f,0f);
             var camGo=new GameObject("Main Camera"); camGo.tag="MainCamera"; camGo.transform.SetParent(pivot.transform); camGo.transform.localPosition=Vector3.zero;
             var cam=camGo.AddComponent<Camera>(); cam.fieldOfView=78; cam.nearClipPlane=.05f; cam.farClipPlane=120;
+            var cameraData=camGo.GetComponent<UniversalAdditionalCameraData>(); if(cameraData==null) cameraData=camGo.AddComponent<UniversalAdditionalCameraData>(); cameraData.renderPostProcessing=true;
             camGo.AddComponent<AudioListener>();
             var controller=player.AddComponent<UfoWashFirstPersonController>(); Set(controller,"cameraPivot",pivot);
             var spray=player.AddComponent<UfoWashSprayTool>(); spray.viewCamera=cam; spray.range=12; spray.cleanPerSecond=.32f;
