@@ -28,3 +28,15 @@
 - Added an Editor structural QA validator.
 
 **QA status:** committed source only. Unity compilation, automatic scene refresh callback, Play Mode, visual result and build remain unverified locally.
+
+
+## 2026-11-23 — Job feedback and technical pass
+
+- Added three visibly distinct contamination profiles that tint the authored hull material and clear back to the original ship finish.
+- Kept the vertical slice honest about its single currently authored UFO class rather than advertising nonexistent ship prefabs.
+- Added an Editor validator for scene wiring, active URP, material shader compatibility, missing scripts and washable surface count.
+- Replaced per-frame scene searches for cleanable surfaces with an active-surface registry.
+- Expanded the washer upgrade to increase cleaning power, spray coverage radius and working range.
+- Tuned customer approach distance to keep the ship clear of the rear bulkhead.
+
+**QA status:** committed source only; Unity compilation, callback behavior, Play Mode and Windows build still need local verification.
