@@ -40,3 +40,10 @@
 - Tuned customer approach distance to keep the ship clear of the rear bulkhead.
 
 **QA status:** committed source only; Unity compilation, callback behavior, Play Mode and Windows build still need local verification.
+
+
+## 2026-11-23 — Final interaction corrections
+
+- Made the cockpit an actual washable surface in the procedural fallback ship.
+- Changed spray hit handling so decorative ship hardware does not block the washable hull behind it.
+- Kept environment colliders as physical blockers; the washer still cannot clean through the hangar.
