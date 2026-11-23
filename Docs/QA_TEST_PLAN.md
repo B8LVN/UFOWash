@@ -84,3 +84,23 @@ Run UFO WASH > QA > VALIDATE ACTIVE GAME SCENE.
 
 ## Report back
 Attach a screenshot of the contract board, a screenshot showing foam on the UFO, a customer dialogue screenshot/clip, and the first Console error/exception if any. Do not manually change code before reporting a blocking error.
+
+
+## 0. Opening experience and scene organization
+
+- [ ] Title menu appears on entering Play Mode over the paused 3D station.
+- [ ] Cursor is visible and UI buttons respond to mouse input.
+- [ ] Start First Shift opens the briefing rather than starting gameplay immediately.
+- [ ] Story opens and returns to title correctly.
+- [ ] How to Play shows movement, interaction, washer controls and service sequence.
+- [ ] Continue to Training and Clock In start the simulation.
+- [ ] Player movement, look and washer input are enabled after Clock In.
+- [ ] The menu does not reappear after Clock In during the same session.
+- [ ] The generated scene Hierarchy contains the eight named top-level groups.
+- [ ] Grouping preserves the world positions/rotations of the player, UFO, equipment and station props.
+
+## 0.1. Reported Unity exception regression
+
+- [ ] Enter Play Mode without a TypeInitializationException from UfoWashDirtSurface.
+- [ ] Use Foam mode and confirm no MaterialPropertyBlock constructor exception appears.
+- [ ] Confirm foam patches still render and final-rinse cleanup remains functional.
