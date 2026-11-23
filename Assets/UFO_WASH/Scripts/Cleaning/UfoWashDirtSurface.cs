@@ -23,6 +23,7 @@ namespace UFOWASH
         Color[] originalColors;
         int[] colorProperties;
         readonly List<Renderer> foamPatches = new List<Renderer>(32);
+        static readonly MaterialPropertyBlock FoamBlock = new MaterialPropertyBlock();
         float foamPatchTimer;
         Color contaminationTint = new Color(0.48f, 0.30f, 0.16f, 1f);
 
@@ -163,7 +164,9 @@ namespace UFOWASH
             patch.transform.localScale = new Vector3(radius * 1.45f / scale.x, 0.035f / scale.y, radius / scale.z);
 
             var patchRenderer = patch.GetComponent<Renderer>();
-            patchRenderer.sharedMaterial = GetFoamMaterial();
+            Material material = GetFoamMaterial();
+            if (material == null) { Destroy(patch); return; }
+            patchRenderer.sharedMaterial = material;
             patchRenderer.shadowCastingMode = ShadowCastingMode.Off;
             patchRenderer.receiveShadows = false;
             foamPatches.Add(patchRenderer);
@@ -188,21 +191,21 @@ namespace UFOWASH
 
         static void SetPatchOpacity(Renderer patch, float amount)
         {
-            var block = new MaterialPropertyBlock();
-            patch.GetPropertyBlock(block);
+            FoamBlock.Clear();
             Color color = new Color(0.82f, 0.97f, 1f, Mathf.Clamp01(amount) * 0.94f);
-            block.SetColor(BaseColorId, color);
-            block.SetColor(ColorId, color);
-            patch.SetPropertyBlock(block);
-            float scale = Mathf.Lerp(0.72f, 1f, Mathf.Clamp01(amount));
-            patch.transform.localScale = new Vector3(patch.transform.localScale.x * scale,
-                patch.transform.localScale.y, patch.transform.localScale.z * scale);
+            FoamBlock.SetColor(BaseColorId, color);
+            FoamBlock.SetColor(ColorId, color);
+            patch.SetPropertyBlock(FoamBlock);
         }
 
         void ClearFoamPatches()
         {
             for (int i = 0; i < foamPatches.Count; i++)
-                if (foamPatches[i] != null) Destroy(foamPatches[i].gameObject);
+                if (foamPatches[i] != null)
+                {
+                    if (Application.isPlaying) Destroy(foamPatches[i].gameObject);
+                    else DestroyImmediate(foamPatches[i].gameObject);
+                }
             foamPatches.Clear();
             foamPatchTimer = 0f;
         }
