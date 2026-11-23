@@ -4,7 +4,7 @@ namespace UFOWASH
 {
     public class UfoWashUpgradeStation : UfoWashInteractable
     {
-        [SerializeField] private int baseCost = 300;
+        [SerializeField] private int baseCost = 200;
         [SerializeField] private float cleaningPowerIncrease = 0.25f;
         [SerializeField] private int maxLevel = 5;
 
