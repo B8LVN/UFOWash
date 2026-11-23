@@ -128,6 +128,15 @@ namespace UFOWASH.Editor
             AreaLight(new Vector3(-8,7,10),new Color(.08f,.3f,1f),5);
             AreaLight(new Vector3(8,7,10),new Color(1f,.32f,.12f),5);
             AreaLight(new Vector3(0,7,17),new Color(.12f,.65f,1f),6);
+            // Contract terminal and career loop: player must accept a customer order before spraying.
+            var career = new GameObject("CAREER LOOP // CUSTOMER CONTRACTS");
+            career.AddComponent<UfoWashCareerLoop>();
+            var contractTerminal = Cube("CONTRACT TERMINAL // ACCEPT JOB", new Vector3(3.8f,1.25f,-9.5f), new Vector3(1.55f,2.5f,1.0f), matBlue);
+            contractTerminal.AddComponent<UfoWashJobBoard>();
+            Cube("Contract terminal screen", new Vector3(3.8f,1.75f,-10.03f), new Vector3(1.25f,.82f,.045f), matGlow);
+            Sign("ACCEPT JOB", new Vector3(3.8f,2.42f,-10.05f), .27f, matWhite);
+            Sign("CONTRACTS", new Vector3(3.8f,3.05f,-9.5f), .32f, matCyan);
+
             var hud=new GameObject("GAME HUD"); hud.AddComponent<UfoWashHUD>();
             EditorSceneManager.SaveScene(scene,ScenePath);
             var scenes=new List<EditorBuildSettingsScene>(EditorBuildSettings.scenes);
