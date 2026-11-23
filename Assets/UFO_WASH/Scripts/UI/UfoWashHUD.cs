@@ -64,7 +64,7 @@ namespace UFOWASH
             var progressBack = MakeImage(panel.transform, "Progress Track", new Color(.08f,.14f,.2f,1),
                 new Vector2(0,1), new Vector2(0,1), new Vector2(24,-234), new Vector2(420,12));
             progressFill = MakeImage(progressBack.transform, "Progress Fill", new Color(.12f,.82f,1f,1),
-                new Vector2(0,0), new Vector2(0,1), Vector2.zero, new Vector2(0,12));
+                new Vector2(0,0), new Vector2(1,1), Vector2.zero, Vector2.zero);
             progressFill.type = Image.Type.Filled;
             progressFill.fillMethod = Image.FillMethod.Horizontal;
             progressFill.fillAmount = 0;
