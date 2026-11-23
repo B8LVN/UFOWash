@@ -18,7 +18,7 @@ namespace UFOWASH
         int[] colorProperties;
         static readonly int BaseColorId = Shader.PropertyToID("_BaseColor");
         static readonly int ColorId = Shader.PropertyToID("_Color");
-        static readonly Color dirtTint = new Color(0.48f, 0.30f, 0.16f, 1f);
+        Color contaminationTint = new Color(0.48f, 0.30f, 0.16f, 1f);
         static readonly Color foamTint = new Color(0.82f, 0.96f, 1f, 1f);
 
         void Awake()
@@ -100,7 +100,7 @@ namespace UFOWASH
 
             // Tint each authored material slot independently. The original hull
             // palette remains intact while contamination and foam are layered on top.
-            Color dirtLayer = Color.Lerp(Color.white, dirtTint, dirt * 0.72f);
+            Color dirtLayer = Color.Lerp(Color.white, contaminationTint, dirt * 0.72f);
             Color finalTint = Color.Lerp(dirtLayer, foamTint, foam * 0.82f);
 
             for (int i = 0; i < propertyBlocks.Length; i++)
@@ -127,6 +127,19 @@ namespace UFOWASH
             float sum = 0f;
             for (int i = 0; i < activeSurfaces.Count; i++) sum += activeSurfaces[i].foam;
             return sum / activeSurfaces.Count;
+        }
+
+        public static void SetJobProfile(Color tint, float startingDirt)
+        {
+            UfoWashHUD.JobComplete = false;
+            for (int i = 0; i < activeSurfaces.Count; i++)
+            {
+                var surface = activeSurfaces[i];
+                surface.contaminationTint = tint;
+                surface.dirt = Mathf.Clamp01(startingDirt);
+                surface.foam = 0f;
+                surface.ApplyColor();
+            }
         }
 
         public static void ResetJob()
