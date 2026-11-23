@@ -9,7 +9,7 @@ namespace UFOWASH
         public static int Credits;
         public static bool JobComplete;
 
-        Text creditsText, clientText, shipText, contaminationText, stateText, instructionText, progressText;
+        Text creditsText, clientText, shipText, contaminationText, stateText, instructionText, progressText, stageText, supplyText;
         Image progressFill;
         UfoWashCareerLoop career;
 
@@ -44,7 +44,7 @@ namespace UFOWASH
             scaler.matchWidthOrHeight = .5f;
 
             var panel = MakeImage(canvasObject.transform, "Mission Panel", new Color(.018f,.035f,.065f,.92f),
-                new Vector2(0,1), new Vector2(0,1), new Vector2(28,-28), new Vector2(470,286));
+                new Vector2(0,1), new Vector2(0,1), new Vector2(28,-28), new Vector2(470,330));
             AddText(panel.transform, "Brand", "U F O   /   W A S H", 23, new Color(.24f,.88f,1f),
                 new Vector2(0,1), new Vector2(0,1), new Vector2(24,-18), new Vector2(420,34), TextAnchor.MiddleLeft);
             AddText(panel.transform, "Subbrand", "INTERGALACTIC VEHICLE CARE  //  BAY 01", 11, new Color(.48f,.66f,.78f),
@@ -61,19 +61,23 @@ namespace UFOWASH
             contaminationText = AddText(panel.transform, "Contamination", "CONTAMINATION // --", 12, new Color(.95f,.56f,.35f),
                 new Vector2(0,1), new Vector2(0,1), new Vector2(24,-198), new Vector2(420,22), TextAnchor.MiddleLeft);
 
+            stageText = AddText(panel.transform, "Service Stage", "PROCESS // PRE-RINSE", 12, new Color(.25f,.9f,1f),
+                new Vector2(0,1), new Vector2(0,1), new Vector2(24,-222), new Vector2(420,20), TextAnchor.MiddleLeft);
             var progressBack = MakeImage(panel.transform, "Progress Track", new Color(.08f,.14f,.2f,1),
-                new Vector2(0,1), new Vector2(0,1), new Vector2(24,-234), new Vector2(420,12));
+                new Vector2(0,1), new Vector2(0,1), new Vector2(24,-248), new Vector2(420,12));
             progressFill = MakeImage(progressBack.transform, "Progress Fill", new Color(.12f,.82f,1f,1),
                 new Vector2(0,0), new Vector2(1,1), Vector2.zero, Vector2.zero);
             progressFill.type = Image.Type.Filled;
             progressFill.fillMethod = Image.FillMethod.Horizontal;
             progressFill.fillAmount = 0;
             progressText = AddText(panel.transform, "Progress Text", "CLEANLINESS  //  0%", 11, new Color(.65f,.82f,.9f),
-                new Vector2(0,1), new Vector2(0,1), new Vector2(24,-252), new Vector2(420,20), TextAnchor.MiddleLeft);
+                new Vector2(0,1), new Vector2(0,1), new Vector2(24,-266), new Vector2(420,20), TextAnchor.MiddleLeft);
+            supplyText = AddText(panel.transform, "Supplies", "WATER 100%  //  FOAM 100%", 11, new Color(.95f,.72f,.35f),
+                new Vector2(0,1), new Vector2(0,1), new Vector2(24,-292), new Vector2(420,20), TextAnchor.MiddleLeft);
 
             stateText = AddText(canvasObject.transform, "Contract State", "CONTRACT REQUIRED", 17, new Color(.25f,.9f,1f),
                 new Vector2(.5f,0), new Vector2(.5f,0), new Vector2(0,46), new Vector2(760,30), TextAnchor.MiddleCenter);
-            instructionText = AddText(canvasObject.transform, "Controls", "WASD MOVE   //   MOUSE LOOK   //   E INTERACT   //   LMB SPRAY   //   R RESET",
+            instructionText = AddText(canvasObject.transform, "Controls", "WASD MOVE  //  E INTERACT  //  LMB SPRAY  //  1 PRE-RINSE  2 FOAM  3 FINAL RINSE  //  R RESET",
                 12, new Color(.65f,.77f,.85f), new Vector2(.5f,0), new Vector2(.5f,0),
                 new Vector2(0,18), new Vector2(900,22), TextAnchor.MiddleCenter);
             AddText(canvasObject.transform, "Reticle", "+", 25, new Color(.6f,.95f,1f),
@@ -100,10 +104,12 @@ namespace UFOWASH
             clientText.text = career.Client;
             shipText.text = "VESSEL // " + career.Ship + "     PAYOUT // " + career.Reward + " CR";
             contaminationText.text = "HAZARD // " + career.ContaminationType;
+            stageText.text = "SERVICE PROCESS // " + career.StageLabel;
+            supplyText.text = "WATER " + Mathf.RoundToInt(career.Water) + "%  //  FOAM CHEMICAL " + Mathf.RoundToInt(career.Chemical) + "%";
 
             if (career.JobAccepted)
             {
-                stateText.text = "DECONTAMINATION IN PROGRESS  //  HOLD LEFT MOUSE TO SPRAY";
+                stateText.text = career.LastMessage + "  //  " + career.StageLabel + "  //  HOLD LEFT MOUSE";
                 stateText.color = new Color(.25f,.9f,1f);
             }
             else if (JobComplete)
