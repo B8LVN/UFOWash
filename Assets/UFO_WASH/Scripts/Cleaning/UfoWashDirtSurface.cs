@@ -11,13 +11,32 @@ namespace UFOWASH
         public static int RewardCredits = 250;
 
         Renderer rend;
-        static readonly Color cleanColor = new Color(0.18f, 0.78f, 0.9f);
-        static readonly Color dirtyColor = new Color(0.32f, 0.19f, 0.12f);
-        static readonly Color foamColor = new Color(0.72f, 0.94f, 1f);
+        MaterialPropertyBlock propertyBlock;
+        Color originalColor = Color.white;
+        bool usesBaseColor;
+        static readonly int BaseColorId = Shader.PropertyToID("_BaseColor");
+        static readonly int ColorId = Shader.PropertyToID("_Color");
+        static readonly Color dirtTint = new Color(0.48f, 0.30f, 0.16f, 1f);
+        static readonly Color foamTint = new Color(0.82f, 0.96f, 1f, 1f);
 
         void Awake()
         {
             rend = GetComponent<Renderer>();
+            propertyBlock = new MaterialPropertyBlock();
+            if (rend != null && rend.sharedMaterial != null)
+            {
+                var material = rend.sharedMaterial;
+                if (material.HasProperty(BaseColorId))
+                {
+                    originalColor = material.GetColor(BaseColorId);
+                    usesBaseColor = true;
+                }
+                else if (material.HasProperty(ColorId))
+                {
+                    originalColor = material.GetColor(ColorId);
+                    usesBaseColor = false;
+                }
+            }
             ApplyColor();
         }
 
@@ -43,16 +62,6 @@ namespace UFOWASH
             }
 
             ApplyColor();
-            if (TotalDirt() <= 0.015f)
-            {
-                var career = UfoWashCareerLoop.Instance;
-                if (career != null) career.CompleteJob();
-                else
-                {
-                    UfoWashHUD.Credits += RewardCredits;
-                    UfoWashHUD.JobComplete = true;
-                }
-            }
         }
 
         public void Clean(float amount)
@@ -63,13 +72,18 @@ namespace UFOWASH
         void ApplyColor()
         {
             if (!rend) rend = GetComponent<Renderer>();
-            if (!rend) return;
+            if (!rend || !usesBaseColor) return;
+            if (propertyBlock == null) propertyBlock = new MaterialPropertyBlock();
 
-            Color surfaceColor = Color.Lerp(cleanColor, dirtyColor, dirt);
-            surfaceColor = Color.Lerp(surfaceColor, foamColor, foam * 0.9f);
-            Material material = rend.material;
-            if (material.HasProperty("_BaseColor")) material.SetColor("_BaseColor", surfaceColor);
-            else if (material.HasProperty("_Color")) material.color = surfaceColor;
+            // Tint the authored hull material instead of replacing it. This keeps
+            // the ship's metal/glass/accent identity visible throughout cleaning.
+            Color dirtLayer = Color.Lerp(Color.white, dirtTint, dirt * 0.72f);
+            Color finalTint = Color.Lerp(dirtLayer, foamTint, foam * 0.82f);
+            Color result = originalColor * finalTint;
+
+            rend.GetPropertyBlock(propertyBlock);
+            propertyBlock.SetColor(rend.sharedMaterial.HasProperty(BaseColorId) ? BaseColorId : ColorId, result);
+            rend.SetPropertyBlock(propertyBlock);
         }
 
         public static float TotalDirt()
