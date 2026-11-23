@@ -277,6 +277,10 @@ R: reset the active contract",
             Part(root.gameObject,"Right upper arm",PrimitiveType.Capsule,new Vector3(.43f,1.2f,0),new Vector3(.22f,.48f,.23f),suit);
             Part(root.gameObject,"Left glove",PrimitiveType.Sphere,new Vector3(-.46f,.83f,.08f),new Vector3(.23f,.2f,.23f),armor);
             Part(root.gameObject,"Right glove",PrimitiveType.Sphere,new Vector3(.46f,.83f,.08f),new Vector3(.23f,.2f,.23f),armor);
+            Part(root.gameObject,"Ion washer pistol grip",PrimitiveType.Cube,new Vector3(.48f,.82f,.3f),new Vector3(.16f,.2f,.2f),matDark);
+            Part(root.gameObject,"Ion washer barrel",PrimitiveType.Cylinder,new Vector3(.48f,.84f,.49f),new Vector3(.065f,.2f,.065f),matMetal);
+            root.Find("Ion washer barrel").localRotation = Quaternion.Euler(90f,0f,0f);
+            Part(root.gameObject,"Ion washer muzzle",PrimitiveType.Sphere,new Vector3(.48f,.84f,.68f),new Vector3(.12f,.12f,.12f),glow);
             Part(root.gameObject,"Left leg",PrimitiveType.Capsule,new Vector3(-.17f,.43f,0),new Vector3(.25f,.55f,.27f),suit);
             Part(root.gameObject,"Right leg",PrimitiveType.Capsule,new Vector3(.17f,.43f,0),new Vector3(.25f,.55f,.27f),suit);
             Part(root.gameObject,"Left boot",PrimitiveType.Cube,new Vector3(-.17f,.13f,.08f),new Vector3(.29f,.2f,.4f),armor);
