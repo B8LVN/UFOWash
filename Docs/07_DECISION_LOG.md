@@ -4,6 +4,8 @@ Record decisions that affect scope, architecture, design or production. Newest f
 
 | ID | Date | Decision | Status | Rationale / notes |
 |---|---|---|---|---|
+| D-010 | 2026-11-23 | Prioritize a coherent, playable first customer job over adding disconnected features. | Approved by owner request | Owner explicitly asked for a substantial development pass and a testable result; stop expanding until this pass is playtested. |
+| D-011 | 2026-11-23 | Prototype local foam patches, a selectable three-offer contract board and a reactive customer NPC. | Implemented — unverified | These changes directly address owner feedback; visual feel and interaction quality must be accepted in Play Mode. |
 | D-001 | 2026-11-23 | The game remains UFO WASH; do not replace it with another simulator. | Approved | Owner explicitly reaffirmed the UFO Wash concept. The production problem is execution quality, depth, progression and automation—not the game's identity. |
 | D-002 | 2026-11-23 | Use Moon Sweepers and Schedule I as high-level design references for tactile work, progression, reinvestment, hiring and automation. | Approved | Translate abstract principles into original UFO cleaning/service gameplay. No copying of protected assets, names, UI, levels or exact mechanics. |
 | D-003 | 2026-11-23 | First-person 3D is the primary camera direction for the intended experience. | Proposed baseline | Confirm against the existing project and player-feel prototype. |
