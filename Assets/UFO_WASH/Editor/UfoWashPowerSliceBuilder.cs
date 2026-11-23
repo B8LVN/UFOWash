@@ -18,8 +18,8 @@ namespace UFOWASH.Editor
             EnsureFoldersAndMaterials();
             var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
             RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Flat;
-            RenderSettings.ambientLight = new Color(.23f,.28f,.36f);
-            RenderSettings.fog = true; RenderSettings.fogColor = new Color(.035f,.055f,.09f); RenderSettings.fogDensity = .012f;
+            RenderSettings.ambientLight = new Color(.38f,.43f,.52f);
+            RenderSettings.fog = true; RenderSettings.fogColor = new Color(.075f,.095f,.13f); RenderSettings.fogDensity = .006f;
 
             // Main industrial hangar shell
             Cube("Polished graphite floor", new Vector3(0,-.25f,3), new Vector3(26,.5f,34), matFloor);
@@ -66,10 +66,10 @@ namespace UFOWASH.Editor
             }
             // UFO: layered custom-looking saucer with ring, portholes, cockpit and engine glow
             var ufo = new GameObject("CUSTOMER UFO // MUDDY CLASS-IV SCOUT");
-            ufo.transform.position = new Vector3(0,2.05f,3.4f);
-            DirtPart(ufo,"Primary hull - contaminated",PrimitiveType.Cylinder,new Vector3(0,0,0),new Vector3(6.8f,.55f,6.8f),1f,matDirt);
+            ufo.transform.position = new Vector3(0,2.65f,3.4f);
+            CustomSaucerPart(ufo,"Primary hull - contaminated",new[]{new Vector2(0f,-.22f),new Vector2(1.0f,-.22f),new Vector2(2.7f,-.12f),new Vector2(3.35f,-.02f),new Vector2(3.45f,.12f),new Vector2(2.9f,.22f),new Vector2(2.1f,.34f),new Vector2(1.25f,.48f),new Vector2(.6f,.56f),new Vector2(0f,.58f)},1f,matDirt);
             Part(ufo,"Lower rim",PrimitiveType.Cylinder,new Vector3(0,-.3f,0),new Vector3(6.1f,.18f,6.1f),matCyan);
-            DirtPart(ufo,"Upper saucer shell",PrimitiveType.Sphere,new Vector3(0,.28f,0),new Vector3(4.5f,1.35f,4.5f),.92f,matDirt);
+            CustomSaucerPart(ufo,"Upper saucer shell",new[]{new Vector2(0f,1.42f),new Vector2(.45f,1.38f),new Vector2(.95f,1.22f),new Vector2(1.35f,.94f),new Vector2(1.62f,.62f),new Vector2(1.7f,.42f),new Vector2(0f,.4f)},.92f,matDirt);
             Part(ufo,"Cockpit collar",PrimitiveType.Cylinder,new Vector3(0,.95f,0),new Vector3(2.35f,.2f,2.35f),matMetal);
             Part(ufo,"Glass cockpit",PrimitiveType.Sphere,new Vector3(0,1.3f,0),new Vector3(2.05f,1.25f,2.05f),matGlass);
             Part(ufo,"Cockpit crown",PrimitiveType.Sphere,new Vector3(0,1.88f,0),new Vector3(.75f,.4f,.75f),matCyan);
@@ -95,9 +95,9 @@ namespace UFOWASH.Editor
             Sign("CUSTOMER",new Vector3(7.5f,3.2f,-3.5f),.35f,matOrange);
             // Player starts facing the UFO; tool and interaction
             var player = new GameObject("PLAYER // FIRST PERSON");
-            player.transform.position = new Vector3(0,1,-8.5f);
+            player.transform.position = new Vector3(0,1,-12.5f);
             var cc=player.AddComponent<CharacterController>(); cc.height=1.8f; cc.radius=.32f; cc.center=new Vector3(0,.9f,0);
-            var pivot=new GameObject("Camera Pivot"); pivot.transform.SetParent(player.transform); pivot.transform.localPosition=new Vector3(0,.62f,0);
+            var pivot=new GameObject("Camera Pivot"); pivot.transform.SetParent(player.transform); pivot.transform.localPosition=new Vector3(0,1.05f,0); pivot.transform.localRotation=Quaternion.Euler(-3f,0f,0f);
             var camGo=new GameObject("Main Camera"); camGo.tag="MainCamera"; camGo.transform.SetParent(pivot.transform); camGo.transform.localPosition=Vector3.zero;
             var cam=camGo.AddComponent<Camera>(); cam.fieldOfView=78; cam.nearClipPlane=.05f; cam.farClipPlane=120;
             camGo.AddComponent<AudioListener>();
@@ -160,6 +160,24 @@ namespace UFOWASH.Editor
         static GameObject Cylinder(string n,Vector3 p,Vector3 s,Material m) {
             var g=GameObject.CreatePrimitive(PrimitiveType.Cylinder);g.name=n;g.transform.position=p;g.transform.localScale=s;g.GetComponent<Renderer>().sharedMaterial=m;return g;
         }
+        static void CustomSaucerPart(GameObject root,string n,Vector2[] profile,float dirt,Material m) {
+            const int segments=64;
+            var vertices=new List<Vector3>(); var triangles=new List<int>();
+            for(int r=0;r<profile.Length;r++) for(int i=0;i<segments;i++) {
+                float a=(float)i/segments*Mathf.PI*2f;
+                vertices.Add(new Vector3(Mathf.Cos(a)*profile[r].x,profile[r].y,Mathf.Sin(a)*profile[r].x));
+            }
+            for(int r=0;r<profile.Length-1;r++) for(int i=0;i<segments;i++) {
+                int a=r*segments+i, b=r*segments+(i+1)%segments, c=(r+1)*segments+i, d=(r+1)*segments+(i+1)%segments;
+                triangles.Add(a); triangles.Add(c); triangles.Add(b); triangles.Add(b); triangles.Add(c); triangles.Add(d);
+            }
+            var mesh=new Mesh(); mesh.name=n+" Mesh"; mesh.SetVertices(vertices); mesh.SetTriangles(triangles,0); mesh.RecalculateNormals(); mesh.RecalculateBounds();
+            var go=new GameObject(n); go.transform.SetParent(root.transform,false);
+            var filter=go.AddComponent<MeshFilter>(); filter.sharedMesh=mesh;
+            var renderer=go.AddComponent<MeshRenderer>(); renderer.sharedMaterial=m;
+            var collider=go.AddComponent<MeshCollider>(); collider.sharedMesh=mesh;
+            var surface=go.AddComponent<UfoWashDirtSurface>(); surface.dirt=dirt;
+        }
         static void Part(GameObject root,string n,PrimitiveType t,Vector3 p,Vector3 s,Material m) {
             var g=GameObject.CreatePrimitive(t);g.name=n;g.transform.SetParent(root.transform,false);g.transform.localPosition=p;g.transform.localScale=s;g.GetComponent<Renderer>().sharedMaterial=m;
         }
@@ -167,7 +185,7 @@ namespace UFOWASH.Editor
             Part(root,n,t,p,s,m);var g=root.transform.Find(n).gameObject;var d=g.AddComponent<UfoWashDirtSurface>();d.dirt=dirt;
         }
         static void Sign(string text,Vector3 p,float size,Material m) {
-            var g=new GameObject("SIGN // "+text);g.transform.position=p;g.transform.rotation=Quaternion.Euler(0,180,0);var tm=g.AddComponent<TextMesh>();tm.text=text;tm.fontSize=64;tm.characterSize=size/4f;tm.anchor=TextAnchor.MiddleCenter;tm.alignment=TextAlignment.Center;tm.color=m.color;tm.fontStyle=FontStyle.Bold;
+            var g=new GameObject("SIGN // "+text);g.transform.position=p;g.transform.rotation=Quaternion.identity;var tm=g.AddComponent<TextMesh>();tm.text=text;tm.fontSize=64;tm.characterSize=size/4f;tm.anchor=TextAnchor.MiddleCenter;tm.alignment=TextAlignment.Center;tm.color=m.color;tm.fontStyle=FontStyle.Bold;
         }
         static void DisplayPanel(string label,Vector3 p) {
             Cube(label+" housing",p,new Vector3(3.2f,2.1f,.3f),matDark);
