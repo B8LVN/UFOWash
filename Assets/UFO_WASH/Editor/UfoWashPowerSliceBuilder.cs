@@ -131,11 +131,11 @@ namespace UFOWASH.Editor
             // Contract terminal and career loop: player must accept a customer order before spraying.
             var career = new GameObject("CAREER LOOP // CUSTOMER CONTRACTS");
             career.AddComponent<UfoWashCareerLoop>();
-            var contractTerminal = Cube("CONTRACT TERMINAL // ACCEPT JOB", new Vector3(3.8f,1.25f,-9.5f), new Vector3(1.55f,2.5f,1.0f), matBlue);
+            var contractTerminal = Cube("CONTRACT TERMINAL // ACCEPT JOB", new Vector3(2.2f,1.25f,-10.2f), new Vector3(1.55f,2.5f,1.0f), matBlue);
             contractTerminal.AddComponent<UfoWashJobBoard>();
-            Cube("Contract terminal screen", new Vector3(3.8f,1.75f,-10.03f), new Vector3(1.25f,.82f,.045f), matGlow);
-            Sign("ACCEPT JOB", new Vector3(3.8f,2.42f,-10.05f), .27f, matWhite);
-            Sign("CONTRACTS", new Vector3(3.8f,3.05f,-9.5f), .32f, matCyan);
+            var contractScreen = Cube("Contract terminal screen", new Vector3(2.2f,1.75f,-10.73f), new Vector3(1.25f,.82f,.045f), matGlow);\n            contractScreen.GetComponent<Collider>().enabled = false;
+            Sign("ACCEPT JOB", new Vector3(2.2f,2.42f,-10.75f), .27f, matWhite);
+            Sign("CONTRACTS", new Vector3(2.2f,3.05f,-10.2f), .32f, matCyan);
 
             var hud=new GameObject("GAME HUD"); hud.AddComponent<UfoWashHUD>();
             EditorSceneManager.SaveScene(scene,ScenePath);
