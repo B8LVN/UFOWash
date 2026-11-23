@@ -143,6 +143,14 @@ namespace UFOWASH.Editor
             Sign("ACCEPT JOB", new Vector3(2.2f,2.42f,-10.75f), .27f, matWhite);
             Sign("CONTRACTS", new Vector3(2.2f,3.05f,-10.2f), .32f, matCyan);
 
+            // Consumables are a real operating cost: refill water and foam chemical here.
+            var supplyStation = Cube("SUPPLY STATION // WATER + FOAM", new Vector3(-3.5f,1.25f,-10.2f),
+                new Vector3(1.55f,2.5f,1.0f), matBlue);
+            supplyStation.AddComponent<UfoWashSupplyStation>();
+            Cube("Supply station display", new Vector3(-3.5f,1.75f,-10.73f),
+                new Vector3(1.25f,.82f,.045f), matGlow).GetComponent<Collider>().enabled = false;
+            Sign("SUPPLIES // 65 CR", new Vector3(-3.5f,2.42f,-10.75f), .24f, matWhite);
+
             var hud=new GameObject("GAME HUD"); hud.AddComponent<UfoWashHUD>();
             EditorSceneManager.SaveScene(scene,ScenePath);
             var scenes=new List<EditorBuildSettingsScene>(EditorBuildSettings.scenes);
