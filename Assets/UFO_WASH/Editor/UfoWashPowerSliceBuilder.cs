@@ -146,21 +146,74 @@ namespace UFOWASH.Editor
         }
 
         static GameObject SpawnImportedModel(string assetName, Vector3 position, Quaternion rotation, float scale, bool washable) {
-            string[] guids = AssetDatabase.FindAssets(assetName + " t:Model", new[] { "Assets/UFO_WASH/Art/Imported/KenneySpaceKit" });
-            if (guids.Length == 0) {
-                Debug.LogWarning("UFO WASH: imported model not found: " + assetName + ". Run UFO WASH/1 - IMPORT REAL CC0 3D ASSETS first.");
+            const string importedFolder = "Assets/UFO_WASH/Art/Imported/KenneySpaceKit";
+            string[] guids = AssetDatabase.FindAssets(assetName + " t:Model", new[] { importedFolder });
+            string selectedPath = guids.Length > 0 ? AssetDatabase.GUIDToAssetPath(guids[0]) : null;
+
+            // Kenney pack filenames differ between releases. Fall back to a semantic filename scan
+            // instead of silently requiring one guessed filename.
+            if (string.IsNullOrEmpty(selectedPath)) {
+                string[] allModels = AssetDatabase.FindAssets("t:Model", new[] { importedFolder });
+                int bestScore = 0;
+                foreach (string guid in allModels) {
+                    string path = AssetDatabase.GUIDToAssetPath(guid);
+                    string name = System.IO.Path.GetFileNameWithoutExtension(path).ToLowerInvariant();
+                    int score = 0;
+                    if (assetName == "alien") {
+                        if (name.Contains("alien")) score = 1000;
+                        else if (name.Contains("character")) score = 180;
+                        else if (name.Contains("robot")) score = 80;
+                    } else {
+                        if (name.Contains("ufo")) score = 1000;
+                        else if (name.Contains("spaceship") || name.Contains("space_ship")) score = 950;
+                        else if (name.Contains("speeder")) score = 900;
+                        else if (name.Contains("starfighter") || name.Contains("fighter")) score = 850;
+                        else if (name.Contains("ship")) score = 800;
+                        else if (name.Contains("craft")) score = 700;
+                        else if (name.Contains("vehicle")) score = 600;
+                        if (name.Contains("station") || name.Contains("building") || name.Contains("asteroid") ||
+                            name.Contains("rock") || name.Contains("turret") || name.Contains("weapon")) score = 0;
+                    }
+                    if (score > bestScore) {
+                        bestScore = score;
+                        selectedPath = path;
+                    }
+                }
+            }
+
+            if (string.IsNullOrEmpty(selectedPath)) {
+                Debug.LogWarning("UFO WASH: no suitable imported model found for " + assetName +
+                    ". The built-in fallback remains active. Check the imported model filenames in " + importedFolder + ".");
                 return null;
             }
-            string path = AssetDatabase.GUIDToAssetPath(guids[0]);
-            var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(path);
+
+            var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(selectedPath);
             if (prefab == null) return null;
             var instance = (GameObject)PrefabUtility.InstantiatePrefab(prefab);
-            instance.name = "KENNEY CC0 MODEL // " + assetName;
-            instance.transform.position = position;
+            instance.name = "IMPORTED 3D MODEL // " + System.IO.Path.GetFileNameWithoutExtension(selectedPath);
             instance.transform.rotation = rotation;
-            instance.transform.localScale = Vector3.one * scale;
+
+            var renderers = instance.GetComponentsInChildren<Renderer>(true);
+            if (renderers.Length > 0) {
+                Bounds bounds = renderers[0].bounds;
+                for (int i = 1; i < renderers.Length; i++) bounds.Encapsulate(renderers[i].bounds);
+                bool isAlien = assetName == "alien";
+                float currentSize = isAlien ? bounds.size.y : Mathf.Max(bounds.size.x, bounds.size.z);
+                float targetSize = isAlien ? 2.2f : 5.8f;
+                float fitScale = currentSize > .001f ? targetSize / currentSize : scale;
+                instance.transform.localScale = Vector3.one * fitScale;
+
+                bounds = renderers[0].bounds;
+                for (int i = 1; i < renderers.Length; i++) bounds.Encapsulate(renderers[i].bounds);
+                Vector3 targetCenter = position + (isAlien ? Vector3.up * 1.1f : Vector3.zero);
+                instance.transform.position += targetCenter - bounds.center;
+            } else {
+                instance.transform.position = position;
+                instance.transform.localScale = Vector3.one * scale;
+            }
+
             if (washable) {
-                foreach (var renderer in instance.GetComponentsInChildren<Renderer>(true)) {
+                foreach (var renderer in renderers) {
                     var go = renderer.gameObject;
                     if (go.GetComponent<Collider>() == null) {
                         var filter = go.GetComponent<MeshFilter>();
@@ -175,6 +228,8 @@ namespace UFOWASH.Editor
                     }
                 }
             }
+
+            Debug.Log("UFO WASH: selected imported model " + selectedPath + " for " + assetName);
             return instance;
         }
 
