@@ -77,7 +77,7 @@ namespace UFOWASH
             {
                 var sprayObject = new GameObject("SPRAY // pressurized ion-water");
                 sprayObject.transform.SetParent(viewCamera.transform, false);
-                sprayObject.transform.localPosition = new Vector3(0,-.12f,.45f);
+                sprayObject.transform.localPosition = new Vector3(.46f,-1.02f,4.45f);
                 sprayParticles = sprayObject.AddComponent<ParticleSystem>();
                 var main = sprayParticles.main;
                 main.loop = true;
