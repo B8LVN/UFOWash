@@ -1,255 +1,168 @@
-# UFO WASH — Game Design Document
+# UFO WASH — Living Game Design Document
 
-**Version:** 0.2  
-**Status:** Production direction approved; vertical slice in implementation  
-**Genre:** First-person work simulation / business management / incremental automation  
-**Platform:** Windows PC first; Android only after the PC loop is validated
+**Version:** 2.2 — Vesper Belt Studio Blueprint
+**Product target:** Commercial single-player PC game for Steam  
+**Engine:** Unity 6.6, URP  
+**Perspective:** Third-person planetary exploration and business operation; close first-person view only while actively cleaning the contracted ship  
+**Status:** Full-game design target. A playable first shift is a production gate, not the product or scope.
 
-## 1. High concept
+## 1. The game
 
-UFO WASH is a first-person sci-fi spaceship cleaning and servicing business simulator. The player inherits a tiny intergalactic wash operation: one cramped bay, unreliable equipment, little working capital and a stream of strange alien customers. The player personally inspects, prepares, cleans and certifies each vessel, then reinvests the proceeds into better tools, machinery, staff and facilities.
+UFO WASH is a planet-based spacecraft service company simulation. The player arrives at a failing outpost on Vesper, a mineral-rich alien world between established trade lanes. They inherit one wash bay, a damaged pump, overdue station fees and an old service suit. The first customers keep the station alive. Their fees fund land, machines, staff and a reputation that attracts stranger and more valuable ships.
 
-The long-term arc is from owner-operator to the owner of a multi-bay, multi-location spacecraft care company. Cleaning remains the identity and the central source of value. Management and automation grow out of the cleaning workflow; they do not replace the premise.
+The player explores a continuous third-person alien world, meets pilots, buys and lays out physical facilities, and watches the business change the landscape. At a hull, holding the wash control while aiming at a serviceable panel shifts into close first-person cleaning. Releasing the tool or losing the hull target returns to third person. Late game is an operating company the player designed: staff and machines run visible work orders while the owner handles exceptions, expands the planet-side operation and chooses where to invest.
 
-## 2. Product pillars
+**Design promise:** every profitable upgrade changes a capability, choice, throughput limit or part of the world. Cleaning remains tactile after the business grows.
 
-1. **Tactile work:** tools must feel physical, responsive and satisfying. A job is a sequence of actions on a real vehicle, not a progress bar.
-2. **Visible transformation:** contamination, foam, rinse water and restored surfaces must be legible in the world. The player sees exactly what their work changed.
-3. **Customer-specific jobs:** ships, contamination, service requirements, deadlines, risk and payout create meaningful variation.
-4. **Reinvestment with consequences:** purchases unlock capabilities, throughput or new decisions—not just tiny percentage bonuses.
-5. **Delegation as earned progression:** the player first learns the work, then hires specialists and configures machines to take over repeatable tasks.
-6. **A cohesive alien service world:** every ship, prop, interface and facility belongs to the same intergalactic industrial design language.
+### Design grammar
 
-## 3. Player fantasy and tone
+- From **Moon Sweepers**: cleaning physically transforms surfaces; recovered by-products feed processing and automation; upgrades remove repeated labor while preserving a hands-on option.
+- From **Schedule I**: the owner walks through a compact world, buys adjoining business plots, recruits workers and grows through visible operational tiers.
+- From **Aquapark Tycoon**: visitors have moods and patience, route/layout affects throughput and comfort, and specialized facilities influence satisfaction and revenue.
 
-The player is a capable owner who turns a neglected service bay into a respected interstellar operation. The tone is playful and slightly strange, but the work and business systems are grounded. Alien customers have distinct needs and personalities; spacecraft are valuable machines with recognizable silhouettes and service quirks.
+These are system-level inspirations. UFO WASH has its own world, story, art, characters, names and interface.
 
-The player should feel: "I took this filthy ship from a disaster to showroom condition, earned real money, and used that money to make tomorrow's work better."
+### Zero-to-Boss progression
 
-## 4. Core job loop
+1. **Owner-operator:** accept a dispatch, inspect contamination, clean hull zones in order, certify quality and reinvest.
+2. **Station builder:** claim plots, place bays and utilities, route ships and supplies, hire the first worker.
+3. **Operations designer:** configure recipes, balance power and fluids, specialize facilities and solve bottlenecks.
+4. **Tycoon boss:** operate several sectors, set service prices, staff shifts, handle VIP contracts and expand a planetary network while still able to wash any ship personally.
 
-**Attract → receive → inspect → quote → prepare → service → certify → collect → reinvest.**
+## 2. Six product pillars
 
-1. A customer books or arrives with a vessel and a service request.
-2. The player receives the ship into an available bay and secures it.
-3. An inspection reveals ship class, contamination type, damage/fragility, required service stages and quality target.
-4. The player accepts a quoted contract. Optional add-ons and rush service trade time and consumables for higher payout.
-5. The player prepares the bay: checks water, chemical stock, tool condition and bay readiness.
-6. The player performs the ordered work using the correct tool and sequence.
-7. A quality inspection evaluates coverage, missed contamination, surface damage and remaining residue.
-8. The customer pays. The player receives a breakdown of gross revenue, consumables, operating costs, quality bonus and reputation change.
-9. The player spends or saves the proceeds. New jobs, equipment and capacity become available as the business grows.
+### A. Tactile wash work
 
-The first playable slice implements a deliberately small version: accept contract, pre-rinse, foam, final-rinse, consume supplies, refill at a station, complete and earn credits. It is the first proof of the loop, not the full game.
+A ship has authored cleanable zones, each with its own contamination, foam and quality. The opening recipe is pre-rinse → foam coverage → final rinse. Every zone must pass the current stage before service advances. Water and chemical stock are consumed by active spray time. A ship can earn its base quote at a lower grade, while premium tips and reputation need a better inspection.
 
-## 5. Hands-on cleaning design
+Later contamination layers: cosmic dust, engine soot, xenon bio-slime, asteroid barnacles and hardened void crust. Each has a counter-tool and visual response. Planned manual gear: Hydro-Lance → fan/precision nozzles → foam cannon → ultrasonic barnacle peeler → ion-polish buffer. Wrong tools are inefficient or risk damage; correct tools create satisfying local removal. Later service stages add degreasing, drying, polishing, glass care and shield coat.
 
-### 5.1 Service stages
+### B. Planet, ships and visual identity
 
-The default exterior clean has three ordered stages:
+The setting is Vesper, a twilight frontier planet in the Vesper Belt. Art direction is premium stylized sci-fi industrial: sculpted basalt and glass, readable silhouettes, cool alloy, restrained cyan/teal status light, warm amber hazards, practical hangar lighting and legible wet surfaces. Avoid toy-like placeholder forms and generic military darkness.
 
-- **Pre-rinse:** break up loose dust, grit and ionized deposits. Water is consumed. This exposes the heavier contamination.
-- **Foam application:** coat the vessel in cleaning compound. Chemical stock is consumed. Coverage matters; dry or missed panels reduce final quality.
-- **Final rinse:** remove loosened grime and foam. Water is consumed. Rinsing a panel without adequate foam is inefficient and can leave residue.
+**Sectors and land progression**
 
-Later service contracts can add drying, polishing, decontamination, engine intake cleaning, glass treatment and delicate-surface protection. Those are new interactions and equipment requirements, not reskins of the same button.
+| Sector | Biome and role | Hazard and counterplay | Prestige unlock |
+|---|---|---|---|
+| Dust Basin | Starter plateau, regolith apron, inherited pad, relay mast and two small plots | Dust squalls clog filters; cyclone pre-filters protect exposed stock | Independent-operator license |
+| Crater Ridge | Elevated basalt shelf for multi-bay traffic and customer plaza | Rockfall closes marked approach lanes; retaining pylons and clear roads protect throughput | Regional fleet contracts |
+| Ion Flats | Charged mineral plain for heavy ships, reactor fields and extraction | Ion surges stress grids; grounding pylons and capacitor banks protect machinery | Heavy-vessel certification |
+| Glasswake Reach | Twilight canyon of black-glass shelves, luminous brine, suspended shards and skyhook docks | Crystal storms disrupt power/navigation; storm shutters, grounded spires and redundant routing counter them | Vesper Orbital Exchange and galactic expo |
 
-### 5.2 Tool language
+Plots are physical places with roads, build pads, hazard overlays and utility connection points. New sectors change the skyline, ambient sound, customer mix and operating constraints.
 
-The first tool is a basic ion-water lance. Later tools introduce distinct behavior:
-- Fan nozzle: wide coverage, lower impact, slower on stubborn grime.
-- Precision nozzle: narrow coverage, high control for vents, seams and delicate panels.
-- Foam cannon: rapid chemical coverage, high chemical consumption.
-- Rotary polisher: removes oxidation and restores gloss, but can damage unprotected surfaces.
-- Deionized rinse: prevents mineral spotting on premium glass and hull coatings.
+**World scale:** this is a small, dense planet-side business world, not a vast empty open-world map. Each sector is an approximately 80 m × 80 m walkable district built from 4 m construction cells. The opening Dust Basin yard exposes about 40 m × 48 m and two adjoining claimable pads. A visible road, gate or lift connects the other districts. Crater Ridge targets a 2,500 GC / 2.6-star unlock, Ion Flats 9,000 GC / 3.5 stars, and Glasswake Reach 25,000 GC / 4.2 stars. These are first economy targets for the full game and require balance testing. The gate physically opens and new land, landmarks and building choices become visible; a menu entry alone never counts as world expansion.
 
-Tool switching must be quick and readable. A wrong tool should have a comprehensible consequence, not an arbitrary failure.
+**Ship roster**
 
-### 5.3 Surface simulation
+| Ship class | Silhouette and contamination | Gameplay hook |
+|---|---|---|
+| Zorgon Scout Saucer | Compact saucer; dust and ionic sludge | Onboarding ship; cockpit dome and rim are separate inspection zones |
+| Krell Hauler Barge | Broad modular cargo hull; soot and mineral grease | High water demand; underside/container modules need route planning |
+| Vexx Luxury Cruiser | Swept hull and luminous canopy; delicate coating | Low pressure and glass-safe finish required for premium tip |
+| Morrowline Bio-Dome Ark | Petal hull and greenhouse pods; fictional pollen film | Bio-neutral wash; aggressive solvent damages living lacquer |
+| Tesseract Foldship | Offset rings and articulated panels; crystalline void crust | Stabilize reconfiguring panels before spraying |
+| Cinderwing Interceptor | Three heat fins and engine cowl; baked plasma soot | Cooldown before degreasing; excess pressure on hot panels damages finish |
 
-Each serviceable panel tracks contamination and stage-specific treatment. The ship is not one global health bar: the player must move around it and treat multiple surfaces. MVP may use a small number of authored surface zones; later ships can have more zones and unique material responses.
+These are design targets. Only ships with verified models and behavior may be called implemented. The current generated scene has one procedural saucer, not six ship assets.
 
-Quality is calculated from:
-- Required contamination removed.
-- Foam coverage on eligible panels.
-- Final-rinse coverage and residue.
-- Missed zones and optional detailing.
-- Any damage caused by excessive pressure or the wrong tool.
+**Asset policy:** create original procedural meshes and textures where useful; curate included Kenney Space Kit assets only where style and license fit; record source and license. No paid asset without owner approval. Verify URP materials in the actual scene. Procedural generation is a production method, not a claim that primitives are finished models.
 
-A completion threshold guarantees a clear win condition; higher quality earns a bonus and reputation.
+### C. Construction and facility architecture
 
-## 6. Job and customer design
+Buildings occupy a snap grid of 4 m cells on purchasable plots. Placement checks plot ownership, terrain grade, road access, machine clearance, hazard exposure and utility reach. A facility may look good and still operate poorly if queue roads cross worker routes or pipes take the long way around.
 
-A job is a data-defined contract, not a hard-coded sequence of names. Each contract contains:
-- Customer profile and ship archetype.
-- Service package and required stages.
-- Contamination profile and surface difficulty.
-- Consumable estimate.
-- Target quality and optional deadline.
-- Base payout, bonus rules and reputation impact.
+| Structure | Gameplay role and visible upgrade |
+|---|---|
+| Landing & Wash Bay | Dirt pad → covered bay → automated multi-arch tunnel; capacity and ship-size clearance |
+| Fluid & Chemical Plant | Pressurized silos and mixer produce water/foam/degreaser; exposed pipes show flow |
+| Fusion / Solar Hub | Generator, solar field, capacitor bank or crystal reactor; capacity, upkeep and surge resistance trade off |
+| Crew Quarters | Trailer, lockers and break room add worker slots and stamina recovery |
+| Alien Customer Lounge | Seating, viewing window and service kiosks add waiting capacity, patience and tips |
+| Boss Command Office | Tower unlocks pricing, contracts, shift plans and land purchase |
+| Residue Reclaimer | Filters used wash fluid into reusable water and Rare Residue; lowers disposal cost |
+| Drone Depot | Visible hauling/inspection drones add route capacity and battery/repair upkeep |
+| VIP Detailing Annex | Low-pressure enclosure with glass-safe filtration enables luxury finish packages |
 
-Customer archetypes:
-- **Courier:** frequent, low-risk, quick turnaround; values reliability.
-- **Miner:** abrasive dust and industrial residue; larger hulls, high water use.
-- **Diplomat:** delicate finish and strict quality; premium payout, low tolerance for mistakes.
-- **Explorer:** biological or unknown contamination; requires specialist chemical later.
-- **Military contractor:** engine soot and heat residue; high payout, strict process requirements.
+Starter utility targets: Fusion Cart 100 kW; wash bay 45 kW; lounge 12 kW; exterior lights 6 kW; automated gantry 35 kW. Pipes have flow capacity and pressure; long or undersized routes reduce throughput. Outages name the overloaded network and affected machines.
 
-Customers can become repeat clients. Reputation increases booking volume and unlocks premium contracts. Failed deadlines, poor quality or damage reduce trust and can lose a client. Avoid random punishment: requirements and risks must be visible before acceptance.
+### D. Staff, machines and boss management
 
-## 7. Progression and business growth
+Workers visibly navigate and perform explicit task loops. Each has role, skill, stamina, shift, wage, morale, work speed, preferred bay and current task. Hiring costs 120 GC plus shift wages. Initial wage targets per 8-hour business shift: Wash Tech 80 GC, Utility Engineer 110 GC, Lounge Host 65 GC, Shift Supervisor 140 GC.
 
-### Early game — Owner-operator
-
-- One compact bay, one small ship class and one basic tool.
-- The player performs reception, inspection, all cleaning stages, inspection and payment.
-- Water and chemical stocks are limited; refills cost money.
-- First purchases should solve obvious bottlenecks: better nozzle, larger tanks, faster pump or a second service package.
-- Early customers are forgiving and teach the cleaning sequence.
+Skill levels I–III improve one action: coverage rate, maintenance speed, supply yield or customer handling. Promotion costs training credits and time. Morale rises with safe equipment, fair wages, a clean break room, short routes and completed work; it falls with outages, unsafe assignments, long queues and missed breaks. Low morale increases callouts and slows work; it never randomly sabotages a contract. Set shift, home bay, service class and task priority in the staff roster.
 
-**Player question:** "Which job can I complete profitably with the equipment and supplies I have?"
+Machine work orders define allowed ships, recipe, minimum supply reserve, quality target, queue priority and fallback. Wash Techs prepare/monitor; gantries repeat recipes; engineers refill/repair; hosts route customers; supervisors coordinate queues but never create capacity. Processing competes for actual bay, water, chemical, power, staff and downstream capacity.
 
-### Mid game — A real service company
+### E. UFO customers and incremental economy
 
-- Two or more bays and a customer queue.
-- Medium and large ships with different panel layouts.
-- Foam cannon, precision nozzle, drying equipment and specialist chemicals.
-- Inventory storage, supplier deliveries, maintenance and utility costs.
-- Hire a bay technician, wash operator or prep worker.
-- Assign workers to a bay, service class and task priority.
-- Unlock premium service packages and repeat customer contracts.
+Customer identity affects patience, service preference, tip rule, contamination and relationship.
 
-**Player question:** "What should I delegate, and what bottleneck is stopping the business from serving more ships?"
+- **Zorp — reliable courier:** routine jobs and a dependable-finish tip.
+- **Nyx-7 — scrap prospector:** abrasive deposits and Rare Residue for thorough cleaning.
+- **Captain Vex — perfectionist noble:** delicate glass; large premium for near-perfect finish.
+- **Archivist Oru — hazard-sensitive pilgrim:** careful handling and safe decontamination build trust.
+- **Mira Quell — salvage broker:** fast industrial turnaround; buys recovered residue at a posted price.
+- **Rill of the Morrowline — living-ship keeper:** neutral chemistry, patient service and clean brine filter.
 
-### Late game — Intergalactic operations
+**Currencies and reputation**
 
-- Multiple hangars and locations with distinct customer markets.
-- Specialized facilities for heavy vessels, luxury craft and hazardous contamination.
-- Automated wash gantries, sensor inspection, drying tunnels and chemical dosing.
-- Managers coordinate shifts and bay priorities; technicians maintain machines.
-- Logistics systems replenish chemicals and move ships between service zones.
-- The player manages contracts, capital investment, staff, maintenance and expansion while still being able to step onto the floor and do the work.
-
-**Player question:** "Where should the next capital investment go to increase profit, capacity or market access?"
-
-## 8. Economy
+- Galactic Credits pay wages, utilities, land, structures and purchases.
+- Rare Residue comes from contaminated filters and selected ships; craft advanced formulas/modules or sell it.
+- Reputation is a visible 1–5 star rating that changes demand and unlocks contracts/sectors. The current prototype starts at 2.1; heavy dispatch unlocks at 2.1, VIP at 3.8. Playtests must tune these values.
 
-### 8.1 Revenue
+Opening quotes: 250 / 420 / 600 GC. Tip rules: 8% of base at 84% quality, 16% at 90%, and 35% at 98.5%. The quality bonus is separate. Inspection changes reputation by +0.08 at 84%, +0.16 at 92%, +0.25 at 98.5%, or −0.15 below 84%, clamped to 1–5. Dispatch cards disclose trait, quote, tip threshold and reputation requirement.
 
-Revenue comes from:
-- Base service fee by ship class and service package.
-- Quality bonus for complete coverage and a clean final inspection.
-- Rush premium for accepted deadlines.
-- Reputation-driven repeat work and premium customer tiers.
-- Later: maintenance plans, fleet contracts and location-specific specialist services.
-
-### 8.2 Costs
-
-Costs must be visible per job and per operating period:
-- Water, foam, specialist chemicals and replacement filters.
-- Equipment wear, repairs and machine maintenance.
-- Employee wages and training.
-- Facility utilities and rent/loan costs.
-- Logistics and supplier delivery fees.
-
-### 8.3 Investment rule
+Show gross and net separately. Receipts break out base fee, quality bonus, tip, consumables, wages, utilities and maintenance. Pricing/service packages affect demand and reputation. Lounge comfort × premium polish × fast turnaround can synergize, with a visible cap and quote breakdown.
 
-Every upgrade must unlock a new decision, capability or capacity:
-- Larger tanks reduce refill trips and allow larger jobs.
-- A better pump reduces active cleaning time but may consume more power.
-- A foam cannon increases coverage speed while increasing chemical cost.
-- A second bay increases parallel capacity but adds utilities and staffing.
-- A worker removes a defined task from the player's workload but has wages and throughput limits.
-- An automated gantry increases unattended throughput but requires capital, power, maintenance and a configured recipe.
+## 3. First-shift service rules
 
-No endless +2% upgrade ladder. Prefer discrete tiers with visible functional changes.
+The opening customer is Zorp of Orion Traders and their Class-IV scout.
 
-### 8.4 Pricing and balance targets
+1. Review dispatch and accept an unlocked contract.
+2. The ship docks. Third person stays active while walking and interacting.
+3. Aim and hold wash control on an active contract panel to enter close first person and spray.
+4. Pre-rinse every service zone to at most 0.58 contamination.
+5. Foam every zone to at least 0.62 coverage.
+6. Final-rinse every zone to at most 0.15 contamination and 0.10 foam.
+7. Return to dispatch for inspection. Grade, base payout, bonus, tip and reputation are explained.
+8. Refill costs 65 GC when water or chemical is depleted. The opening 750 GC cash reserve makes the first mistake recoverable.
 
-Initial tuning targets (to be playtested, not treated as final):
-- Early basic contract gross payout: 250–400 credits.
-- Consumables: 5–12% of basic contract gross.
-- A first useful tool upgrade: approximately 2–3 successful jobs.
-- A first hire: approximately 8–12 successful jobs, with wages covered by a modest increase in throughput.
-- New bay: a major investment requiring a deliberate saving goal.
-- Automated equipment should have a clear break-even estimate shown before purchase.
+Quality = 1 − average contracted-zone contamination − 0.18 × average residual foam, clamped to 0–1. Quality is a summary grade; each individual zone must pass its completion limits. Spraying outside the active ship’s contract has no effect and must not switch perspective.
 
-The player should rarely be unable to act because of money. Offer a lower-paying basic contract and a visible supply cost so a poor decision is recoverable without grinding.
+## 4. Unity implementation and scope truth
 
-## 9. Employees and automation
+| GDD system | Unity implementation | State |
+|---|---|---|
+| Hull contamination and local foam feedback | Assets/UFO_WASH/Scripts/Cleaning/UfoWashDirtSurface.cs | Source implemented; foam visibility and per-zone tuning still need QA |
+| Contract-only panels and staged zone gates | UfoWashCareerLoop.cs, UfoWashCustomerShip.cs | C# compile check against Unity 6.6 references passed; Editor import and Play Mode unverified |
+| Third-person exploration / aimed cleaning view | UfoWashFirstPersonController.cs | C# compile check passed; camera behavior still needs Play Mode verification |
+| Trait tips, reputation unlocks and NPC identity | UfoWashCareerLoop.cs, UfoWashCustomerNpc.cs, UfoWashContractTerminalUI.cs | C# compile check passed; UI and receipt behavior unverified |
+| Title, story, briefing and field guide | UfoWashFrontEnd.cs | Source exists; earlier local run observed, needs art and interaction polish |
+| Vesper vista, modular outpost and palette | UfoWashPowerSliceBuilder.cs, KenneyModularSpaceKit, Art/Textures | Editor C# compile check passed; CC0 source kit and Vesper recolor are present; asset import, scene regeneration and visual check pending |
+| Sector land claims and gate unlocks | UfoWashSectorGate.cs, UfoWashPowerSliceBuilder.cs | Runtime/editor C# compile check passed; three cost/reputation gates are authored; in-scene behavior unverified |
+| Physical building placement and utility routing | None | Designed, not implemented; sector claim currently unlocks land only |
+| Staff AI, work orders and automation | None | Designed, not implemented |
+| Ship roster, chemistry damage, Rare Residue, save/load, multi-sector progress | Partial or absent | Future production work |
 
-Employees are not passive percentage buffs. Each worker has:
-- Role and permitted task set.
-- Skill level and work speed.
-- Fatigue/shift availability.
-- Wage and training cost.
-- Assigned bay, task priority and service restrictions.
+The present Windows player output is not the product. Do not create or launch another player build until the full game is ready and the owner requests it. Unity source import/compilation and Editor Play Mode checks are allowed; state exactly what they verify.
 
-Initial roles:
-- **Prep technician:** secures incoming ships, connects service ports and stages supplies.
-- **Wash operator:** performs pre-rinse, foam and final-rinse on assigned ships.
-- **Detail specialist:** handles polish, glass and delicate finish.
-- **Maintenance technician:** maintains pumps, gantries and filters.
-- **Shift supervisor:** coordinates work priorities and reduces idle time; does not magically create capacity.
+## 5. Full-game production roadmap
 
-Automation is configured through readable work orders:
-- Which bay/ship classes are allowed.
-- Which service recipe to run.
-- Minimum supply reserve before starting.
-- Quality target versus throughput priority.
-- What to do when supplies are low, a machine is damaged or a job needs manual attention.
+1. Complete a truthful first shift: zone feedback, tool gating, supplies, inspection, tips, reputation and repeat contracts.
+2. Author the Vesper Basin: modular hangar, custom hull panels, terrain, props, readable light, audio and modern menu/HUD.
+3. Add saved company state, booking/queue, financial ledger, sector plots and physical construction.
+4. Add utility networks, residue processing, first visible employee and automated gantry chain.
+5. Expand sectors, ship classes, traits, contracts and boss management.
+6. Finish accessibility, controller support, sound, performance, save migration and commercial/Steam QA.
 
-Machines have throughput, operating cost, maintenance and failure states. A machine cannot exceed the capacity of its upstream supply or downstream bay. Employees and machines should complement one another: staff prepare, monitor, repair and handle exceptions while automation performs repeatable work.
+Code written or a player launched is not proof of completion. Each milestone needs clean Unity compilation, an Editor Play Mode run, current-scene screenshots and an honest issue list.
 
-## 10. Visual direction
+## 6. Living GDD changelog
 
-**Art direction:** premium stylized sci-fi industrial, not toy-like primitive geometry and not generic dark military sci-fi.
+- **v1.0–v1.1:** Initial planetary spacecraft wash and company-growth premise.
+- **v2.0:** Zero-to-Boss progression, service stages, initial buildings, ship/customer/staff concepts and six-pillar framework.
+- **v2.1:** Locked the commercial full-game target and camera rule; defined four Vesper sectors/hazards, six ship classes, three specialist facilities, physical utility/build grid, staff hiring/wages/skills/morale/shifts, customer traits, exact tips/reputation gates, first-shift zone thresholds and Unity implementation map. Replaced all outstanding [EXPAND] prompts with game-ready targets.
+- **v2.2:** Carried the Moon Sweepers / Schedule I / Aquapark Tycoon inspiration into a compact, contiguous Vesper business world; added three physical sector claims, a CC0 modular outpost kit with a custom Vesper palette, per-zone service progression and customer/reputation rewards. Fixed contract-panel initialization ordering. Unity-reference C# compile checks passed; actual Editor import, scene generation and Play Mode remain pending.
 
-- Palette: graphite and deep navy structure, cool brushed metal, restrained cyan/teal status lighting, warm amber hazard accents, clean white service markings.
-- Shapes: strong readable silhouettes, rounded industrial housings, modular panels, exposed hoses, clamps, rails, gantries and service ports.
-- UFOs: each class needs a distinct silhouette, landing gear, windows, engine details, panel breaks and readable contamination zones.
-- Materials: physically plausible metal, coated ceramic, glass, rubber, wet surfaces and grime. Dirt should layer over—not simply replace—the underlying material.
-- Lighting: practical hangar fixtures, readable key/fill/rim lighting, restrained bloom, contact shadows and reflection where performance allows.
-- UI: compact industrial service interface, clear contract card, tool mode, supply levels, stage checklist, quality feedback and credits. Avoid debug-like text blocks.
-- Audio: pump startup, nozzle pressure, foam hiss, water impact, drainage, tool switching, ship engine ambience, customer arrival and satisfying certification/payment cues.
-
-Temporary blockout geometry is allowed for layout tests only. It must be labelled honestly and replaced before any quality milestone is called an art pass.
-
-### Asset sourcing policy
-Prefer original or commercially usable assets with explicit licenses. Kenney Space Kit is CC0 and includes over 150 spaceport, ship, character and prop models. Its low-poly style can support a coherent stylized direction if used consistently, but imported materials must be converted/verified for URP and models must be curated rather than selected by a loose filename guess. Do not claim an asset is in the repository until its files are actually present and verified.
-
-## 11. MVP vertical slice
-
-The MVP is one polished, repeatable job in one bay:
-- Stable first-person movement and interaction.
-- One authored, non-pink UFO with several individually cleanable zones.
-- Contract acceptance and readable service requirements.
-- Three-stage pre-rinse / foam / final-rinse workflow.
-- Water and chemical consumption plus a paid refill station.
-- Visible contamination and foam feedback.
-- Completion, quality result, payout and repeat contract.
-- One meaningful equipment purchase.
-- Reliable reset and save-ready data boundaries.
-
-Out of scope until this loop is enjoyable: multiple locations, employee AI, automated production lines, multiplayer, open-world exploration, elaborate construction and Android.
-
-## 12. Acceptance and quality gates
-
-A milestone is accepted only when:
-1. It compiles in the target Unity version.
-2. It launches in Play Mode without blocking errors.
-3. The player can complete the loop without developer instructions.
-4. Every interaction has clear feedback and a failure state.
-5. Purchases and consumables affect the economy correctly.
-6. A second job can be accepted and completed.
-7. A first-time tester can explain what to do and why the next purchase matters.
-8. Screenshots/video from the actual Unity build support visual-quality claims.
-
-The developer must distinguish committed code, locally compiled code, and playtested behavior. A GitHub commit is not proof of a working Unity build.
-
-## 13. Design references (principles only)
-
-- **Moon Sweepers:** manual cleaning creates visible world change; collection/delivery creates a satisfying conversion of labor into money; tools and capacity improve the work; vehicles, depots, belts and robots progressively replace repetitive labor. UFO WASH adapts this as panel cleaning, supply logistics, service bays and wash automation.
-- **Schedule I:** a hands-on opening grows into a configurable business; workers take over specific jobs; properties and equipment unlock capacity; customer preferences and timing make planning meaningful. UFO WASH adapts this as contracts, customer reputation, specialist service roles and configurable wash recipes.
-
-We do not copy either game's setting, content, UI, characters or exact systems. We borrow the clarity of their progression structures.

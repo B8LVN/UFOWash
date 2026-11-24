@@ -1,0 +1,6 @@
+Kenney Modular Space Kit 1.0
+Source: https://kenney.nl/assets/modular-space-kit
+License: CC0 1.0 Universal; see License.txt
+Unity source format: FBX, with the original color atlas in Models/Textures.
+A Vesper palette edit is authored separately for UFO WASH.
+

@@ -1,57 +1,48 @@
-# UFO WASH — Prioritized Backlog
+# UFO WASH — Full-Game Production Backlog
 
-Status must reflect reality. `NEXT_TASK.md` identifies the single task currently authorized.
+**Canonical design:** Docs/GDD.md, version 2.2.
 
-## P0 — Blocking verification
+**Product target:** Full commercial PC/Steam game. A vertical slice is a validation milestone, never the delivery target.
 
-| ID | Task | Status | Depends on | Notes |
-|---|---|---|---|---|
-| UW-000 | Audit existing Unity project and establish source baseline | Completed — source audit only | GitHub repository access | Report: `Docs/reports/PROJECT_AUDIT_001.md`. Local Editor/build/playtest evidence remains outstanding. |
-| UW-101 | Owner playtest of foam, contract board and customer interaction recovery pass | Ready | Latest main pulled into Unity 6000.6.10f1 | Current authorized task. No feature expansion before results. |
+**Execution policy:** Progress autonomously across all six pillars; no paid assets without owner approval; no player builds until the game is playable and the owner asks for one.
 
-## P1 — First playable vertical slice
+## P0 — Stabilize current systems and prove the work
 
-| ID | Task | Status | Depends on | Notes |
-|---|---|---|---|---|
-| UW-100 | Recover the core job loop: local foam, selectable contracts and reactive customer | Implemented — unverified | UW-000 source audit | Code committed; owner must verify visuals, input and end-to-end job flow. |
-| UW-001 | Approve vertical-slice scope and visual target from audit | Backlog | UW-000, UW-101 | Owner approval required after seeing the recovery pass. |
-| UW-010 | First-person movement/camera feel | Existing source — needs playtest | UW-001 | Tune only from observed feedback. |
-| UW-020 | Art-directed starter station and one service bay | Backlog | UW-001 | Current environment is still largely procedural geometry; greybox is not final art. |
-| UW-030 | UFO arrival, job request and bay assignment | Partial | UW-010, UW-020 | Ship approach/docking exists; queue and bay assignment do not. |
-| UW-040 | Dirt visualization benchmark and local tool interaction | Partial | UW-020 | Local foam prototype committed; dirt remains renderer-level tint. |
-| UW-050 | Complete manual cleaning job loop and payout | Partial | UW-030, UW-040 | Stages, supplies and payout exist; owner playtest is required. |
-| UW-060 | One meaningful upgrade and progression save | Partial / backlog | UW-050 | Numeric washer upgrade exists; no save/load proof. |
-| UW-070 | One small employee task or automation machine | Backlog | UW-050, UW-060 | Choose only after manual loop is accepted. |
-| UW-080 | Vertical-slice polish, QA and playtest | Backlog | UW-010–UW-070 | Target: understandable 10–15 minute experience. |
+| Task | Status | Acceptance evidence |
+|---|---|---|
+| Bind wash work to the accepted ship and every service panel | Unity-reference C# compile passed; Editor import/play test pending | Each panel separately gates pre-rinse, foam and final rinse |
+| Restrict FPS handoff to actively targeted contracted hull | Unity-reference C# compile passed; Play Mode pending | Third person while walking/interacting; first person only while actively cleaning correct ship |
+| Customer tips, reputation and contract unlocks | Unity-reference C# compile passed; UI test pending | Disclosed terms; payout receipt and unlocks match quality |
+| Full first-shift loop, supplies, grade, customer and repeated dispatch | Partial | Complete two different jobs without reset/developer intervention |
+| Current Hierarchy and runtime Console | Needs fresh evidence | Screenshot of scene roots and clean runtime Console |
 
-## P2 — Post vertical-slice expansion
+## P1 — Make Vesper feel like a place and cleaning feel tactile
 
-- Additional UFO classes and service profiles.
-- More tools, chemicals and cleaning methods.
-- More service bays and larger facility layouts.
-- Employee roles, schedules and task management.
-- Additional automation stages and logistics.
-- Supplies, maintenance and waste/by-products where they add decisions.
-- More advanced contracts, customers and reputation.
-- Additional properties/locations.
+- Create a coherent Vesper basin surrounding the service yard: terrain silhouette, distinctive sky, landmarks, roads, plot boundaries, ambient life and weather.
+- Replace obvious placeholder forms with authored modular hangar architecture, signage, clamps, pumps, piping, service cranes and readable ship silhouettes.
+- Improve local grime response so spray clears visible areas rather than tinting a whole zone; add contamination-layer materials, foam/runoff, audio and impact feedback.
+- Replace the current debug-like HUD/contract screens with responsive, typographic service interfaces.
+- Add exploration landmarks, customer waiting behavior and clear transitions between world movement and close cleaning view.
 
-## P3 — Later / optional
+**Gate:** current Unity screenshots must show a visibly art-directed alien service world, not a greybox called finished.
 
-- Android port.
-- Multiplayer/co-op.
-- Large-scale multi-location simulation.
-- Advanced simulation of every worker/machine at high fidelity.
-- Extensive narrative/campaign systems.
+## P2 — Turn the station into a management game
 
-Do not promote P2/P3 work before the manual job loop is understood, enjoyable and accepted.
+- Saveable company ledger: GC, reputation, inventory, active contract, unlocks and expenses.
+- Contract board with ship/customer archetypes, recipes, deadlines/preferences and transparent gross/net quote.
+- Physical land plot ownership, snapping placement, collision/access checks and visible building upgrades.
+- Power/fluid network with capacities, routing, load, outages and readable failure recovery.
+- Residue Reclaimer and Rare Residue resource/crafting/sales.
+- Customer queue, lounge comfort and dispatch/checkout pipeline.
+- Staff roster with hiring, wages, shifts, assignments, skills, fatigue, morale and visible NavMesh task loops.
 
+## P3 — Deliver the tycoon fantasy and commercial game
 
-## UW-102 local verification follow-up (2026-11-23)
+- Automated wash gantry, drone logistics, recipe/work-order configuration, maintenance, throughput and safe fallback.
+- Additional bays, buildings, six authored ship classes, alien customer archetypes, contamination types and specialist contracts.
+- Four playable Vesper sectors, weather hazards, land expansion and late-game prestige fleet traffic.
+- Boss office for prices, service tiers, shift plans, sector acquisition and network bottlenecks.
+- Audio, accessibility, input settings, save migration, performance and Steam-facing QA/presentation.
+- Repeated owner-facing review of actual screenshots/gameplay; only the owner decides when the game is playable enough for a player build.
 
-Compile and menu Play Mode smoke check passed in Unity 6.6.10f1. Full cleaning job needs fresh end-to-end verification. Next priority: UW-103 art-directed hangar and complete first job. Scene remains greybox.
-
-
-## UW-103 camera/NPC follow-up (2026-11-23)
-- Implemented conditional station third-person and washer first-person mode; hide tool in third-person.
-- Attempted alien material and bubble readability fixes.
-- Unity compile and opening/third-person view checked. First-person and alien result still unverified; environment/UI remain greybox. Continue with focused visual validation and first-job gameplay.
+A task is complete only with checked implementation and evidence. Code written, scene-generated or committed is not runtime verification.

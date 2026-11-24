@@ -13,11 +13,12 @@ namespace UFOWASH.Editor
     {
         const string ScenePath = "Assets/UFO_WASH/Scenes/UFO_WASH_PowerSlice.unity";
         static Material matFloor, matWall, matDark, matMetal, matWhite, matCyan, matBlue, matOrange, matGlass, matDirt, matGlow;
+        static Material matBasalt, matIce, matPlanet, matStarfield, matVesperModular;
 
         [MenuItem("UFO WASH/REBUILD GENERATED SCENE (MANUAL FALLBACK)", false, 0)]
         public static void Build()
         {
-            BuildScene(true);
+            BuildScene(!Application.isBatchMode);
         }
 
         // Called only when this dedicated generated-scene builder changes.
@@ -35,17 +36,18 @@ namespace UFOWASH.Editor
             var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
             EnsureFoldersAndMaterials();
             RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Flat;
-            RenderSettings.ambientLight = new Color(.38f,.43f,.52f);
-            RenderSettings.fog = true; RenderSettings.fogColor = new Color(.075f,.095f,.13f); RenderSettings.fogDensity = .006f;
+            RenderSettings.ambientLight = new Color(.48f,.52f,.62f);
+            RenderSettings.fog = true; RenderSettings.fogColor = new Color(.08f,.12f,.2f); RenderSettings.fogDensity = .0018f;
             SetupPostProcessing();
             BuildOuterRimVista();
+            BuildVesperLandingYard();
 
             // Main industrial hangar shell
             Cube("Polished graphite floor", new Vector3(0,-.25f,3), new Vector3(26,.5f,34), matFloor);
             Cube("Rear bulkhead left", new Vector3(-11,6,19.5f), new Vector3(4,12,.7f), matWall);
             Cube("Rear bulkhead right", new Vector3(11,6,19.5f), new Vector3(4,12,.7f), matWall);
             Cube("Rear bulkhead lintel", new Vector3(0,11,19.5f), new Vector3(18,2,.7f), matWall);
-            Cube("Bay 01 outer shield sill", new Vector3(0,1,19.5f), new Vector3(18,2,.7f), matMetal);
+            Cube("Bay 01 pressure gate threshold", new Vector3(0,.13f,19.5f), new Vector3(18,.26f,.7f), matMetal);
             Cube("Left bulkhead", new Vector3(-13,6,3), new Vector3(.7f,12,33), matWall);
             Cube("Right bulkhead", new Vector3(13,6,3), new Vector3(.7f,12,33), matWall);
             Cube("Ceiling", new Vector3(0,12,3), new Vector3(26,.5f,33), matDark);
@@ -105,17 +107,10 @@ namespace UFOWASH.Editor
                 float a=i*Mathf.PI/3;
                 Part(ufo,"Engine thruster "+i,PrimitiveType.Cylinder,new Vector3(Mathf.Cos(a)*2.1f,-.48f,Mathf.Sin(a)*2.1f),new Vector3(.48f,.18f,.48f),matGlow);
             }
-            // Replace the placeholder saucer with a real imported spacecraft when the CC0 pack is present.
-            var importedShip = SpawnImportedModel("craft_speederA", new Vector3(0,2.65f,3.4f), Quaternion.Euler(0,180,0), 3.2f, true);
-            if (importedShip != null)
-            {
-                ufo.SetActive(false);
-                importedShip.AddComponent<UfoWashCustomerShip>();
-            }
-            else
-            {
-                ufo.AddComponent<UfoWashCustomerShip>();
-            }
+            // Keep the authored saucer as the customer vessel. The included space kit's
+            // speeder is a fighter silhouette; using it here obscured the UFO identity and
+            // replaced the cleanable layered hull with a wedge-shaped ship.
+            ufo.AddComponent<UfoWashCustomerShip>();
             // Alien customer waiting at reception marker
             var alien = new GameObject("ALIEN CUSTOMER // ZORP");
             alien.transform.position = new Vector3(7.5f,0,-3.5f);
@@ -139,7 +134,7 @@ namespace UFOWASH.Editor
             }
             // Player starts facing the UFO; tool and interaction
             var player = new GameObject("PLAYER // CUSTOM SPACER SUIT");
-            player.transform.position = new Vector3(0,0,-9.5f);
+            player.transform.position = new Vector3(0,0,-5.8f);
             var cc=player.AddComponent<CharacterController>(); cc.height=1.8f; cc.radius=.34f; cc.center=new Vector3(0,.9f,0);
             BuildPlayerCharacter(player.transform);
             var pivot=new GameObject("First Person Camera Pivot"); pivot.transform.SetParent(player.transform); pivot.transform.localPosition=new Vector3(0,1.62f,0); pivot.transform.localRotation=Quaternion.identity;
@@ -174,20 +169,20 @@ namespace UFOWASH.Editor
             // Contract terminal and career loop: player must accept a customer order before spraying.
             var career = new GameObject("CAREER LOOP // CUSTOMER CONTRACTS");
             career.AddComponent<UfoWashCareerLoop>();
-            var contractTerminal = Cube("CONTRACT TERMINAL // ACCEPT JOB", new Vector3(2.2f,1.25f,-10.2f), new Vector3(1.55f,2.5f,1.0f), matBlue);
+            var contractTerminal = Cube("CONTRACT TERMINAL // ACCEPT JOB", new Vector3(4.2f,1.25f,-3.7f), new Vector3(1.55f,2.5f,1.0f), matBlue);
             contractTerminal.AddComponent<UfoWashJobBoard>();
-            var contractScreen = Cube("Contract terminal screen", new Vector3(2.2f,1.75f,-10.73f), new Vector3(1.25f,.82f,.045f), matGlow);
+            var contractScreen = Cube("Contract terminal screen", new Vector3(4.2f,1.75f,-4.23f), new Vector3(1.25f,.82f,.045f), matGlow);
             contractScreen.GetComponent<Collider>().enabled = false;
-            Sign("ACCEPT JOB", new Vector3(2.2f,2.42f,-10.75f), .27f, matWhite);
-            Sign("CONTRACTS", new Vector3(2.2f,3.05f,-10.2f), .32f, matCyan);
+            Sign("ACCEPT JOB", new Vector3(4.2f,2.42f,-4.25f), .27f, matWhite);
+            Sign("CONTRACTS", new Vector3(4.2f,3.05f,-3.7f), .32f, matCyan);
 
             // Consumables are a real operating cost: refill water and foam chemical here.
-            var supplyStation = Cube("SUPPLY STATION // WATER + FOAM", new Vector3(-3.5f,1.25f,-10.2f),
+            var supplyStation = Cube("SUPPLY STATION // WATER + FOAM", new Vector3(-4.2f,1.25f,-3.7f),
                 new Vector3(1.55f,2.5f,1.0f), matBlue);
             supplyStation.AddComponent<UfoWashSupplyStation>();
-            Cube("Supply station display", new Vector3(-3.5f,1.75f,-10.73f),
+            Cube("Supply station display", new Vector3(-4.2f,1.75f,-4.23f),
                 new Vector3(1.25f,.82f,.045f), matGlow).GetComponent<Collider>().enabled = false;
-            Sign("SUPPLIES // 65 CR", new Vector3(-3.5f,2.42f,-10.75f), .24f, matWhite);
+            Sign("SUPPLIES // 65 CR", new Vector3(-4.2f,2.42f,-4.25f), .24f, matWhite);
 
             var hud=new GameObject("GAME HUD"); hud.AddComponent<UfoWashHUD>();
             var frontEnd = new GameObject("GAME FRONT END // STORY + TUTORIAL");
@@ -437,36 +432,60 @@ Left mouse: operate washer",
 
         static void BuildOuterRimVista()
         {
-            // The service bay opens onto a settlement carved into the Vesper Belt.
-            // Keep the skyline beyond the bay opening so the station reads as one place in a larger world.
-            var ground = Cube("VESPER BELT // BASALT APRON", new Vector3(0,-1.3f,30), new Vector3(90,1.4f,80), matDark);
-            ground.GetComponent<Renderer>().sharedMaterial = matWall;
-            for (int i = 0; i < 13; i++)
+            // A real vista beyond the bay gives the station a place in the Vesper Belt.
+            // The skyfield and banded planet are original procedural assets; the remote
+            // relays use only the included CC0 Kenney Space Kit.
+            BuildStarfieldBackdrop();
+            Cube("VESPER BELT // BASALT APRON", new Vector3(0,-1.15f,34), new Vector3(110,1.1f,96), matBasalt);
+
+            // Sculpted, triangulated mesas replace the old row of rotated box silhouettes.
+            for (int i = 0; i < 16; i++)
             {
-                float x = -34 + i * 5.7f;
-                float height = 8f + Mathf.PerlinNoise(i * .41f, .73f) * 15f;
-                float depth = 5f + Mathf.PerlinNoise(.24f, i * .39f) * 8f;
-                var mesa = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                mesa.name = "VESPER BELT // DISTANT BASALT MESA";
-                mesa.transform.position = new Vector3(x, height * .45f - .6f, 43f + (i % 3) * 5f);
-                mesa.transform.localScale = new Vector3(4.2f + (i % 4), height, depth);
-                mesa.transform.rotation = Quaternion.Euler(0, (i * 37) % 360, (i % 2 == 0 ? 1 : -1) * (3 + i % 5));
-                mesa.GetComponent<Renderer>().sharedMaterial = (i % 3 == 0) ? matBlue : matWall;
-                Object.DestroyImmediate(mesa.GetComponent<Collider>());
+                bool rightSide = i >= 8;
+                int index = i % 8;
+                float x = (rightSide ? 1f : -1f) * (13f + index * 3.9f);
+                float z = 32f + (index % 4) * 6.4f;
+                float width = 7f + (index % 3) * 2.2f;
+                float height = 5f + Mathf.PerlinNoise(index * .53f, rightSide ? .91f : .19f) * 11f;
+                float depth = 8f + (index % 4) * 1.6f;
+                BuildLowPolyMesa("VESPER BELT // BASALT MESA", new Vector3(x, -.55f, z),
+                    new Vector3(width, height, depth), 120 + i, (i % 3 == 0) ? matBlue : matBasalt);
+
+                if (index % 2 == 0)
+                {
+                    Vector3 crystalBase = new Vector3(x + (rightSide ? -2.3f : 2.3f), -.55f + height * .58f, z - 1.2f);
+                    BuildCrystalCluster(crystalBase, 210 + i);
+                }
             }
+
             var planet = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-            planet.name = "VESPER // RINGED GAS GIANT";
-            planet.transform.position = new Vector3(-23, 29, 72);
-            planet.transform.localScale = new Vector3(29, 29, 5);
-            planet.GetComponent<Renderer>().sharedMaterial = matBlue;
+            planet.name = "VESPER // THE AMBER VEIL GAS GIANT";
+            planet.transform.position = new Vector3(0f, 8.2f, 45f);
+            planet.transform.localScale = new Vector3(18f, 14f, 7f);
+            planet.transform.rotation = Quaternion.Euler(8f, 0f, -7f);
+            planet.GetComponent<Renderer>().sharedMaterial = matPlanet;
             Object.DestroyImmediate(planet.GetComponent<Collider>());
+
             var ring = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
-            ring.name = "VESPER // PLANETARY RING";
-            ring.transform.position = planet.transform.position + Vector3.forward * 2.8f;
-            ring.transform.localScale = new Vector3(21, .035f, 21);
-            ring.transform.rotation = Quaternion.Euler(18, 0, 18);
-            ring.GetComponent<Renderer>().sharedMaterial = matOrange;
+            ring.name = "VESPER // ICE PARTICLE RING";
+            ring.transform.position = new Vector3(0f, 8.2f, 49.6f);
+            ring.transform.localScale = new Vector3(18.2f, .045f, 18.2f);
+            ring.transform.rotation = Quaternion.Euler(68f, 0f, 13f);
+            ring.GetComponent<Renderer>().sharedMaterial = matIce;
             Object.DestroyImmediate(ring.GetComponent<Collider>());
+
+            var moon = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            moon.name = "VESPER // FROST MOON NARA";
+            moon.transform.position = new Vector3(8.2f, 10.1f, 58f);
+            moon.transform.localScale = new Vector3(4.3f, 4.3f, 2.8f);
+            moon.GetComponent<Renderer>().sharedMaterial = matIce;
+            Object.DestroyImmediate(moon.GetComponent<Collider>());
+
+            SpawnImportedModel("satelliteDish_large", new Vector3(-11f, 3f, 42f), Quaternion.Euler(0f, 30f, 0f), 1f, false);
+            SpawnImportedModel("satelliteDish_large", new Vector3(11f, 3f, 46f), Quaternion.Euler(0f, -35f, 0f), 1f, false);
+            SpawnImportedModel("hangar_smallA", new Vector3(-20f, 3f, 55f), Quaternion.Euler(0f, 150f, 0f), 1f, false);
+            SpawnImportedModel("hangar_smallB", new Vector3(20f, 3f, 58f), Quaternion.Euler(0f, 205f, 0f), 1f, false);
+
             for (int i = 0; i < 24; i++)
             {
                 float x = -38 + (i * 13 % 76);
@@ -480,8 +499,268 @@ Left mouse: operate washer",
                 Object.DestroyImmediate(beacon.GetComponent<Collider>());
             }
         }
+
+        static void BuildVesperLandingYard()
+        {
+            // The bay is a real doorway onto a small service compound, not a painted vista.
+            // This sloped apron joins the hangar floor to the lower basalt plateau.
+            var apron = Cube("VESPER OUTPOST // RAMPED ARRIVAL CAUSEWAY",
+                new Vector3(0f,-.29f,27.4f), new Vector3(10.5f,.30f,16.2f), matFloor);
+            apron.transform.rotation = Quaternion.Euler(2f,0f,0f);
+            for (int x = -4; x <= 4; x += 8)
+            {
+                var edge = Cube("VESPER OUTPOST // CAUSEWAY GUIDE LIGHT",
+                    new Vector3(x,-.13f,27.4f), new Vector3(.09f,.035f,15.8f), matGlow);
+                edge.transform.rotation = Quaternion.Euler(2f,0f,0f);
+            }
+
+            // CC0 Kenney modular rooms and corridors are recolored with UFO WASH's
+            // graphite, Vesper teal and amber hazard palette before they enter the scene.
+            SpawnModularKitModel("gate-door-window", new Vector3(0f,.10f,20.2f),
+                Quaternion.identity, 13.5f);
+            SpawnModularKitModel("corridor-wide", new Vector3(0f,-.18f,27.5f),
+                Quaternion.identity, 10.5f);
+            SpawnModularKitModel("room-wide", new Vector3(-14.8f,-.54f,39.5f),
+                Quaternion.Euler(0f,18f,0f), 11f);
+            SpawnModularKitModel("room-large-variation", new Vector3(14.7f,-.54f,41f),
+                Quaternion.Euler(0f,-14f,0f), 11.5f);
+            SpawnModularKitModel("room-small-variation", new Vector3(-22f,-.54f,48f),
+                Quaternion.Euler(0f,28f,0f), 7.5f);
+            SpawnModularKitModel("corridor-junction", new Vector3(0f,-.54f,39.5f),
+                Quaternion.Euler(0f,90f,0f), 8.2f);
+
+            // A named utility spine and landing marks give the outside space scale and use.
+            Cube("VESPER OUTPOST // WATER AND POWER SPINE", new Vector3(-5.2f,.2f,38f),
+                new Vector3(.36f,.38f,19f), matMetal);
+            for (int i = 0; i < 7; i++)
+            {
+                float z = 22f + i * 3.1f;
+                Cylinder("VESPER OUTPOST // CAUSEWAY BEACON", new Vector3(5.6f,.6f,z),
+                    new Vector3(.2f,.8f,.2f), i % 2 == 0 ? matGlow : matOrange);
+                Sphere("VESPER OUTPOST // BEACON LENS", new Vector3(5.6f,1.1f,z), .22f,
+                    i % 2 == 0 ? matGlow : matOrange);
+            }
+            Sign("BAY 01 // CUSTOMER DOCK", new Vector3(0f,5.2f,20.1f), .55f, matCyan);
+            Sign("VESPER BELT // INDEPENDENT SERVICE YARD", new Vector3(0f,4.2f,20.1f), .24f, matWhite);
+
+            SpawnImportedModel("craft_miner", new Vector3(-24f,.2f,38f),
+                Quaternion.Euler(0f,168f,0f), 1f, false);
+            SpawnImportedModel("rover", new Vector3(21f,-.3f,45f),
+                Quaternion.Euler(0f,-22f,0f), 1f, false);
+
+            BuildSectorExpansionGate("crater-ridge", "CRATER RIDGE", new Vector3(0f,2.5f,63f),
+                2500, 2.6f, new Vector3(0f,-.54f,76f), "room-large");
+            BuildSectorExpansionGate("ion-flats", "ION FLATS", new Vector3(43f,2.5f,34f),
+                9000, 3.5f, new Vector3(50f,-.54f,40f), "room-wide");
+            BuildSectorExpansionGate("glasswake-reach", "GLASSWAKE REACH", new Vector3(-43f,2.5f,34f),
+                25000, 4.2f, new Vector3(-50f,-.54f,40f), "room-large-variation");
+        }
+
+        static void BuildSectorExpansionGate(string key, string sectorName, Vector3 gateCenter,
+            int cost, float reputation, Vector3 contentPosition, string roomAsset)
+        {
+            string title = sectorName.ToUpperInvariant();
+            Cube("SECTOR GATE // " + title + " // LEFT PYLON",
+                gateCenter + new Vector3(-5.2f,0f,0f), new Vector3(.7f,5.6f,.8f), matMetal);
+            Cube("SECTOR GATE // " + title + " // RIGHT PYLON",
+                gateCenter + new Vector3(5.2f,0f,0f), new Vector3(.7f,5.6f,.8f), matMetal);
+            Cube("SECTOR GATE // " + title + " // CROWN",
+                gateCenter + new Vector3(0f,2.75f,0f), new Vector3(11f,.75f,.9f), matDark);
+            Cube("SECTOR GATE // " + title + " // STATUS STRIP",
+                gateCenter + new Vector3(0f,2.25f,-.48f), new Vector3(8.8f,.12f,.07f), matGlow);
+            Sign(title + " // LAND CLAIM", gateCenter + new Vector3(0f,3.8f,-.52f), .42f, matWhite);
+            Sign(cost.ToString("N0") + " GC  //  " + reputation.ToString("0.0") + " REP",
+                gateCenter + new Vector3(0f,-3.65f,-.52f), .26f, matOrange);
+
+            var barrier = Cube("SECTOR GATE // " + title + " // CLAIM TO OPEN",
+                gateCenter, new Vector3(9.4f,4.8f,.22f), matGlass);
+            var sectorContent = new GameObject("SECTOR CONTENT // " + title + " // CLAIMED LAND");
+            var room = SpawnModularKitModel(roomAsset, contentPosition, Quaternion.identity, 11f);
+            if (room != null) room.transform.SetParent(sectorContent.transform, true);
+            sectorContent.SetActive(false);
+
+            var sectorGate = barrier.AddComponent<UfoWashSectorGate>();
+            sectorGate.Configure(key, title, cost, reputation, barrier, sectorContent);
+            EditorUtility.SetDirty(sectorGate);
+        }
+
+        static GameObject SpawnModularKitModel(string assetName, Vector3 position, Quaternion rotation, float targetFootprint)
+        {
+            const string modelFolder = "Assets/UFO_WASH/Art/Imported/KenneyModularSpaceKit/Models";
+            string selectedPath = null;
+            foreach (string guid in AssetDatabase.FindAssets("t:Model", new[] { modelFolder }))
+            {
+                string path = AssetDatabase.GUIDToAssetPath(guid);
+                if (System.IO.Path.GetFileNameWithoutExtension(path).Equals(assetName,
+                    System.StringComparison.OrdinalIgnoreCase))
+                {
+                    selectedPath = path;
+                    break;
+                }
+            }
+
+            if (string.IsNullOrEmpty(selectedPath))
+            {
+                Debug.LogWarning("UFO WASH: Kenney modular piece not found: " + assetName);
+                return null;
+            }
+
+            var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(selectedPath);
+            if (prefab == null) return null;
+            var instance = (GameObject)PrefabUtility.InstantiatePrefab(prefab);
+            instance.name = "VESPER OUTPOST // MODULAR " + assetName.ToUpperInvariant();
+            instance.transform.rotation = rotation;
+
+            var renderers = instance.GetComponentsInChildren<Renderer>(true);
+            if (renderers.Length == 0)
+            {
+                instance.transform.SetPositionAndRotation(position, rotation);
+                return instance;
+            }
+
+            Bounds bounds = renderers[0].bounds;
+            for (int i = 1; i < renderers.Length; i++) bounds.Encapsulate(renderers[i].bounds);
+            float footprint = Mathf.Max(bounds.size.x, bounds.size.z);
+            float fitScale = footprint > .001f ? targetFootprint / footprint : 1f;
+            instance.transform.localScale = Vector3.one * fitScale;
+            bounds = renderers[0].bounds;
+            for (int i = 1; i < renderers.Length; i++) bounds.Encapsulate(renderers[i].bounds);
+            instance.transform.position += position - new Vector3(bounds.center.x, bounds.min.y, bounds.center.z);
+
+            foreach (var renderer in renderers)
+            {
+                int materialCount = renderer.sharedMaterials != null ? renderer.sharedMaterials.Length : 1;
+                var materials = new Material[Mathf.Max(1, materialCount)];
+                Material stationMaterial = matVesperModular != null ? matVesperModular : matMetal;
+                for (int i = 0; i < materials.Length; i++) materials[i] = stationMaterial;
+                renderer.sharedMaterials = materials;
+            }
+            return instance;
+        }
+
+        static void BuildStarfieldBackdrop()
+        {
+            var sky = new GameObject("VESPER BELT // AURORA SKYFIELD");
+            sky.transform.position = new Vector3(0f, 19f, 94f);
+            var mesh = new Mesh { name = "Vesper Skyfield Panorama Mesh" };
+            mesh.vertices = new[]
+            {
+                new Vector3(-110f, -70f, 0f), new Vector3(110f, -70f, 0f),
+                new Vector3(110f, 70f, 0f), new Vector3(-110f, 70f, 0f)
+            };
+            mesh.uv = new[] { new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(1f, 1f), new Vector2(0f, 1f) };
+            mesh.triangles = new[] { 0, 2, 1, 0, 3, 2 }; // front face points toward the player at -Z
+            mesh.RecalculateNormals();
+            sky.AddComponent<MeshFilter>().sharedMesh = mesh;
+            sky.AddComponent<MeshRenderer>().sharedMaterial = matStarfield;
+        }
+
+        static void BuildLowPolyMesa(string objectName, Vector3 center, Vector3 size, int seed, Material material)
+        {
+            const int sides = 9;
+            var random = new System.Random(seed);
+            var rings = new Vector3[3][];
+            float[] radius = { 1f, .78f, .54f };
+            float[] height = { 0f, .32f, .76f };
+            float angleOffset = (float)random.NextDouble() * Mathf.PI * 2f;
+            for (int ring = 0; ring < rings.Length; ring++)
+            {
+                rings[ring] = new Vector3[sides];
+                for (int i = 0; i < sides; i++)
+                {
+                    float angle = angleOffset + i * Mathf.PI * 2f / sides;
+                    float jitter = .82f + (float)random.NextDouble() * .36f;
+                    float vertical = height[ring] + ((float)random.NextDouble() - .5f) * (ring == 0 ? .04f : .14f);
+                    rings[ring][i] = new Vector3(
+                        Mathf.Cos(angle) * size.x * .5f * radius[ring] * jitter,
+                        size.y * vertical,
+                        Mathf.Sin(angle) * size.z * .5f * radius[ring] * jitter);
+                }
+            }
+
+            var vertices = new List<Vector3>();
+            var triangles = new List<int>();
+            for (int ring = 0; ring < rings.Length - 1; ring++)
+            {
+                for (int i = 0; i < sides; i++)
+                {
+                    int next = (i + 1) % sides;
+                    AddTriangle(vertices, triangles, rings[ring][i], rings[ring + 1][i], rings[ring][next]);
+                    AddTriangle(vertices, triangles, rings[ring][next], rings[ring + 1][i], rings[ring + 1][next]);
+                }
+            }
+            Vector3 crown = new Vector3(0f, size.y * .8f, 0f);
+            for (int i = 0; i < sides; i++)
+                AddTriangle(vertices, triangles, crown, rings[2][(i + 1) % sides], rings[2][i]);
+
+            var mesh = new Mesh { name = objectName + " Mesh" };
+            mesh.SetVertices(vertices);
+            mesh.SetTriangles(triangles, 0);
+            mesh.RecalculateNormals();
+            mesh.RecalculateBounds();
+            var mesa = new GameObject(objectName);
+            mesa.transform.position = center;
+            mesa.AddComponent<MeshFilter>().sharedMesh = mesh;
+            mesa.AddComponent<MeshRenderer>().sharedMaterial = material;
+        }
+
+        static void BuildCrystalCluster(Vector3 basePosition, int seed)
+        {
+            var random = new System.Random(seed);
+            int count = 3 + seed % 3;
+            for (int i = 0; i < count; i++)
+            {
+                float angle = (float)random.NextDouble() * Mathf.PI * 2f;
+                float radius = .2f + (float)random.NextDouble() * .95f;
+                float height = 1.1f + (float)random.NextDouble() * 2.5f;
+                float width = .25f + (float)random.NextDouble() * .38f;
+                Vector3 position = basePosition + new Vector3(Mathf.Cos(angle) * radius, height * .5f, Mathf.Sin(angle) * radius);
+                BuildCrystal("VESPER BELT // LUMEN CRYSTAL", position, width, height, seed + i * 41);
+            }
+        }
+
+        static void BuildCrystal(string objectName, Vector3 center, float width, float height, int seed)
+        {
+            const int sides = 6;
+            float angleOffset = (seed % 360) * Mathf.Deg2Rad;
+            var vertices = new List<Vector3>();
+            var triangles = new List<int>();
+            Vector3[] baseRing = new Vector3[sides];
+            Vector3[] shoulderRing = new Vector3[sides];
+            for (int i = 0; i < sides; i++)
+            {
+                float angle = angleOffset + i * Mathf.PI * 2f / sides;
+                float jagged = .86f + ((seed * (i + 3) % 17) / 100f);
+                baseRing[i] = new Vector3(Mathf.Cos(angle) * width * jagged, -height * .5f, Mathf.Sin(angle) * width * jagged);
+                shoulderRing[i] = new Vector3(Mathf.Cos(angle) * width * .65f, height * .22f, Mathf.Sin(angle) * width * .65f);
+            }
+            Vector3 tip = new Vector3(Mathf.Sin(seed) * width * .18f, height * .5f, Mathf.Cos(seed) * width * .18f);
+            for (int i = 0; i < sides; i++)
+            {
+                int next = (i + 1) % sides;
+                AddTriangle(vertices, triangles, baseRing[i], shoulderRing[i], baseRing[next]);
+                AddTriangle(vertices, triangles, baseRing[next], shoulderRing[i], shoulderRing[next]);
+                AddTriangle(vertices, triangles, shoulderRing[i], tip, shoulderRing[next]);
+            }
+            var mesh = new Mesh { name = objectName + " Mesh" };
+            mesh.SetVertices(vertices);
+            mesh.SetTriangles(triangles, 0);
+            mesh.RecalculateNormals();
+            mesh.RecalculateBounds();
+            var crystal = new GameObject(objectName);
+            crystal.transform.position = center;
+            crystal.AddComponent<MeshFilter>().sharedMesh = mesh;
+            crystal.AddComponent<MeshRenderer>().sharedMaterial = matIce;
+        }
+
+        static void AddTriangle(List<Vector3> vertices, List<int> triangles, Vector3 a, Vector3 b, Vector3 c)
+        {
+            int first = vertices.Count;
+            vertices.Add(a); vertices.Add(b); vertices.Add(c);
+            triangles.Add(first); triangles.Add(first + 1); triangles.Add(first + 2);
+        }
         static void EnsureFoldersAndMaterials() {
-            foreach(string f in new[]{"Assets/UFO_WASH/Art/Materials","Assets/UFO_WASH/Scenes"}) if(!AssetDatabase.IsValidFolder(f)) System.IO.Directory.CreateDirectory(f);
+            foreach(string f in new[]{"Assets/UFO_WASH/Art/Materials","Assets/UFO_WASH/Art/Textures","Assets/UFO_WASH/Scenes"}) if(!AssetDatabase.IsValidFolder(f)) System.IO.Directory.CreateDirectory(f);
             matFloor=MakeMat("PS_Floor",new Color(.055f,.075f,.105f),.82f);
             matWall=MakeMat("PS_Wall",new Color(.09f,.13f,.19f),.72f);
             matDark=MakeMat("PS_DarkMetal",new Color(.018f,.027f,.045f),.65f);
@@ -494,6 +773,129 @@ Left mouse: operate washer",
             matDirt=MakeMat("PS_ContaminatedHull",new Color(.26f,.16f,.085f),.92f);
             matGlow=MakeMat("PS_EmissiveCyan",new Color(.02f,.8f,1f),.3f);
             matGlow.EnableKeyword("_EMISSION"); matGlow.SetColor("_EmissionColor",new Color(.02f,1.2f,1.8f));
+            matBasalt=MakeMat("PS_VesperBasalt",new Color(.075f,.105f,.18f),.22f);
+            matIce=MakeMat("PS_VesperLumenCrystal",new Color(.18f,.68f,.82f),.34f);
+            matIce.EnableKeyword("_EMISSION"); matIce.SetColor("_EmissionColor",new Color(.035f,.22f,.34f));
+            matPlanet=MakeMat("PS_VesperPlanetSurface",Color.white,.48f);
+            matPlanet.SetTexture("_BaseMap",EnsureProceduralTexture("Assets/UFO_WASH/Art/Textures/Vesper_AmberVeil_Albedo.png",true));
+            matPlanet.EnableKeyword("_EMISSION"); matPlanet.SetColor("_EmissionColor",new Color(.08f,.07f,.10f));
+            matStarfield=MakeUnlitTextureMat("PS_VesperAuroraSkyfield",EnsureProceduralTexture("Assets/UFO_WASH/Art/Textures/Vesper_Aurora_Skyfield.png",false));
+            matVesperModular=MakeMat("PS_VesperModularStation",Color.white,.36f);
+            var modularPalette=AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/UFO_WASH/Art/Textures/Vesper_ModularSpace_Colormap.png");
+            if(modularPalette!=null)
+            {
+                if(matVesperModular.HasProperty("_BaseMap")) matVesperModular.SetTexture("_BaseMap",modularPalette);
+                else if(matVesperModular.HasProperty("_MainTex")) matVesperModular.SetTexture("_MainTex",modularPalette);
+                EditorUtility.SetDirty(matVesperModular);
+            }
+        }
+
+        static Material MakeUnlitTextureMat(string name, Texture2D texture)
+        {
+            string path="Assets/UFO_WASH/Art/Materials/"+name+".mat";
+            var material=AssetDatabase.LoadAssetAtPath<Material>(path);
+            var shader=Shader.Find("Universal Render Pipeline/Unlit");
+            if(shader==null) throw new System.InvalidOperationException("URP/Unlit shader is unavailable.");
+            if(material==null){material=new Material(shader);AssetDatabase.CreateAsset(material,path);}
+            else if(material.shader!=shader) material.shader=shader;
+            if(material.HasProperty("_BaseMap")) material.SetTexture("_BaseMap",texture);
+            if(material.HasProperty("_BaseColor")) material.SetColor("_BaseColor",Color.white);
+            material.renderQueue=(int)RenderQueue.Geometry;
+            EditorUtility.SetDirty(material);
+            return material;
+        }
+
+        static Texture2D EnsureProceduralTexture(string path, bool gasGiant)
+        {
+            var existing=AssetDatabase.LoadAssetAtPath<Texture2D>(path);
+            if(existing!=null) return existing;
+
+            const int width=1024;
+            const int height=512;
+            var texture=new Texture2D(width,height,TextureFormat.RGBA32,true,false);
+            texture.name=System.IO.Path.GetFileNameWithoutExtension(path);
+            var pixels=new Color[width*height];
+            for(int y=0;y<height;y++)
+            {
+                float v=y/(float)(height-1);
+                for(int x=0;x<width;x++)
+                {
+                    float u=x/(float)(width-1);
+                    Color color;
+                    if(gasGiant)
+                    {
+                        float turbulence=Mathf.PerlinNoise(u*5.7f+2.2f,v*8.5f+1.4f);
+                        float warp=(Mathf.PerlinNoise(u*3.1f+8f,v*4.2f+6f)-.5f)*.11f;
+                        float bands=.5f+.5f*Mathf.Sin((v+warp)*Mathf.PI*2f*13f);
+                        Color deep=new Color(.045f,.095f,.19f);
+                        Color teal=new Color(.12f,.36f,.47f);
+                        Color copper=new Color(.58f,.23f,.20f);
+                        Color sand=new Color(.87f,.55f,.34f);
+                        color=Color.Lerp(deep,teal,Mathf.SmoothStep(.12f,.78f,bands));
+                        float storm=Mathf.SmoothStep(.48f,.78f,turbulence)*Mathf.SmoothStep(.2f,.8f,1f-bands);
+                        color=Color.Lerp(color,copper,storm*.72f);
+                        color=Color.Lerp(color,sand,Mathf.SmoothStep(.82f,.98f,bands)*(.38f+turbulence*.35f));
+                        color*=.78f+turbulence*.42f;
+                    }
+                    else
+                    {
+                        Color deep=new Color(.006f,.012f,.04f);
+                        Color upper=new Color(.025f,.05f,.13f);
+                        color=Color.Lerp(deep,upper,Mathf.SmoothStep(0f,1f,v));
+                        float cloud=Mathf.PerlinNoise(u*5.2f+3.3f,v*7.4f+9.1f);
+                        float ridge=.49f+.08f*Mathf.Sin(u*15f+cloud*5f);
+                        float aurora=Mathf.Exp(-Mathf.Pow((v-ridge)/.16f,2f))*Mathf.SmoothStep(.26f,.76f,cloud);
+                        color=Color.Lerp(color,new Color(.025f,.24f,.33f),aurora*.72f);
+                        float violet=Mathf.Exp(-Mathf.Pow((v-(.72f+.05f*Mathf.Sin(u*9f)))/.09f,2f))*cloud;
+                        color=Color.Lerp(color,new Color(.25f,.065f,.22f),violet*.62f);
+                    }
+                    pixels[y*width+x]=new Color(color.r,color.g,color.b,1f);
+                }
+            }
+
+            if(!gasGiant)
+            {
+                var random=new System.Random(2189);
+                for(int star=0;star<1100;star++)
+                {
+                    int sx=random.Next(0,width);
+                    int sy=random.Next(0,height);
+                    int radius=random.NextDouble()>.94 ? 2 : 1;
+                    float strength=.45f+(float)random.NextDouble()*.55f;
+                    Color tint=random.NextDouble()>.84 ? new Color(.46f,.78f,1f) : Color.white;
+                    for(int oy=-radius;oy<=radius;oy++)
+                    for(int ox=-radius;ox<=radius;ox++)
+                    {
+                        int px=sx+ox,py=sy+oy;
+                        if(px<0||px>=width||py<0||py>=height) continue;
+                        float falloff=1f/(1f+ox*ox+oy*oy);
+                        Color starColor=tint*(strength*falloff);
+                        int pixelIndex=py*width+px;
+                        Color existingPixel=pixels[pixelIndex];
+                        pixels[pixelIndex]=new Color(Mathf.Max(existingPixel.r,starColor.r),Mathf.Max(existingPixel.g,starColor.g),Mathf.Max(existingPixel.b,starColor.b),1f);
+                    }
+                }
+            }
+
+            texture.SetPixels(pixels);
+            texture.Apply(true,false);
+            string absolute=System.IO.Path.GetFullPath(path);
+            System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(absolute));
+            System.IO.File.WriteAllBytes(absolute,texture.EncodeToPNG());
+            Object.DestroyImmediate(texture);
+            AssetDatabase.ImportAsset(path,ImportAssetOptions.ForceUpdate);
+            var importer=AssetImporter.GetAtPath(path) as TextureImporter;
+            if(importer!=null)
+            {
+                importer.textureType=TextureImporterType.Default;
+                importer.sRGBTexture=true;
+                importer.wrapMode=TextureWrapMode.Repeat;
+                importer.filterMode=FilterMode.Bilinear;
+                importer.mipmapEnabled=true;
+                importer.maxTextureSize=2048;
+                importer.SaveAndReimport();
+            }
+            return AssetDatabase.LoadAssetAtPath<Texture2D>(path);
         }
         static void SetupPostProcessing() {
             const string profilePath = "Assets/UFO_WASH/Art/Materials/UfoWash_CinematicVolume.asset";
@@ -596,7 +998,7 @@ Left mouse: operate washer",
             Part(root,n,t,p,s,m);var g=root.transform.Find(n).gameObject;var d=g.AddComponent<UfoWashDirtSurface>();d.dirt=dirt;
         }
         static void Sign(string text,Vector3 p,float size,Material m) {
-            var g=new GameObject("SIGN // "+text);g.transform.position=p;g.transform.rotation=Quaternion.identity;var tm=g.AddComponent<TextMesh>();tm.text=text;tm.fontSize=64;tm.characterSize=size/4f;tm.anchor=TextAnchor.MiddleCenter;tm.alignment=TextAlignment.Center;tm.color=m.color;tm.fontStyle=FontStyle.Bold;
+            var g=new GameObject("SIGN // "+text);g.transform.position=p;g.transform.rotation=Quaternion.identity;var tm=g.AddComponent<TextMesh>();tm.text=text;tm.fontSize=64;tm.characterSize=size/64f;tm.anchor=TextAnchor.MiddleCenter;tm.alignment=TextAlignment.Center;tm.color=m.color;tm.fontStyle=FontStyle.Bold;
         }
         static void DisplayPanel(string label,Vector3 p) {
             Cube(label+" housing",p,new Vector3(3.2f,2.1f,.3f),matDark);
@@ -618,12 +1020,13 @@ Left mouse: operate washer",
     public sealed class UfoWashSceneAutoBuilder : AssetPostprocessor
     {
         const string BuilderPath = "Assets/UFO_WASH/Editor/UfoWashPowerSliceBuilder.cs";
+        const string BuilderScenePath = "Assets/UFO_WASH/Scenes/UFO_WASH_PowerSlice.unity";
         static bool rebuildQueued;
 
         static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets,
             string[] movedAssets, string[] movedFromAssetPaths)
         {
-            if (rebuildQueued) return;
+            if (rebuildQueued || Application.isBatchMode) return;
             for (int i = 0; i < importedAssets.Length; i++)
             {
                 if (importedAssets[i] != BuilderPath) continue;
@@ -641,6 +1044,12 @@ Left mouse: operate washer",
                 EditorApplication.delayCall += RebuildAfterImport;
                 return;
             }
+            var activeScene = EditorSceneManager.GetActiveScene();
+            if (activeScene.path == BuilderScenePath && activeScene.isDirty)
+            {
+                Debug.LogWarning("UFO WASH: generated scene refresh skipped because the open scene has unsaved edits. Save or close it, then use UFO WASH > REBUILD GENERATED SCENE (MANUAL FALLBACK) when ready.");
+                return;
+            }
             try { UfoWashPowerSliceBuilder.AutoRebuildGeneratedScene(); }
             catch (System.Exception exception)
             {
@@ -650,6 +1059,11 @@ Left mouse: operate washer",
     }
 }
 #endif
+
+
+
+
+
 
 
 

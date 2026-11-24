@@ -9,7 +9,7 @@ namespace UFOWASH
         public static int Credits;
         public static bool JobComplete;
 
-        Text creditsText, clientText, shipText, contaminationText, stateText, instructionText, progressText, stageText, supplyText;
+        Text creditsText, contractLabelText, clientText, shipText, contaminationText, stateText, instructionText, progressText, stageText, supplyText, zonesText;
         Image progressFill;
         UfoWashCareerLoop career;
 
@@ -43,8 +43,8 @@ namespace UFOWASH
             scaler.referenceResolution = new Vector2(1920, 1080);
             scaler.matchWidthOrHeight = .5f;
 
-            var panel = MakeImage(canvasObject.transform, "Mission Panel", new Color(.018f,.035f,.065f,.92f),
-                new Vector2(0,1), new Vector2(0,1), new Vector2(28,-28), new Vector2(470,330));
+            var panel = MakeImage(canvasObject.transform, "Mission Panel", new Color(.018f,.035f,.065f,.94f),
+                new Vector2(0,1), new Vector2(0,1), new Vector2(28,-28), new Vector2(470,448));
             AddText(panel.transform, "Brand", "U F O   /   W A S H", 23, new Color(.24f,.88f,1f),
                 new Vector2(0,1), new Vector2(0,1), new Vector2(24,-18), new Vector2(420,34), TextAnchor.MiddleLeft);
             AddText(panel.transform, "Subbrand", "INTERGALACTIC VEHICLE CARE  //  BAY 01", 11, new Color(.48f,.66f,.78f),
@@ -52,7 +52,7 @@ namespace UFOWASH
 
             creditsText = AddText(panel.transform, "Credits", "CREDITS  //  0000", 19, new Color(1f,.72f,.28f),
                 new Vector2(0,1), new Vector2(0,1), new Vector2(24,-86), new Vector2(420,28), TextAnchor.MiddleLeft);
-            AddText(panel.transform, "ContractLabel", "ACTIVE CONTRACT", 11, new Color(.36f,.83f,.95f),
+            contractLabelText = AddText(panel.transform, "ContractLabel", "DISPATCH BOARD", 11, new Color(.36f,.83f,.95f),
                 new Vector2(0,1), new Vector2(0,1), new Vector2(24,-122), new Vector2(420,20), TextAnchor.MiddleLeft);
             clientText = AddText(panel.transform, "Client", "NO CONTRACT SELECTED", 18, Color.white,
                 new Vector2(0,1), new Vector2(0,1), new Vector2(24,-145), new Vector2(420,26), TextAnchor.MiddleLeft);
@@ -74,6 +74,11 @@ namespace UFOWASH
                 new Vector2(0,1), new Vector2(0,1), new Vector2(24,-266), new Vector2(420,20), TextAnchor.MiddleLeft);
             supplyText = AddText(panel.transform, "Supplies", "WATER 100%  //  FOAM 100%", 11, new Color(.95f,.72f,.35f),
                 new Vector2(0,1), new Vector2(0,1), new Vector2(24,-292), new Vector2(420,20), TextAnchor.MiddleLeft);
+            AddText(panel.transform, "Zone Heading", "HULL SERVICE ZONES", 11, new Color(.36f,.83f,.95f),
+                new Vector2(0,1), new Vector2(0,1), new Vector2(24,-320), new Vector2(420,18), TextAnchor.MiddleLeft);
+            zonesText = AddText(panel.transform, "Zone Checklist", "Accept a contract to inspect the hull.", 11,
+                new Color(.72f,.84f,.9f), new Vector2(0,1), new Vector2(0,1), new Vector2(24,-342),
+                new Vector2(420,96), TextAnchor.UpperLeft);
 
             stateText = AddText(canvasObject.transform, "Contract State", "CONTRACT REQUIRED", 17, new Color(.25f,.9f,1f),
                 new Vector2(.5f,0), new Vector2(.5f,0), new Vector2(0,46), new Vector2(760,30), TextAnchor.MiddleCenter);
@@ -87,8 +92,9 @@ namespace UFOWASH
         void RefreshInterface()
         {
             if (creditsText == null) return;
-            float cleanliness = 1f - UfoWashDirtSurface.TotalDirt();
-            creditsText.text = "CREDITS  //  " + Credits.ToString("0000");
+            float cleanliness = career != null && career.JobAccepted ? career.Quality : 1f - UfoWashDirtSurface.TotalDirt();
+            creditsText.text = "CREDITS  //  " + Credits.ToString("0000") +
+                (career != null ? "     REPUTATION  //  " + career.Reputation.ToString("0.0") + " ★" : string.Empty);
             progressFill.fillAmount = cleanliness;
             progressText.text = "CLEANLINESS  //  " + Mathf.RoundToInt(cleanliness * 100f) + "%";
 
@@ -101,14 +107,17 @@ namespace UFOWASH
                 return;
             }
 
-            clientText.text = career.Client;
-            shipText.text = "VESSEL // " + career.Ship + "     PAYOUT // " + career.Reward + " CR";
-            contaminationText.text = "HAZARD // " + career.ContaminationType;
+            clientText.text = career.JobAccepted ? career.Client : "NO ACTIVE CLIENT // CHECK DISPATCH";
+            contractLabelText.text = career.JobAccepted ? "ACTIVE SERVICE ORDER" : "DISPATCH BOARD // NEXT AVAILABLE JOB";
+            shipText.text = "VESSEL // " + career.Ship + (career.JobAccepted ? "     PAYOUT // " + career.Reward + " CR" : string.Empty);
+            contaminationText.text = career.JobAccepted ? "HAZARD // " + career.ContaminationType : "HAZARD // INSPECT AT CONTRACT BOARD";
             stageText.text = "SERVICE PROCESS // " + career.StageLabel;
             supplyText.text = "WATER " + Mathf.RoundToInt(career.Water) + "%  //  FOAM CHEMICAL " + Mathf.RoundToInt(career.Chemical) + "%";
+            zonesText.text = career.GetZoneChecklist();
 
             if (career.JobAccepted && career.CanSubmit)
             {
+                contractLabelText.text = "FINAL INSPECTION READY";
                 stateText.text = "INSPECTION READY // GRADE " + career.QualityGrade +
                     " // RETURN TO CONTRACT TERMINAL AND PRESS E";
                 stateText.color = new Color(1f,.78f,.32f);
@@ -120,19 +129,20 @@ namespace UFOWASH
             }
             else if (JobComplete)
             {
+                contractLabelText.text = "CERTIFIED // PAYMENT RECEIVED";
                 stateText.text = career.LastMessage + "  //  CONTRACT COMPLETE  //  NEXT JOB AT TERMINAL";
                 stateText.color = new Color(.35f,1f,.62f);
             }
             else if (!career.CanAcceptJob)
             {
+                contractLabelText.text = "CUSTOMER VESSEL IN TRANSIT";
                 stateText.text = "CUSTOMER SHIP IN TRANSIT  //  STAND BY FOR DOCKING";
                 stateText.color = new Color(.35f,.78f,1f);
             }
             else
             {
-                stateText.text = JobComplete
-                    ? "VESSEL CERTIFIED  //  NEXT CUSTOMER DOCKED  //  ACCEPT AT TERMINAL"
-                    : "NEW CONTRACT AVAILABLE  //  ACCEPT AT THE CONTRACT TERMINAL";
+                contractLabelText.text = "DISPATCH BOARD // NEXT AVAILABLE JOB";
+                stateText.text = "NEW CONTRACT AVAILABLE  //  ACCEPT AT THE CONTRACT TERMINAL";
                 stateText.color = new Color(1f,.72f,.28f);
             }
         }

@@ -15,7 +15,7 @@ namespace UFOWASH
 
         private void Start()
         {
-            sprayTool = FindFirstObjectByType<UfoWashSprayTool>();
+            sprayTool = FindAnyObjectByType<UfoWashSprayTool>();
         }
 
         public override string GetPrompt()

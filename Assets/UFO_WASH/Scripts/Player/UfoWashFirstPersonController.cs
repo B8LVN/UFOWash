@@ -11,7 +11,10 @@ namespace UFOWASH
         [SerializeField] float moveSpeed = 5.5f;
         [SerializeField] float mouseSensitivity = 0.12f;
         [SerializeField] float gravity = -20f;
-        [SerializeField] float explorationCameraDistance = 3.1f;
+        [SerializeField] float explorationCameraDistance = 4.2f;
+        [SerializeField] float explorationCameraShoulder = 1.05f;
+        [SerializeField] float explorationCameraHeight = 0.55f;
+        [SerializeField] float explorationCameraPitch = 5f;
         CharacterController controller;
         Renderer[] bodyRenderers;
         Renderer[] viewModelRenderers;
@@ -22,6 +25,8 @@ namespace UFOWASH
         bool discardMouseDelta;
 
         public bool IsCleaningView => isCleaningView;
+
+        public void SetCharacterVisible(bool visible) => SetRenderers(bodyRenderers, visible && !isCleaningView);
 
         public void SetInputSuspended(bool suspended)
         {
@@ -84,7 +89,8 @@ namespace UFOWASH
 
             Vector2 mouse = discardMouseDelta ? Vector2.zero : Mouse.current.delta.ReadValue() * mouseSensitivity;
             discardMouseDelta = false;
-            pitch = Mathf.Clamp(pitch - mouse.y, -72f, 72f);
+            float pitchLimit = isCleaningView ? 72f : 38f;
+            pitch = Mathf.Clamp(pitch - mouse.y, -pitchLimit, pitchLimit);
             cameraPivot.localRotation = Quaternion.Euler(pitch, 0f, 0f);
             transform.Rotate(Vector3.up * mouse.x);
 
@@ -98,6 +104,7 @@ namespace UFOWASH
             verticalVelocity += gravity * Time.deltaTime;
             motion.y = verticalVelocity;
             controller.Move(motion * Time.deltaTime);
+            ResolveExplorationCameraCollision();
         }
 
         bool IsActivelyAimingAtWashableShip()
@@ -106,9 +113,17 @@ namespace UFOWASH
                 Cursor.lockState != CursorLockMode.Locked || playerCamera == null) return false;
             var career = UfoWashCareerLoop.Instance;
             if (career == null || !career.JobAccepted) return false;
-            if (Physics.Raycast(playerCamera.transform.position, playerCamera.transform.forward,
-                out var hit, 14f, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore))
-                return hit.collider.GetComponentInParent<UfoWashDirtSurface>() != null;
+            var hits = Physics.RaycastAll(playerCamera.transform.position, playerCamera.transform.forward,
+                14f, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore);
+            System.Array.Sort(hits, (a, b) => a.distance.CompareTo(b.distance));
+            for (int i = 0; i < hits.Length; i++)
+            {
+                var collider = hits[i].collider;
+                if (collider == null || collider.transform == transform || collider.transform.IsChildOf(transform))
+                    continue;
+                var surface = collider.GetComponentInParent<UfoWashDirtSurface>();
+                if (surface != null && career.IsContractSurface(surface)) return true;
+            }
             return false;
         }
 
@@ -118,12 +133,41 @@ namespace UFOWASH
             if (playerCamera != null)
             {
                 Transform t = playerCamera.transform;
-                t.localPosition = cleaning ? Vector3.zero : new Vector3(0f, 0.12f, -explorationCameraDistance);
-                t.localRotation = Quaternion.identity;
+                t.localPosition = cleaning ? new Vector3(0f, 0.08f, 0.42f) :
+                    new Vector3(explorationCameraShoulder, explorationCameraHeight, -explorationCameraDistance);
+                t.localRotation = cleaning ? Quaternion.identity : Quaternion.Euler(explorationCameraPitch, 0f, 0f);
                 playerCamera.fieldOfView = cleaning ? 72f : 66f;
             }
             SetRenderers(bodyRenderers, !cleaning);
             SetRenderers(viewModelRenderers, cleaning);
+            if (!cleaning) ResolveExplorationCameraCollision();
+        }
+
+        void ResolveExplorationCameraCollision()
+        {
+            if (isCleaningView || playerCamera == null || cameraPivot == null) return;
+
+            Vector3 desiredOffset = new Vector3(explorationCameraShoulder, explorationCameraHeight, -explorationCameraDistance);
+            Vector3 worldOffset = cameraPivot.TransformVector(desiredOffset);
+            float distance = worldOffset.magnitude;
+            if (distance <= 0.01f) return;
+
+            Vector3 direction = worldOffset / distance;
+            var hits = Physics.SphereCastAll(cameraPivot.position, 0.2f, direction, distance,
+                Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore);
+            System.Array.Sort(hits, (a, b) => a.distance.CompareTo(b.distance));
+            for (int i = 0; i < hits.Length; i++)
+            {
+                Collider collider = hits[i].collider;
+                if (collider == null || collider.transform == transform || collider.transform.IsChildOf(transform))
+                    continue;
+
+                float safeDistance = Mathf.Max(0.25f, hits[i].distance - 0.12f);
+                playerCamera.transform.position = cameraPivot.position + direction * safeDistance;
+                return;
+            }
+
+            playerCamera.transform.localPosition = desiredOffset;
         }
 
         static void SetRenderers(Renderer[] renderers, bool visible)
@@ -134,6 +178,9 @@ namespace UFOWASH
         }
     }
 }
+
+
+
 
 
 

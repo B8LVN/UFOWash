@@ -13,12 +13,15 @@ namespace UFOWASH
         Vector3 approachPosition;
         float turnaroundTimer;
         DockState state;
+        UfoWashDirtSurface[] serviceSurfaces;
 
         public bool IsDocked { get; private set; }
+        public UfoWashDirtSurface[] ServiceSurfaces => serviceSurfaces;
 
         void Awake()
         {
             dockPosition = transform.position;
+            serviceSurfaces = GetComponentsInChildren<UfoWashDirtSurface>(true);
             approachPosition = dockPosition + Vector3.forward * travelDistance;
             transform.position = approachPosition;
             IsDocked = false;

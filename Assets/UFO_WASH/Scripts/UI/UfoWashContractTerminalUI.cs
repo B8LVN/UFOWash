@@ -15,7 +15,13 @@ namespace UFOWASH
         UfoWashCareerLoop career;
         UfoWashFirstPersonController playerController;
         readonly Image[] cardImages = new Image[3];
+        readonly Button[] cardButtons = new Button[3];
         readonly Text[] cardSelectionLabels = new Text[3];
+        readonly Text[] cardTitleTexts = new Text[3];
+        readonly Text[] cardClientTexts = new Text[3];
+        readonly Text[] cardBriefTexts = new Text[3];
+        readonly Text[] cardHazardTexts = new Text[3];
+        readonly Text[] cardPayoutTexts = new Text[3];
         int selectedOffer;
 
         public static bool IsOpen => instance != null && instance.canvas != null && instance.canvas.enabled;
@@ -46,7 +52,7 @@ namespace UFOWASH
         {
             career = loop;
             selectedOffer = 0;
-            playerController = FindFirstObjectByType<UfoWashFirstPersonController>();
+            playerController = FindAnyObjectByType<UfoWashFirstPersonController>();
             if (playerController != null) playerController.SetInputSuspended(true);
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
@@ -73,6 +79,7 @@ namespace UFOWASH
 
         void SelectOffer(int index)
         {
+            if (career != null && !career.GetOfferUnlocked(index)) return;
             selectedOffer = Mathf.Clamp(index, 0, 2);
             RefreshCards();
         }
@@ -86,7 +93,20 @@ namespace UFOWASH
                         ? new Color(0.06f, 0.27f, 0.34f, 0.98f)
                         : new Color(0.025f, 0.065f, 0.095f, 0.97f);
                 if (cardSelectionLabels[i] != null)
-                    cardSelectionLabels[i].text = i == selectedOffer ? "SELECTED  /  READY" : "SELECT CONTRACT";
+                {
+                    bool unlocked = career == null || career.GetOfferUnlocked(i);
+                    cardSelectionLabels[i].text = !unlocked ? "LOCKED  /  " + career.GetOfferUnlockRequirement(i) :
+                        i == selectedOffer ? "SELECTED  /  READY" : "SELECT CONTRACT";
+                    if (cardButtons[i] != null) cardButtons[i].interactable = unlocked;
+                }
+                if (career == null) continue;
+                cardTitleTexts[i].text = career.GetOfferTitle(i);
+                cardClientTexts[i].text = career.GetOfferClient(i);
+                cardBriefTexts[i].text = career.GetOfferBrief(i) + "\n\n" + career.GetOfferTrait(i) +
+                    "\nQUALITY " + Mathf.RoundToInt(career.GetOfferTipQuality(i) * 100f) + "% UNLOCKS UP TO " +
+                    career.GetOfferPotentialTip(i) + " CR TIP";
+                cardHazardTexts[i].text = career.GetOfferContamination(i);
+                cardPayoutTexts[i].text = career.GetOfferReward(i).ToString("N0") + " CR BASE";
             }
         }
 
@@ -144,24 +164,25 @@ namespace UFOWASH
             MakeText(card.transform, "Contract Number", "JOB 0" + (index + 1), 15,
                 new Color(0.28f, 0.84f, 0.93f), new Vector2(0f, 1f), new Vector2(0f, 1f),
                 new Vector2(24f, -22f), new Vector2(280f, 26f), TextAnchor.MiddleLeft);
-            MakeText(card.transform, "Contract Name", career != null ? career.GetOfferTitle(index) : "SERVICE CONTRACT", 25,
+            cardTitleTexts[index] = MakeText(card.transform, "Contract Name", career != null ? career.GetOfferTitle(index) : "SERVICE CONTRACT", 25,
                 Color.white, new Vector2(0f, 1f), new Vector2(0f, 1f),
                 new Vector2(24f, -62f), new Vector2(280f, 60f), TextAnchor.MiddleLeft);
-            MakeText(card.transform, "Customer", career != null ? career.GetOfferClient(index) : "CUSTOMER", 16,
+            cardClientTexts[index] = MakeText(card.transform, "Customer", career != null ? career.GetOfferClient(index) : "CUSTOMER", 16,
                 new Color(0.7f, 0.82f, 0.9f), new Vector2(0f, 1f), new Vector2(0f, 1f),
                 new Vector2(24f, -128f), new Vector2(280f, 30f), TextAnchor.MiddleLeft);
-            MakeText(card.transform, "Description", career != null ? career.GetOfferBrief(index) : "Inspect and service the arriving vessel.", 17,
+            cardBriefTexts[index] = MakeText(card.transform, "Description", career != null ? career.GetOfferBrief(index) : "Inspect and service the arriving vessel.", 15,
                 new Color(0.73f, 0.82f, 0.87f), new Vector2(0f, 1f), new Vector2(0f, 1f),
-                new Vector2(24f, -174f), new Vector2(280f, 110f), TextAnchor.UpperLeft);
-            MakeText(card.transform, "Contamination", career != null ? career.GetOfferContamination(index) : "CONTAMINATION", 14,
+                new Vector2(24f, -174f), new Vector2(280f, 135f), TextAnchor.UpperLeft);
+            cardHazardTexts[index] = MakeText(card.transform, "Contamination", career != null ? career.GetOfferContamination(index) : "CONTAMINATION", 14,
                 new Color(1f, 0.62f, 0.34f), new Vector2(0f, 1f), new Vector2(0f, 1f),
                 new Vector2(24f, -292f), new Vector2(280f, 32f), TextAnchor.MiddleLeft);
-            MakeText(card.transform, "Payout", career != null ? career.GetOfferReward(index).ToString("N0") + " CR" : "250 CR", 29,
+            cardPayoutTexts[index] = MakeText(card.transform, "Payout", career != null ? career.GetOfferReward(index).ToString("N0") + " CR" : "250 CR", 22,
                 new Color(1f, 0.75f, 0.34f), new Vector2(0f, 0f), new Vector2(0f, 0f),
-                new Vector2(24f, 66f), new Vector2(280f, 42f), TextAnchor.MiddleLeft);
+                new Vector2(24f, 66f), new Vector2(280f, 38f), TextAnchor.MiddleLeft);
 
             var select = MakeButton(card.transform, "SELECT CONTRACT", new Vector2(0f, 18f),
                 new Vector2(282f, 46f), new Color(0.08f, 0.2f, 0.27f), () => SelectOffer(index));
+            cardButtons[index] = select;
             cardSelectionLabels[index] = select.GetComponentInChildren<Text>();
         }
 
@@ -243,7 +264,7 @@ namespace UFOWASH
 
         static void EnsureEventSystem()
         {
-            var eventSystem = FindFirstObjectByType<EventSystem>();
+            var eventSystem = FindAnyObjectByType<EventSystem>();
             if (eventSystem == null)
                 eventSystem = new GameObject("EventSystem", typeof(EventSystem), typeof(InputSystemUIInputModule))
                     .GetComponent<EventSystem>();

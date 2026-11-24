@@ -256,12 +256,48 @@ namespace UFOWASH
             return sum / activeSurfaces.Count;
         }
 
+        public static float AverageDirt(IList<UfoWashDirtSurface> surfaces)
+        {
+            if (surfaces == null || surfaces.Count == 0) return 1f;
+            float sum = 0f;
+            int count = 0;
+            for (int i = 0; i < surfaces.Count; i++)
+            {
+                if (surfaces[i] == null) continue;
+                sum += surfaces[i].dirt;
+                count++;
+            }
+            return count == 0 ? 1f : sum / count;
+        }
+
+        public static float AverageFoam(IList<UfoWashDirtSurface> surfaces)
+        {
+            if (surfaces == null || surfaces.Count == 0) return 0f;
+            float sum = 0f;
+            int count = 0;
+            for (int i = 0; i < surfaces.Count; i++)
+            {
+                if (surfaces[i] == null) continue;
+                sum += surfaces[i].foam;
+                count++;
+            }
+            return count == 0 ? 0f : sum / count;
+        }
+
         public static void SetJobProfile(Color tint, float startingDirt)
         {
             UfoWashHUD.JobComplete = false;
-            for (int i = 0; i < activeSurfaces.Count; i++)
+            SetJobProfile(activeSurfaces, tint, startingDirt);
+        }
+
+        public static void SetJobProfile(IList<UfoWashDirtSurface> surfaces, Color tint, float startingDirt)
+        {
+            UfoWashHUD.JobComplete = false;
+            if (surfaces == null) return;
+            for (int i = 0; i < surfaces.Count; i++)
             {
-                var surface = activeSurfaces[i];
+                var surface = surfaces[i];
+                if (surface == null) continue;
                 surface.contaminationTint = tint;
                 surface.dirt = Mathf.Clamp01(startingDirt);
                 surface.foam = 0f;
@@ -273,9 +309,17 @@ namespace UFOWASH
         public static void ResetJob()
         {
             UfoWashHUD.JobComplete = false;
-            for (int i = 0; i < activeSurfaces.Count; i++)
+            ResetJob(activeSurfaces);
+        }
+
+        public static void ResetJob(IList<UfoWashDirtSurface> surfaces)
+        {
+            UfoWashHUD.JobComplete = false;
+            if (surfaces == null) return;
+            for (int i = 0; i < surfaces.Count; i++)
             {
-                var surface = activeSurfaces[i];
+                var surface = surfaces[i];
+                if (surface == null) continue;
                 surface.dirt = 1f;
                 surface.foam = 0f;
                 surface.ClearFoamPatches();

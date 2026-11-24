@@ -14,7 +14,7 @@ namespace UFOWASH
     [DefaultExecutionOrder(1000)]
     public sealed class UfoWashFrontEnd : MonoBehaviour
     {
-        static readonly Color Ink = new Color(0.025f, 0.045f, 0.075f, 0.96f);
+        static readonly Color Ink = new Color(0.025f, 0.045f, 0.075f, 0.58f);
         static readonly Color Panel = new Color(0.045f, 0.085f, 0.12f, 0.94f);
         static readonly Color Cyan = new Color(0.22f, 0.88f, 0.96f, 1f);
         static readonly Color Muted = new Color(0.66f, 0.77f, 0.82f, 1f);
@@ -44,7 +44,7 @@ namespace UFOWASH
             sprayTool = FindAnyObjectByType<UfoWashSprayTool>();
             hud = FindAnyObjectByType<UfoWashHUD>();
             customerNpc = FindAnyObjectByType<UfoWashCustomerNpc>();
-            if (playerController != null) playerController.enabled = false;
+            if (playerController != null) { playerController.enabled = false; playerController.SetCharacterVisible(false); }
             if (playerInteraction != null) playerInteraction.enabled = false;
             if (sprayTool != null) sprayTool.enabled = false;
             if (hud != null)
@@ -185,6 +185,7 @@ namespace UFOWASH
             if (playerController != null)
             {
                 playerController.enabled = true;
+                playerController.SetCharacterVisible(true);
                 playerController.SetInputSuspended(false);
             }
             Cursor.lockState = CursorLockMode.Locked;
@@ -208,7 +209,7 @@ namespace UFOWASH
             rect.anchorMin = Vector2.zero; rect.anchorMax = Vector2.one;
             rect.offsetMin = Vector2.zero; rect.offsetMax = Vector2.zero;
             var image = page.GetComponent<Image>();
-            image.color = new Color(.012f,.025f,.045f,.96f);
+            image.color = new Color(.012f,.025f,.045f,.38f);
             pageRoot = page.transform;
         }
 
@@ -265,3 +266,7 @@ namespace UFOWASH
         }
     }
 }
+
+
+
+

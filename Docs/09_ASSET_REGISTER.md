@@ -5,6 +5,7 @@ Every non-original asset added to the project must be recorded here before the m
 | Asset ID | Name / description | Type | Source URL | Creator / vendor | License / terms | Cost | Files / GUID | Intended use | Status |
 |---|---|---|---|---|---|---|---|---|---|
 | ASSET-001 | Kenney Space Kit 2.0 — spacecraft, alien, station props and isometric sprite assets | 3D FBX/DAE models and 2D PNGs | https://kenney.nl/assets/space-kit | Kenney | CC0 1.0; included `License.txt` explicitly permits personal, educational and commercial use; attribution optional | Free | `Assets/UFO_WASH/Art/Imported/KenneySpaceKit/` | Imported spacecraft and customer model, plus future environment props | Imported; selected craft/alien used by scene builder; full visual integration still in progress |
+| ASSET-002 | Kenney Modular Space Kit 1.0 — 40 modular rooms, corridors, gates and station pieces | 3D FBX models + color atlas | https://kenney.nl/assets/modular-space-kit | Kenney | CC0 1.0; included `License.txt` permits commercial use and modification; attribution optional | Free | `Assets/UFO_WASH/Art/Imported/KenneyModularSpaceKit/` | Expand Bay 01 into a compact Vesper outpost; modular exterior rooms, arrival gate and corridor | Source files and custom Vesper graphite/teal/amber palette are present; live Unity import, generated `.meta` files and in-scene appearance still pending |
 
 ## Asset approval checklist
 

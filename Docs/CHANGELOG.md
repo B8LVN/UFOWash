@@ -90,3 +90,33 @@
 - Apply safe teal/dark materials to imported alien renderer slots and lower/enlarge customer dialogue for easier reading.
 
 **QA:** Unity compilation completed without C# errors; title/briefing/tutorial flow and third-person gameplay were observed. First-person transition, NPC final materials/dialogue in scene, full cleaning job and visuals need further verification.
+
+## 2026-11-23 — Contract depth, world blueprint and full-game scope
+
+- Replaced the old Living GDD baseline with v2.1: full commercial PC/Steam scope, third-person planetary exploration, first-person only for contracted hull cleaning, four Vesper sectors, six UFO classes, facilities, utilities, staff wages/morale, customer traits, economy, progression and source-to-design truth table.
+- Bound contract quality and stage progression to the customer ship’s own cleanable zones. Each panel must meet pre-rinse, foam and final-rinse criteria; unrelated surfaces cannot progress the job.
+- Limited the close cleaning camera to an active contracted ship target and added a hull-zone service checklist to the HUD.
+- Added named client traits, quality-gated tips, reputation thresholds, reputation-gated contract cards and NPC identity updates.
+- Corrected contract card data refresh so the live board fills the selected client and job terms after opening.
+- No player build was made during this milestone. The newest C# changes remain uncompiled/unverified in Unity until a safe editor check.
+
+**QA status:** source/doc edits only; no current Unity compile or full Play Mode run. The commercial game remains in active development.
+
+## 2026-11-23 — Vesper outpost art and compact planet world
+
+- Added Kenney Modular Space Kit 1.0: 40 free modular FBX pieces. Its CC0 license is stored beside the models in the repository.
+- Authored a personalized graphite/steel, teal and amber derivative of the kit’s original color atlas; original source atlas and license are preserved.
+- Extended the generated scene source with a walkable ramped causeway, pressure-gate opening, modular arrival gate/corridor/rooms, utility spine and approach beacons. The generated scene refresh now skips a dirty active scene rather than replacing unsaved editor work.
+- Clarified the full-game world as four compact, connected 80 m districts with visible land gates, claimable 4 m plots and staged expansion costs. This is a dense business world, not a huge empty planet.
+- Added three persistent land claim gates: Crater Ridge (2,500 GC / 2.6 stars), Ion Flats (9,000 GC / 3.5 stars) and Glasswake Reach (25,000 GC / 4.2 stars). A successful purchase opens the physical gate and reveals its sector content.
+
+**QA status:** CC0 files and derivative texture are present and inspected. Scene and sector code is written; because Unity currently has a dirty scene open, the automatic scene refresh was intentionally guarded. The new scene dressing and gate behavior have not yet been generated or visually verified in Unity. No player build was made.
+
+## 2026-11-23 — Compact-world progression and Unity-reference compile check
+
+- Bumped the Living GDD to v2.2 and locked the inspiration mapping: tactile layered washing, walkable owner-led business expansion, and customer/layout/throughput management.
+- Added three physical land-claim gates with GC and reputation requirements, persistent unlocks and visible claimed-room content in the generated-scene source.
+- Added the CC0 Kenney modular station kit and original Vesper palette to the outpost scene source. The world is framed as four adjoining 80 m districts rather than an oversized empty map.
+- Bound service orders to the docked ship's zones and moved discovery to `Start` so Unity's `Awake` order cannot accidentally bind the global grime list.
+- Compiled runtime and editor C# assemblies against Unity 6.6 generated project references: zero errors; the runtime compile had zero warnings and the editor compile reported six existing deprecation warnings.
+- Did not produce a player build. Unity Editor import, generated-scene refresh, Play Mode, screenshots and in-game asset appearance remain unverified. Isolated batch-mode import was blocked during LicensingClient token validation.

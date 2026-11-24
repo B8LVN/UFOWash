@@ -287,3 +287,5 @@ A feature is not good merely because it compiles. It must:
 - Have an intentional visual/audio presentation appropriate to its stage.
 - Pass its acceptance criteria and regression checks.
 - Be documented and reproducible.
+
+> **Archived baseline:** this earlier draft is retained for project history. The current canonical design is [Docs/GDD.md](GDD.md), version 2.1. Its full-game scope, third-person planetary exploration and first-person-only cleaning rule supersede this document.
