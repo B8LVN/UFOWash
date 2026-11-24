@@ -5,6 +5,8 @@
   were runtime dependencies; ordinary play verification remains necessary.
 - Simplified the title flow so starting a shift is immediate while story/manual
   pages remain optional. Added a Tab toggle for the hull checklist.
+- Added a disclosed 5-minute, +45 GC express bonus to Quick Decontamination;
+  missing it does not reduce other rewards or reputation.
 - Updated project handoff documents and the setup helper to match the new workflow.
 - Kept the changes on the approved test branch; Unity visual/gameplay review still
   requires the owner's licensed Editor.

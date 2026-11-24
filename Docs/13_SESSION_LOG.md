@@ -7,6 +7,8 @@
   acceptance notes and the Unity package graph unchanged.
 - Made Story and How to Play optional rather than mandatory before starting a shift.
   Added a Tab shortcut to show/hide the hull checklist.
+- Added a disclosed five-minute / +45 GC express bonus to the quick contract.
+  The bonus never penalizes the base payout or other rewards.
 - Existing Kenney Space Kit and Modular Space Kit remain the free CC0 art base;
   this update did not download or falsely claim integration of additional packs.
 - The earlier Unity Editor download and import logs are not present in this checkout;

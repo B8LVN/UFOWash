@@ -8,6 +8,7 @@
 
 - Shift start now goes directly into gameplay; Story and How to Play remain optional.
 - Added a Tab toggle for the hull checklist and updated the HUD hint.
+- Added an optional five-minute, +45 GC express bonus to the quick contract; late completion has no penalty.
 - Removed optional standalone checks, Editor validators, QA-plan documents and generated audit/check output.
 - Preserved the existing authored scenes, free CC0 assets and test-branch workflow. Unity visuals and gameplay remain unverified here.
 

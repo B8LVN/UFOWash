@@ -126,7 +126,7 @@ namespace UFOWASH
                 cardClientTexts[i].text = career.GetOfferClient(i);
                 cardBriefTexts[i].text = career.GetOfferBrief(i) + "\n\n" + career.GetOfferTrait(i) +
                     "\nQUALITY " + Mathf.RoundToInt(career.GetOfferTipQuality(i) * 100f) + "% UNLOCKS UP TO " +
-                    career.GetOfferPotentialTip(i) + " CR TIP";
+                    career.GetOfferPotentialTip(i) + " CR TIP\n" + career.GetOfferRushSummary(i);
                 cardHazardTexts[i].text = career.GetOfferContamination(i);
                 cardPayoutTexts[i].text = career.GetOfferReward(i).ToString("N0") + " CR BASE";
             }

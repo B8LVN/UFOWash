@@ -12,6 +12,9 @@
   dependency and is not listed as a project dependency or used by game scripts.
 - The title now starts a shift directly; story and controls remain optional. The
   hull-zone checklist can be hidden or shown with Tab.
+- Quick Decontamination now offers a disclosed +45 GC express bonus for passing
+  inspection within five minutes. Missing it has no penalty; the other offers
+  remain untimed. This source change is not yet Unity-tested.
 - Existing Kenney Space Kit and Modular Space Kit assets are CC0 and remain the
   current free asset base. No new pack was downloaded or represented as integrated.
 - Latest source and documentation edits are on `ufo-wash/cleaning-recovery`.

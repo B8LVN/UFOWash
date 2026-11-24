@@ -29,6 +29,8 @@ namespace UFOWASH
         static readonly float[] OfferTipRates = { 0.08f, 0.16f, 0.35f };
         static readonly float[] OfferTipQuality = { 0.84f, 0.90f, 0.985f };
         static readonly float[] OfferReputationRequirements = { 1f, 2.1f, 3.8f };
+        static readonly float[] OfferRushWindows = { 300f, 0f, 0f };
+        static readonly int[] OfferRushBonuses = { 45, 0, 0 };
 
         public bool JobAccepted { get; private set; }
         public int CompletedJobs { get; private set; }
@@ -43,6 +45,7 @@ namespace UFOWASH
         UfoWashCustomerNpc customerNpc;
         UfoWashDirtSurface[] contractSurfaces = System.Array.Empty<UfoWashDirtSurface>();
         int activeOfferIndex = -1;
+        float activeJobStartedAt;
         public float Reputation { get; private set; } = 2.1f;
         public bool CanAcceptJob => !JobAccepted && contractSurfaces.Length > 0 && (customerShip == null || customerShip.IsDocked);
         public float Quality => Mathf.Clamp01(1f - UfoWashDirtSurface.AverageDirt(contractSurfaces) -
@@ -86,6 +89,14 @@ namespace UFOWASH
         public string GetOfferContamination(int index) => OfferContamination[Mathf.Clamp(index, 0, OfferContamination.Length - 1)];
         public int GetOfferReward(int index) => OfferPayouts[Mathf.Clamp(index, 0, OfferPayouts.Length - 1)];
         public string GetOfferTrait(int index) => OfferTraits[Mathf.Clamp(index, 0, OfferTraits.Length - 1)];
+        public string GetOfferRushSummary(int index)
+        {
+            int safeIndex = Mathf.Clamp(index, 0, OfferRushWindows.Length - 1);
+            if (OfferRushWindows[safeIndex] <= 0f) return "NO DEADLINE // WORK AT YOUR OWN PACE";
+            int seconds = Mathf.CeilToInt(OfferRushWindows[safeIndex]);
+            return "EXPRESS BONUS // " + (seconds / 60).ToString("00") + ":" +
+                (seconds % 60).ToString("00") + " FOR +" + OfferRushBonuses[safeIndex] + " CR // NO LATE PENALTY";
+        }
         public int GetOfferPotentialTip(int index)
         {
             int safeIndex = Mathf.Clamp(index, 0, OfferPayouts.Length - 1);
@@ -96,6 +107,23 @@ namespace UFOWASH
         public string GetOfferUnlockRequirement(int index) => "REPUTATION " + OfferReputationRequirements[Mathf.Clamp(index, 0, OfferReputationRequirements.Length - 1)].ToString("0.0") + " STARS";
         public string StageLabel => CurrentStage == UfoWashToolMode.PreRinse ? "01 / PRE-RINSE" :
             CurrentStage == UfoWashToolMode.Foam ? "02 / FOAM COVERAGE" : "03 / FINAL RINSE";
+        public bool HasExpressWindow => JobAccepted && activeOfferIndex >= 0 &&
+            OfferRushWindows[activeOfferIndex] > 0f;
+        public int RushBonus => HasExpressWindow &&
+            Time.time - activeJobStartedAt <= OfferRushWindows[activeOfferIndex]
+                ? OfferRushBonuses[activeOfferIndex] : 0;
+        public string RushStatus
+        {
+            get
+            {
+                if (!HasExpressWindow) return string.Empty;
+                if (RushBonus <= 0) return "EXPRESS WINDOW MISSED  //  NO PAYOUT PENALTY";
+                int seconds = Mathf.CeilToInt(Mathf.Max(0f,
+                    OfferRushWindows[activeOfferIndex] - (Time.time - activeJobStartedAt)));
+                return "EXPRESS BONUS  //  " + (seconds / 60).ToString("00") + ":" +
+                    (seconds % 60).ToString("00") + "  //  +" + OfferRushBonuses[activeOfferIndex] + " CR";
+            }
+        }
 
         public bool CanUseTool(UfoWashToolMode mode) => JobAccepted && mode == CurrentStage &&
             (mode == UfoWashToolMode.Foam ? Chemical > 0f : Water > 0f);
@@ -206,6 +234,7 @@ namespace UFOWASH
                 }
             activeOfferIndex = Mathf.Clamp(offerIndex, 0, OfferTitles.Length - 1);
             JobAccepted = true;
+            activeJobStartedAt = Time.time;
             CurrentStage = UfoWashToolMode.PreRinse;
             UfoWashHUD.JobComplete = false;
             UfoWashDirtSurface.SetJobProfile(contractSurfaces,
@@ -307,7 +336,8 @@ namespace UFOWASH
             int qualityBonus = Mathf.RoundToInt(basePayout * Mathf.Clamp01((Quality - 0.85f) / 0.15f) * 0.25f);
             int tip = Quality >= OfferTipQuality[activeOfferIndex]
                 ? Mathf.RoundToInt(basePayout * OfferTipRates[activeOfferIndex]) : 0;
-            int payout = basePayout + qualityBonus + tip;
+            int rushBonus = RushBonus;
+            int payout = basePayout + qualityBonus + tip + rushBonus;
             string grade = QualityGrade;
             Reputation = Mathf.Clamp(Reputation + (Quality >= 0.985f ? 0.25f : Quality >= 0.92f ? 0.16f : Quality >= 0.84f ? 0.08f : -0.15f), 1f, 5f);
 
@@ -316,14 +346,15 @@ namespace UFOWASH
             UfoWashHUD.Credits += payout;
             LastPayout = payout;
             LastReceipt = "GRADE " + grade + "  //  BASE " + basePayout + " + QUALITY " + qualityBonus +
-                " + TIP " + tip + " = " + payout + " CR\nREPUTATION " + Reputation.ToString("0.00") +
+                " + TIP " + tip + " + EXPRESS " + rushBonus + " = " + payout + " CR\nREPUTATION " + Reputation.ToString("0.00") +
                 " STARS  //  JOBS CERTIFIED " + CompletedJobs;
             if (customerNpc != null) customerNpc.OnContractCompleted(grade, tip);
             if (customerShip != null) customerShip.DepartAndReturn();
             activeOfferIndex = -1;
             UfoWashHUD.JobComplete = true;
             LastMessage = "INSPECTION PASSED // GRADE " + grade + " // BASE " + basePayout +
-                " + QUALITY BONUS " + qualityBonus + " + CUSTOMER TIP " + tip + " CR // REPUTATION " + Reputation.ToString("0.0");
+                " + QUALITY BONUS " + qualityBonus + " + CUSTOMER TIP " + tip +
+                " + EXPRESS " + rushBonus + " CR // REPUTATION " + Reputation.ToString("0.0");
             if (UfoWashProgressSave.Instance != null)
                 UfoWashProgressSave.Instance.SaveNow();
         }

@@ -114,6 +114,8 @@ Customer identity affects patience, service preference, tip rule, contamination 
 
 Opening quotes: 250 / 420 / 600 GC. Tip rules: 8% of base at 84% quality, 16% at 90%, and 35% at 98.5%. The quality bonus is separate. Inspection changes reputation by +0.08 at 84%, +0.16 at 92%, +0.25 at 98.5%, or −0.15 below 84%, clamped to 1–5. Dispatch cards disclose trait, quote, tip threshold and reputation requirement.
 
+The opening Quick Decontamination contract also offers a transparent, optional express bonus: pass inspection within five minutes for +45 GC. Missing the window only loses that bonus; it never reduces base pay, quality rewards, tips or reputation. The other opening offers have no time limit.
+
 Show gross and net separately. Receipts break out base fee, quality bonus, tip, consumables, wages, utilities and maintenance. Pricing/service packages affect demand and reputation. Lounge comfort × premium polish × fast turnaround can synergize, with a visible cap and quote breakdown.
 
 ## 3. First-shift service rules

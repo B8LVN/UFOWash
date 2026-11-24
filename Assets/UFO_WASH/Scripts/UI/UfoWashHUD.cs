@@ -9,7 +9,7 @@ namespace UFOWASH
         public static int Credits;
         public static bool JobComplete;
 
-        Text creditsText, contractLabelText, clientText, shipText, contaminationText, stateText, instructionText, progressText, stageText, supplyText, zonesText;
+        Text creditsText, contractLabelText, clientText, shipText, contaminationText, stateText, instructionText, progressText, stageText, supplyText, zonesText, rushText;
         Image progressFill;
         Image zonePanel;
         UfoWashCareerLoop career;
@@ -48,7 +48,7 @@ namespace UFOWASH
             scaler.matchWidthOrHeight = .5f;
 
             var panel = MakeImage(canvasObject.transform, "Mission Panel", new Color(.018f,.035f,.065f,.94f),
-                new Vector2(0,1), new Vector2(0,1), new Vector2(28,-28), new Vector2(470,326));
+                new Vector2(0,1), new Vector2(0,1), new Vector2(28,-28), new Vector2(470,350));
             AddText(panel.transform, "Brand", "U F O   /   W A S H", 23, new Color(.24f,.88f,1f),
                 new Vector2(0,1), new Vector2(0,1), new Vector2(24,-18), new Vector2(420,34), TextAnchor.MiddleLeft);
             AddText(panel.transform, "Subbrand", "INTERGALACTIC VEHICLE CARE  //  BAY 01", 11, new Color(.48f,.66f,.78f),
@@ -78,6 +78,8 @@ namespace UFOWASH
                 new Vector2(0,1), new Vector2(0,1), new Vector2(24,-266), new Vector2(420,20), TextAnchor.MiddleLeft);
             supplyText = AddText(panel.transform, "Supplies", "WATER 100%  //  FOAM 100%", 11, new Color(.95f,.72f,.35f),
                 new Vector2(0,1), new Vector2(0,1), new Vector2(24,-292), new Vector2(420,20), TextAnchor.MiddleLeft);
+            rushText = AddText(panel.transform, "Express Bonus", "", 11, new Color(1f,.75f,.34f),
+                new Vector2(0,1), new Vector2(0,1), new Vector2(24,-317), new Vector2(420,18), TextAnchor.MiddleLeft);
             zonePanel = MakeImage(canvasObject.transform, "Service Checklist", new Color(.018f,.035f,.065f,.90f),
                 new Vector2(1,1), new Vector2(1,1), new Vector2(-28,-28), new Vector2(430,230));
             AddText(zonePanel.transform, "Zone Heading", "HULL MAP  //  TAB TO TOGGLE", 13, new Color(.36f,.83f,.95f),
@@ -112,6 +114,7 @@ namespace UFOWASH
 
             if (career == null)
             {
+                rushText.gameObject.SetActive(false);
                 clientText.text = "NO CONTRACT MANAGER";
                 shipText.text = "VESSEL // --";
                 contaminationText.text = "CONTAMINATION // --";
@@ -120,6 +123,14 @@ namespace UFOWASH
             }
 
             clientText.text = career.JobAccepted ? career.Client : "NO ACTIVE CLIENT // CHECK DISPATCH";
+            rushText.gameObject.SetActive(career.HasExpressWindow);
+            if (career.HasExpressWindow)
+            {
+                rushText.text = career.RushStatus;
+                rushText.color = career.RushBonus > 0
+                    ? new Color(1f,.75f,.34f)
+                    : new Color(.66f,.77f,.82f);
+            }
             contractLabelText.text = career.JobAccepted ? "ACTIVE SERVICE ORDER" : "DISPATCH BOARD // NEXT AVAILABLE JOB";
             shipText.text = "VESSEL // " + career.Ship + (career.JobAccepted ? "     PAYOUT // " + career.Reward + " CR" : string.Empty);
             contaminationText.text = career.JobAccepted ? "HAZARD // " + career.ContaminationType : "HAZARD // INSPECT AT CONTRACT BOARD";
