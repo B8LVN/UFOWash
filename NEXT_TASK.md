@@ -25,7 +25,7 @@ Run Git commands inside the existing project's repository folder, not the Window
 
 The exact Linux Editor has been downloaded into ignored `generated-artifacts/unity-editor/`; its version command succeeds. After installing required Linux libraries and ICU, the isolated import exited **198**: **No valid Unity Editor license found**. Activate the exact Editor or provide an accessible licensed session; do not send credentials in chat. No further import retry is useful until licensing changes.
 
-Source now contains local dirt/foam, tool pressure audio, shared target acquisition, guarded input, a switchable fan purchase, supply limits, revised HUD and a non-destructive bay-preview generator. Fourteen engine-independent coating checks pass. Neither these checks nor the new two-contract Unity rule fixture count as authored-scene gameplay acceptance.
+Source now contains local dirt/foam, tool pressure audio, shared target acquisition, guarded input, a switchable fan purchase, supply limits, revised HUD, a versioned company ledger, a useful first attendant, a persistent starter expansion and a non-destructive bay-preview generator. Twenty engine-independent coating/geometry checks pass. Neither these checks nor the new two-contract Unity rule fixture count as authored-scene gameplay acceptance.
 
 **Normal testing path: press Unity Play → main menu → start the shift. No UFO WASH/Create command is required.** The Editor start-scene hook selects the existing main-menu scene and adds the new service access in memory for that Play session, then cleans it up on Stop. This direct-entry source change still needs licensed Play Mode verification.
 
