@@ -1526,8 +1526,9 @@ Left mouse: operate washer",
         static void DirtPart(GameObject root,string n,PrimitiveType t,Vector3 p,Vector3 s,float dirt,Material m) {
             Part(root,n,t,p,s,m);var g=root.transform.Find(n).gameObject;var d=g.AddComponent<UfoWashDirtSurface>();d.dirt=dirt;
         }
-        static void Sign(string text,Vector3 p,float size,Material m) {
+        static GameObject Sign(string text,Vector3 p,float size,Material m) {
             var g=new GameObject("SIGN // "+text);g.transform.position=p;g.transform.rotation=Quaternion.identity;var tm=g.AddComponent<TextMesh>();tm.text=text;tm.fontSize=64;tm.characterSize=size/64f;tm.anchor=TextAnchor.MiddleCenter;tm.alignment=TextAlignment.Center;tm.color=m.color;tm.fontStyle=FontStyle.Bold;
+            return g;
         }
         static void DisplayPanel(string label,Vector3 p) {
             Cube(label+" housing",p,new Vector3(3.2f,2.1f,.3f),matDark);

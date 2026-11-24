@@ -1,5 +1,7 @@
 # 2026-11-24 — Direct development and optional QA cleanup
 
+- Fixed the `Sign` helper's return type after Unity reported CS0815, and added
+  smoother ship arrival/departure motion with a docking beacon.
 - Added a temporary Play-mode art pass: textured bay surfaces, warm/cool focal
   lighting, Kenney service props, and a clearer HUD/loadout. Unity visual review
   remains pending.

@@ -1,3 +1,8 @@
+# 2026-11-24 — Arrival sequence and compile fix
+
+- Corrected `Sign` to return its generated object, fixing CS0815 at the bay recovery label.
+- Customer ships now glide, bank and light their docking beacon during arrival/departure while preserving the existing docked-state gate.
+
 # 2026-11-24 — Starter bay visual overhaul
 
 - Added procedural panel/rock surface materials and a warm/cool lighting rig during Play; existing scene materials/settings are restored on Stop.

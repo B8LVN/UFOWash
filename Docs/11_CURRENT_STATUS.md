@@ -24,6 +24,9 @@
   now have stronger framing, resource bars and a selected-tool hotbar. These
   additions are temporary during Play and do not save over the authored scene;
   their actual look still needs a Unity review.
+- Fixed the sign-builder return type that caused CS0815. Customer ships now use
+  eased arrival/departure paths with a small bank, lift and pulsing docking light;
+  docking still gates contract availability. Unity compile and timing checks remain.
 - Existing Kenney Space Kit and Modular Space Kit assets are CC0 and remain the
   current free asset base. No new pack was downloaded or represented as integrated.
 - Latest source and documentation edits are on `ufo-wash/cleaning-recovery`.

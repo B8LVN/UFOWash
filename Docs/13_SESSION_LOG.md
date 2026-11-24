@@ -17,6 +17,8 @@
   focal lighting, scaled Kenney equipment, and a framed HUD with supply meters,
   target brackets and a selected-tool hotbar. The title UI also gained stronger
   framing and button states.
+- Fixed the `Sign` helper so callers can orient generated bay labels, and added
+  an eased ship approach/exit with a small bank and live docking beacon.
 - Existing Kenney Space Kit and Modular Space Kit remain the free CC0 art base;
   this update did not download or falsely claim integration of additional packs.
 - The earlier Unity Editor download and import logs are not present in this checkout;

@@ -152,6 +152,7 @@ Quality = 1 − average contracted-zone contamination − 0.18 × average residu
 | Company ledger and washer upgrades | UfoWashProgressSave.cs, UfoWashCareerLoop.cs, UfoWashUpgradeStation.cs | Versioned JSON, backup recovery and progression restoration implemented in source; Unity round-trip and corruption cases unverified |
 | First attendant | UfoWashWashAttendant.cs, UfoWashPowerSliceBuilder.cs | Hireable for 120 GC, matching the GDD target; pre-rinses contracted zones and reports water blockage; temporary Play Mode injection and task-loop behavior unverified |
 | Bay recovery investment | UfoWashBayRecoveryStation.cs, UfoWashProgressSave.cs, UfoWashPowerSliceBuilder.cs | Two persistent tiers reduce actual water/chemical use and reveal CC0 Kenney annex modules; Unity persistence and appearance unverified |
+| Ship arrival and departure | UfoWashCustomerShip.cs | Smooth approach/exit arc, light banking and a pulsing beacon; docking still gates job acceptance; Unity timing and visuals unverified |
 | Physical building placement and utility routing | None | Designed, not implemented; sector claim currently unlocks land only |
 | Full staff AI, work orders and automation | None beyond the bounded attendant prototype | Full navigation, rosters, wages, work-order configuration and automated lines remain design/future work |
 | Ship roster, chemistry damage, Rare Residue and full multi-sector progression | Partial or absent | Future production work; only basic sector purchase persistence is implemented |
