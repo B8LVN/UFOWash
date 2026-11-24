@@ -19,6 +19,11 @@
   a further 1,400 GC raises total savings to 30% and expands the annex using
   included Kenney CC0 room models. Purchase, save/reload and rendering remain
   unverified in Unity.
+- Added a play-only art pass for textured deck/wall/basalt surfaces, warm/cool
+  focal lighting, and scaled Kenney service equipment. The title screen and HUD
+  now have stronger framing, resource bars and a selected-tool hotbar. These
+  additions are temporary during Play and do not save over the authored scene;
+  their actual look still needs a Unity review.
 - Existing Kenney Space Kit and Modular Space Kit assets are CC0 and remain the
   current free asset base. No new pack was downloaded or represented as integrated.
 - Latest source and documentation edits are on `ufo-wash/cleaning-recovery`.

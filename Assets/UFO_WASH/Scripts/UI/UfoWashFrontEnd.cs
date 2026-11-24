@@ -213,6 +213,7 @@ namespace UFOWASH
             rect.offsetMin = Vector2.zero; rect.offsetMax = Vector2.zero;
             var image = page.GetComponent<Image>();
             image.color = new Color(.012f,.025f,.045f,.38f);
+            image.raycastTarget = false;
             pageRoot = page.transform;
             PanelAt(new Vector2(0f,.994f), new Vector2(1f,1f), new Color(.22f,.83f,.93f,.84f));
             PanelAt(new Vector2(.055f,.08f), new Vector2(.057f,.92f), new Color(.22f,.83f,.93f,.70f));

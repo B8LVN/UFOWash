@@ -10,13 +10,13 @@ testing is still needed for acceptance but is not a prerequisite for source work
 
 **Task:** Improve the existing Unity game's first-shift experience, service world, and tycoon progression without replacing UFO WASH.
 
-**Status:** In progress on the owner-approved test branch. The current title flow and optional hull-map HUD update are source changes and still need owner-run Unity review.
+**Status:** In progress on the owner-approved test branch. The title/HUD and play-only bay visual pass are source changes and still need owner-run Unity review.
 
 **Owner:** Continue direct implementation on `ufo-wash/cleaning-recovery`; owner reviews playable results in Unity when available.
 
 **Dependencies:** Preserve authored scenes and existing metadata. Do not wait for Editor access to work on independent source/documentation improvements.
 
-**Next implementation:** Continue the garage/world and business-loop update, using existing CC0 Kenney assets where they fit; record new assets only after verifying their license.
+**Next implementation:** Continue with customer arrival, service-life animation and tycoon mechanics after the visual pass; use existing CC0 Kenney assets where they fit and verify licenses for anything new.
 
 **Download for testing:** the source is on GitHub branch `ufo-wash/cleaning-recovery` in `B8LVN/UFOWash`, not merged into `main`. Close Unity, preserve local edits, run `git fetch origin`, then `git switch ufo-wash/cleaning-recovery` and `git pull --ff-only`. Open Unity 6000.6.10f1 and press Play; no scene-generation command is needed.
 

@@ -1,3 +1,10 @@
+# 2026-11-24 — Starter bay visual overhaul
+
+- Added procedural panel/rock surface materials and a warm/cool lighting rig during Play; existing scene materials/settings are restored on Stop.
+- Added scaled Kenney generator, pump, relay and drum models to dress the starter bay.
+- Reframed the title screen and rebuilt the gameplay HUD with rounded panels, live supply meters, a selected-tool hotbar and targeting brackets.
+- Unity import and visual acceptance remain unverified in this workspace.
+
 # 2026-11-24 — Direct Unity Play entry
 
 - Removed the scene-generation menu step from normal testing: Play automatically opens the existing main-menu scene.

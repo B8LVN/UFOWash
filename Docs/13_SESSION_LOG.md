@@ -13,6 +13,10 @@
   savings, and small-to-large annex visuals using existing Kenney CC0 room models.
 - The builder attaches the annex to the existing bay floor; no authored scene was
   replaced. Unity purchase, persistence and visual review are still required.
+- Added a play-only visual pass with textured service-bay surfaces, warm/cool
+  focal lighting, scaled Kenney equipment, and a framed HUD with supply meters,
+  target brackets and a selected-tool hotbar. The title UI also gained stronger
+  framing and button states.
 - Existing Kenney Space Kit and Modular Space Kit remain the free CC0 art base;
   this update did not download or falsely claim integration of additional packs.
 - The earlier Unity Editor download and import logs are not present in this checkout;

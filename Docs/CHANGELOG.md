@@ -1,5 +1,8 @@
 # 2026-11-24 — Direct development and optional QA cleanup
 
+- Added a temporary Play-mode art pass: textured bay surfaces, warm/cool focal
+  lighting, Kenney service props, and a clearer HUD/loadout. Unity visual review
+  remains pending.
 - Added a two-tier, saved Bay Recovery purchase with real supply savings and
   visible Kenney CC0 annex growth; Unity behavior and visuals remain unverified.
 - Removed the optional standalone test runner, Editor validators, QA-plan/recovery

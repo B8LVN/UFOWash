@@ -138,7 +138,7 @@ Quality = 1 − average contracted-zone contamination − 0.18 × average residu
 
 ## 4. Unity implementation and scope truth
 
-**2026-11-24 recovery source update:** localized coating cells replace whole-panel tint and separate foam patches; the first purchase installs a switchable fan nozzle; tool pressure synthesis, shared targeting, supply limits and revised HUD are implemented in source. A versioned company ledger, one hireable first attendant and a persistent starter expansion are also implemented on the test branch. No licensed Unity import, Play Mode or visual pass was available in this workspace. Current acceptance and blockers: `Docs/11_CURRENT_STATUS.md`.
+**2026-11-24 source update:** localized coating cells replace whole-panel tint and separate foam patches; the first purchase installs a switchable fan nozzle; tool pressure synthesis, shared targeting, supply limits and revised HUD are implemented in source. A versioned company ledger, one hireable first attendant, persistent starter expansion, and a temporary Play-mode art pass are also implemented on the test branch. The art pass adds textured environment surfaces, focused lighting, Kenney service equipment, and a framed gameplay HUD. No licensed Unity import, Play Mode or visual review was available in this workspace. Current acceptance and blockers: `Docs/11_CURRENT_STATUS.md`.
 
 | GDD system | Unity implementation | State |
 |---|---|---|
