@@ -70,6 +70,7 @@ namespace UFOWASH
                     other.enabled = false;
                 }
             acceptanceMessage.text = "SELECT A JOB, THEN ACCEPT THE CONTRACT.";
+            acceptanceMessage.color = new Color(0.61f, 0.84f, 0.9f);
             RefreshCards();
             EventSystem.current?.SetSelectedGameObject(null);
         }
@@ -100,7 +101,7 @@ namespace UFOWASH
         {
             if (career != null && !career.GetOfferUnlocked(index)) return;
             selectedOffer = Mathf.Clamp(index, 0, 2);
-            acceptanceMessage.text = "SELECTED: " + career.GetOfferTitle(selectedOffer);
+            acceptanceMessage.text = "SELECTED: " + career.GetOfferTitle(selectedOffer) + "  //  PRESS ACCEPT SELECTED CONTRACT";
             acceptanceMessage.color = new Color(0.61f, 0.84f, 0.9f);
             RefreshCards();
         }

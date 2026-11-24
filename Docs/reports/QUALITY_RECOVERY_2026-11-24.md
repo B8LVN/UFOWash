@@ -2,6 +2,14 @@
 
 ## Status
 
+**User-reported error follow-up:** the closed upper-shell profile uses inward
+triangle winding. Production code now creates an outward-facing runtime mesh copy
+and updates its mesh collider only after the owner accepts/starts a contract.
+The contract board is expanded/reflowed and suppresses underlying gameplay overlays.
+Eighteen deterministic checks now cover the precise legacy shell profile and copy
+orientation. These results establish the geometry math only: use the authored
+Unity Game view to verify collider visibility, button operation and layout.
+
 **Direct Play update:** normal owner workflow is now **Unity Play → main menu → start the shift**, with no Create/Generate step. `Editor/UfoWashPlayModeEntry.cs` selects the existing menu scene and applies the service-access additions only in memory. Stop removes additions and restores moved props; no scene/material assets are regenerated or saved. The old separate preview command remains only as an optional developer tool. This update is source-checked, not Unity-runtime verified.
 
 **Implemented — unverified in Unity. Not accepted.** No player build is authorized or produced.
@@ -74,6 +82,11 @@ ship turnaround and a different second contract. This fixture is **not gameplay/
 12. Buy the 200 GC fan nozzle, compare the visible footprint and next-job coverage, toggle Q both ways. Confirm insufficient funds cannot purchase.
 13. Wait for departure/return. Accept the deep-clean offer and finish it without resetting or developer intervention. Verify new contamination/foam reset, supplies retained, correct reward and reputation.
 14. Capture **actual Game-view/Play Mode** screenshots: wide starter bay, exploration view, close dirty/part-clean/foamed/rinsed hull, equipment, HUD/receipt and second-contract completion. Record resolution, frame time, coating cell/draw counts and Console state. A fixture screenshot or source rendering is not acceptable evidence.
+15. Contract-board focused regression: open dispatch, select the quick contract,
+   read the selection text, click Accept. Confirm it closes, modal hides other
+   gameplay HUD/subtitles, and the upper saucer shell logs no coating error. Try a
+   locked card and confirm the failure/lock state is readable; close and confirm
+   gameplay UI returns. Repeat at 1024×576, 1024×768 and 1920×1080.
 
 ## Remaining risks / scope boundaries
 

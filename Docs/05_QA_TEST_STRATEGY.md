@@ -133,3 +133,16 @@ Run `dotnet run --project Tools/QualityChecks/QualityChecks.csproj` for determin
 Run `UFOWASH.Editor.UfoWashRecoveryChecks.RunBatch` in a disposable exact-version Unity project for the two-contract rule fixture.
 Neither replaces manual camera/input, authored-saucer visibility/access, sound, performance or screenshot acceptance.
 The complete positive/negative checklist and evidence requirements are in `reports/QUALITY_RECOVERY_2026-11-24.md`.
+
+### 12.1 Contract board and upper-saucer failure regression
+
+- Enter Play, clock in, wait for the UFO, open dispatch, select Quick Decontamination
+  and press Accept. Confirm the board closes and one contract starts.
+- Confirm the upper saucer shell produces coating cells without Console errors.
+- Select Deep Hull Clean, verify its card feedback; inspect locked VIP and accept behavior.
+- Confirm modal hides lower-order HUD/customer subtitle canvases while open, and
+  restores them on close and successful acceptance.
+- Repeat at 16:9 and a narrower aspect ratio; no clipped, overlapping or off-panel
+  copy. Verify buttons and input work.
+- Source rules include `UfoWashHullWinding.IsInward` and are exercised by the
+  .NET deterministic fixture. This does not replace Unity Play Mode acceptance.

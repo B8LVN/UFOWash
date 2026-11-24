@@ -61,6 +61,16 @@ A lesson is not “verified” until the corrective action has been tested. Keep
 - **Prevention:** Test a stationary spray against untouched neighboring cells, then compare actual gameplay before/after the purchase. Do not approve local feedback based on aggregate percentages.
 - **Verification:** 14 deterministic state checks passed; Unity integration/visual acceptance remains blocked.
 
+### L-008 — Local coating raycasts depend on consistent hull winding
+
+- **Date:** 2026-11-24
+- **Observation:** Contract acceptance failed during coating creation with `A coating requires exposed surface cells` for the upper saucer shell.
+- **Expected:** Each cleanable hull shell should expose outward-facing coating cells.
+- **Root cause:** Reconstructed the upper-shell profile and builder triangle order; its closed-mesh signed volume was negative, while the lower shell's order is outward. Confidence high for the geometry math; Unity runtime behavior is not yet verified.
+- **Fix:** At runtime, clone and reverse triangles only for inward closed meshes, update associated filter/collider references, and dispose/restore the clone on teardown; do not mutate the scene mesh asset.
+- **Regression test:** Deterministic reproduction asserts the exact upper-shell profile is inward, reversed indices are outward, and source indices remain unchanged. Also check flat open QA surfaces are not reversed.
+- **Verification status:** Geometry rule checks pass; actual Unity collider hits and visual culling require the owner's licensed Editor.
+
 
 ### L-005 — A whole-renderer foam tint is not readable foam application
 

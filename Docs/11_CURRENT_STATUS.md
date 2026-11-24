@@ -11,6 +11,15 @@ verified roles of the three existing scenes are recorded in
 art/gameplay. No scenes or Build Settings were changed. Core runtime acceptance
 remains outstanding; the owner's Project-window screenshot does not verify it.
 
+## User-reported contract board / coating errors — 2026-11-24
+
+- Screenshot showed contract acceptance failing with repeated `A coating requires exposed surface cells` for the upper saucer; board text and gameplay overlays overlapped.
+- Reconstructed the exact upper shell from the scene builder and verified its closed triangle winding has negative signed volume. Local coating relies on outward triangles.
+- Added runtime-only outward correction on a private mesh copy and associated collider. Teardown restores existing references and releases the copy. Scene asset is untouched. Logs now report each panel's failure once.
+- Resized/reflowed the contract board for responsive scaling, bounded text, added selection/failure feedback, and hid lower-order HUD/subtitle canvases behind the modal.
+- **Eighteen deterministic geometry/coating tests pass; all 26 game/editor files pass C# syntax parsing.** These do not prove Unity colliders, successful clicks or correct rendering.
+- Unity verification is still blocked by unavailable Editor licensing. Next: owner tests the new update on `ufo-wash/cleaning-recovery` and shares any new Console error or screenshot.
+
 ## Active quality recovery — latest source state
 
 **Status: Implemented — unverified in Unity; acceptance remains Blocked.**

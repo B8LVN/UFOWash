@@ -1,3 +1,19 @@
+# 2026-11-24 — Fixed contract acceptance geometry and modal layout
+
+- Owner supplied Console/Game-view screenshots showing repeated coating setup
+  failures on the upper saucer and overlapping contract text/visible HUD.
+- Recreated the legacy upper-shell profile and triangle order. Its signed volume is
+  inward. Added a runtime-only outward mesh copy for closed inward-facing panels,
+  safely associates the collider, and restores/destroys the copy on teardown.
+- Enlarged/responsive contract modal, tightened bounded text, added acceptance
+  status, and hides lower-order gameplay canvases/subtitles until the modal closes.
+- **Executed:** 18 deterministic production state/geometry checks passed; 26
+  game/editor files parsed as C# 9. `git diff --check` passed.
+- **Unverified:** Unity compiler/import, accepted-contract Play Mode behavior,
+  collider hit tests, clicking, responsive layout and actual screenshot. Editor
+  licensing remains a blocker; user can test the update from the dev branch.
+- Next: user pull dev branch, retry acceptance, return Console/Game-view evidence.
+
 # 2026-11-24 — Garage-to-spaceport design expansion
 
 - Owner requested brainstorming for a major UI/UX, 3D-model and world overhaul:
