@@ -108,7 +108,7 @@ namespace UFOWASH
         public int GetOfferPotentialTip(int index)
         {
             int safeIndex = Mathf.Clamp(index, 0, Economy.OpeningQuotes.Length - 1);
-            return Mathf.RoundToInt(Economy.OpeningQuotes[safeIndex] * Economy.TipRateForQuality(Economy.GetOfferTipQuality(safeIndex)));
+            return Mathf.RoundToInt(Economy.OpeningQuotes[safeIndex] * Economy.TipRateForQuality(GetOfferTipQuality(safeIndex)));
         }
         public float GetOfferTipQuality(int index)
         {
