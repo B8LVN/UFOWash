@@ -1,35 +1,34 @@
 # Next Production Milestone
 
-**New design direction:** See `Docs/GARAGE_TO_SPACEPORT_DIRECTION.md` for the
-owner-requested small-planet garage start, UI/3D overhaul, visible growth and
-proposed safe scene cleanup. The document is a proposal, not a completed overhaul;
-current cleaning/runtime acceptance remains the immediate implementation gate.
+**2.0 direction:** Continue the small-planet garage-to-spaceport plan in
+`Docs/GARAGE_TO_SPACEPORT_DIRECTION.md`. Direct development is in progress; Unity
+testing is still needed for acceptance but is not a prerequisite for source work.
 
 **Owner's branch rule:** One local Unity project/repository, two branches—not two project folders. `main` is user-facing. Develop and test on `ufo-wash/cleaning-recovery`; merge changes into `main` only after the owner explicitly says OK.
 
-## Active handoff — cleaning and first-contract verification
+## Active handoff — UFO WASH 2.0 direct development
 
-**Task:** Finish the integrated quality-recovery milestone in the existing Unity game.
+**Task:** Improve the existing Unity game's first-shift experience, service world, and tycoon progression without replacing UFO WASH.
 
-**Status:** Source implemented; Unity runtime/visual acceptance **Blocked** pending a working licensed Editor session.
+**Status:** In progress on the owner-approved test branch. The current title flow and optional hull-map HUD update are source changes and still need owner-run Unity review.
 
-**Owner:** Developer with Unity 6000.6.10f1 Editor access; product owner reviews gameplay evidence.
+**Owner:** Continue direct implementation on `ufo-wash/cleaning-recovery`; owner reviews playable results in Unity when available.
 
-**Dependencies:** successful Editor licensing/import; preserved authored scene; actual Play Mode and screenshots.
+**Dependencies:** Preserve authored scenes and existing metadata. Do not wait for Editor access to work on independent source/documentation improvements.
 
-**Next single action:** Establish the working Editor session and run the complete acceptance sequence in `Docs/reports/QUALITY_RECOVERY_2026-11-24.md`. Fix any discovered defects before declaring this milestone complete.
+**Next implementation:** Continue the garage/world and business-loop update, using existing CC0 Kenney assets where they fit; record new assets only after verifying their license.
 
 **Download for testing:** the source is on GitHub branch `ufo-wash/cleaning-recovery` in `B8LVN/UFOWash`, not merged into `main`. Close Unity, preserve local edits, run `git fetch origin`, then `git switch ufo-wash/cleaning-recovery` and `git pull --ff-only`. Open Unity 6000.6.10f1 and press Play; no scene-generation command is needed.
 
 Run Git commands inside the existing project's repository folder, not the Windows home folder. Close Unity and preserve uncommitted work before switching branches. Do not clone another project or add a second Unity Hub entry. If `git status` fails inside the actual project root, investigate whether that existing folder contains Git metadata before giving further commands.
 
-The exact Linux Editor has been downloaded into ignored `generated-artifacts/unity-editor/`; its version command succeeds. After installing required Linux libraries and ICU, the isolated import exited **198**: **No valid Unity Editor license found**. Activate the exact Editor or provide an accessible licensed session; do not send credentials in chat. No further import retry is useful until licensing changes.
+An earlier session recorded a Linux Editor download and version check, followed by an import exit **198**: **No valid Unity Editor license found**. Those editor files and logs are not present in this checkout now; `generated-artifacts/` is empty. No licensed Unity Editor session is available here, so gameplay cannot be verified in this workspace.
 
-Source now contains local dirt/foam, tool pressure audio, shared target acquisition, guarded input, a switchable fan purchase, supply limits, revised HUD, a versioned company ledger, a useful first attendant, a persistent starter expansion and a non-destructive bay-preview generator. Twenty engine-independent coating/geometry checks pass. Neither these checks nor the new two-contract Unity rule fixture count as authored-scene gameplay acceptance.
+Source now contains local dirt/foam, tool pressure audio, shared target acquisition, guarded input, a switchable fan purchase, supply limits, a versioned company ledger, a first attendant, persistent starter expansion, and a non-destructive bay preview. Optional test/validator tooling and its standalone reports were removed at the owner's request. The latest UI pass makes story/help optional and toggles the hull map with Tab.
 
 **Normal testing path: press Unity Play → main menu → start the shift. No UFO WASH/Create command is required.** The Editor start-scene hook selects the existing main-menu scene and adds the new service access in memory for that Play session, then cleans it up on Stop. This direct-entry source change still needs licensed Play Mode verification.
 
-Preserve `Assets/UFO_WASH/Scenes/UFO_WASH_PowerSlice.unity` and existing `.meta` files. The separate preview generator is now a developer-only optional tool, not an owner setup step. No player builds, paid assets, migrations, browser rewrite or additional feature expansion belongs to this handoff. The company ledger and first wash tech are now included on this test branch as source-only progression work; run their save, affordability, blocked-water and refill checks during the same Unity review.
+Preserve authored scenes and existing `.meta` files. The separate preview generator is an optional developer tool, not an owner setup step. No player build, paid asset or main-branch merge is authorized by this handoff. Keep building on the test branch; owner-run Unity review remains necessary before claiming gameplay acceptance.
 
 ---
 

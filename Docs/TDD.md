@@ -72,15 +72,14 @@ This is transitional prototype architecture. Before content scales, migrate cont
 
 Initial PC target: 1080p, stable 60 FPS on Ryzen 5 5600 / RTX 3060 / 16 GB RAM. This is a target, not a verified result. Use URP renderer features conservatively; avoid excessive real-time point lights and transparent particle overdraw. Profile before optimizing.
 
-## 6. QA and acceptance gates
+## 6. Play and release verification
 
-- Compile: no errors; warnings reviewed.
-- Play Mode: launch, movement, interaction, one complete contract, second contract, refill and upgrade.
-- Rendering: no magenta materials, missing textures or broken normals.
-- Physics: player cannot pass through bay walls or become trapped; tool raycast ignores player colliders.
-- Economy: all payouts and costs occur once; failed purchase leaves wallet unchanged.
-- Performance: profile a representative scene and record frame time, memory and draw calls.
-- Build: create and launch a Windows Development Build before calling the slice validated.
+- Import the project in the supported Unity version and resolve compile errors before owner review.
+- Press Play → main menu → start shift; complete two contracts, refill and make a purchase.
+- Confirm materials render, player collision is usable and the washer only affects its intended target.
+- Confirm rewards and purchases occur once and failed purchases leave the wallet unchanged.
+- Measure frame time, memory and draw calls before making performance claims.
+- Create a Windows build only when the owner asks for one.
 
 ## 7. Dependency order
 

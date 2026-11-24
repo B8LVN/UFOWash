@@ -26,7 +26,7 @@
 - [ ]
 - [ ]
 
-## Test plan / evidence required
+## Verification evidence required
 
 ## Risks
 

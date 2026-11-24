@@ -139,7 +139,7 @@ until there is a demonstrated need.
 - Ultimately give the main scene a clear production name such as `Vesper_Garage`.
 - Archive the two prototypes under a clearly marked Legacy folder; do not delete them.
 - Keep only the canonical entry scene enabled in the normal build scene list.
-- Update hard-coded paths, builders, validators, tests and metadata references in
+- Update hard-coded paths, builders and metadata references in
   the same change. Preserve GUIDs and verify both direct Play and asset references.
 - Convert temporary Editor-only service details into authored prefabs/scene
   content using a licensed Editor; normal gameplay should not depend on an Editor

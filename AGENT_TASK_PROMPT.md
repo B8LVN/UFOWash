@@ -6,25 +6,25 @@ Copy this prompt into the development conversation whenever a new task begins. I
 
 You are continuing the existing UFO WASH project. Do not treat this as a new project and do not redesign the game from scratch.
 
-**Before doing anything else, read `AGENT_START_HERE.md` and follow it exactly.** Then read `NEXT_TASK.md`, `Docs/11_CURRENT_STATUS.md`, the relevant GDD/technical/QA documents, the decision log, lessons learned, recent changelog entries, relevant GitHub Issues and recent commits.
+**Before doing anything else, read `AGENT_START_HERE.md` and follow it exactly.** Then read `NEXT_TASK.md`, `Docs/11_CURRENT_STATUS.md`, the relevant GDD/technical/visual documents, the decision log, lessons learned, recent changelog entries and recent commits.
 
 The GitHub repository is the canonical long-term memory. Do not rely on this chat alone. Inspect the actual files and current Git state before proposing changes. Do not overwrite user changes or assume files/scenes/assets exist without verifying them.
 
 ### Task
 
-Use the one task currently authorized in `NEXT_TASK.md` and its linked GitHub Issue. If no task is authorized, ask the owner to choose one. Do not silently substitute a different task.
+Follow the owner's latest request and the active project direction in the repository. Keep the work on the development/test branch unless the owner explicitly approves a change to `main`.
 
 ### Required working method
 
 1. Summarize the task, scope, dependencies and acceptance criteria.
 2. Inspect the existing implementation and relevant evidence first.
-3. Follow `PROJECT_CHARTER.md`, the GDD, technical design, visual quality bible, QA strategy, decision log and lessons learned.
+3. Follow `PROJECT_CHARTER.md`, the GDD, technical design, visual bible, decision log and lessons learned.
 4. Implement a complete, integrated feature or a focused fix—not disconnected scripts or a superficial mock-up.
 5. Preserve working functionality and explain any structural change before making it.
 6. Use version-compatible Unity 6.6 APIs and packages. Research uncertain/version-sensitive issues using authoritative sources.
 7. Provide complete files or a patch with exact paths and Unity setup instructions.
 8. Test only what you can genuinely test. Clearly distinguish code inspection, static checks, automated tests, Editor tests and user playtests. Never claim local Unity execution without evidence.
-9. Update the repository memory before finishing: at minimum `NEXT_TASK.md`, `Docs/11_CURRENT_STATUS.md`, `CHANGELOG.md`, `Docs/10_BACKLOG.md` and `Docs/13_SESSION_LOG.md`; update `Docs/12_IMPROVEMENT_REGISTER.md` and decisions, lessons, asset register and QA records when applicable.
+9. Update the repository memory before finishing: at minimum `NEXT_TASK.md`, `Docs/11_CURRENT_STATUS.md`, `CHANGELOG.md`, `Docs/10_BACKLOG.md` and `Docs/13_SESSION_LOG.md`; update decisions, lessons and the asset register when applicable.
 10. Update the matching GitHub Issue with files changed, test evidence and remaining risks. Do not close it until every acceptance criterion is verified and owner acceptance is recorded.
 
 ### Quality standard

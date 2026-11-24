@@ -24,7 +24,7 @@
 - [ ]
 - [ ]
 
-## Test plan
+## Verification notes
 
 ## Implementation notes (after technical review)
 

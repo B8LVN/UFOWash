@@ -16,7 +16,7 @@ Tasks:
 - Choose first-person controller/camera approach.
 - Prototype and compare dirt visualization approaches.
 - Establish visual target with reference board and asset plan.
-- Create first task breakdown and QA plan.
+- Define the first implementation milestones and Unity play-evidence needs.
 
 Deliverables:
 - `docs/reports/PROJECT_AUDIT_001.md`
@@ -141,7 +141,7 @@ Each system requires a feature brief, effort/risk assessment, acceptance criteri
 - Settings, accessibility and input support.
 - Steam store assets and trailer capture.
 - Legal asset/license verification.
-- Build/release pipeline and QA matrix.
+- Build/release pipeline and platform compatibility checks.
 - Pricing and market research.
 - Marketing plan and demo strategy.
 

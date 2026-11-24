@@ -8,8 +8,8 @@ namespace UFOWASH
 {
     /// <summary>
     /// Lightweight in-scene front end for the first playable chapter.
-    /// Keeps the existing service bay as the 3D title backdrop, then hands control
-    /// to the first-person game only after the player has read the briefing/tutorial.
+    /// Keeps the existing service bay as the 3D title backdrop. Story and controls
+    /// remain optional so starting a shift never requires a tutorial sequence.
     /// </summary>
     [DefaultExecutionOrder(1000)]
     public sealed class UfoWashFrontEnd : MonoBehaviour
@@ -123,7 +123,7 @@ namespace UFOWASH
             AddText(pageRoot, "Every ship has a story. Every stain has a price.", 18, White,
                 new Vector2(.08f,.43f), new Vector2(.58f,.48f), TextAnchor.MiddleLeft);
 
-            ButtonAt("START FIRST SHIFT", new Vector2(.08f,.32f), new Vector2(.29f,.385f), Cyan, ShowBriefing);
+            ButtonAt("START FIRST SHIFT", new Vector2(.08f,.32f), new Vector2(.29f,.385f), Cyan, StartGameplay);
             ButtonAt("STORY", new Vector2(.08f,.235f), new Vector2(.22f,.29f), Panel, ShowStory);
             ButtonAt("HOW TO PLAY", new Vector2(.245f,.235f), new Vector2(.39f,.29f), Panel, ShowHowTo);
 
@@ -134,7 +134,7 @@ namespace UFOWASH
                 new Vector2(.68f,.48f), new Vector2(.89f,.68f), TextAnchor.UpperLeft);
             AddText(pageRoot, "ONE SHIP AT A TIME. BUILD SOMETHING THAT LASTS.", 13, Muted,
                 new Vector2(.68f,.29f), new Vector2(.89f,.39f), TextAnchor.MiddleLeft);
-            AddText(pageRoot, "VERSION 0.1  //  EARLY ACCESS BUILD", 12, Muted,
+            AddText(pageRoot, "VESPER BELT  //  BAY 01", 12, Muted,
                 new Vector2(.08f,.06f), new Vector2(.48f,.10f), TextAnchor.MiddleLeft);
         }
 
@@ -146,18 +146,7 @@ namespace UFOWASH
                 "YEAR 2189.\n\nThe old interstellar trade lanes are booming, but the independent pilots who keep them alive are being squeezed by fuel taxes, docking fees and corporate repair monopolies.\n\nAt the edge of the Vesper Belt sits Bay 01: a half-forgotten wash station with failing equipment, unpaid bills and one contract left before the doors are sealed.\n\nYou inherited the keys. Not the money. Not the staff. Just the bay, a pressure washer and a chance to turn a dead stop into the busiest service station in the sector.\n\nYour first customer is already on approach.",
                 21, White, new Vector2(.12f,.26f), new Vector2(.72f,.72f), TextAnchor.UpperLeft);
             ButtonAt("BACK TO TITLE", new Vector2(.12f,.13f), new Vector2(.29f,.20f), Panel, ShowMainMenu);
-            ButtonAt("TAKE THE KEYS", new Vector2(.32f,.13f), new Vector2(.52f,.20f), Cyan, ShowBriefing);
-        }
-
-        void ShowBriefing()
-        {
-            NewPage();
-            Header("SHIFT 001  //  BAY 01", "KEEP THE LIGHTS ON.");
-            AddText(pageRoot,
-                "A scout ship is inbound with asteroid dust and ion residue across its hull. The pilot needs a clean vessel before the next jump.\n\nYour station is not running itself. Read the service request, take the contract, treat the hull, rinse it clean and earn your first credits. A good finish means more than a bigger payout: it is the first step toward rebuilding this place.\n\nDISPATCH: ZORP — ORION TRADERS\nVESSEL: CLASS-IV SCOUT\nJOB: FIRST-CONTACT DECONTAMINATION",
-                22, White, new Vector2(.12f,.30f), new Vector2(.72f,.70f), TextAnchor.UpperLeft);
-            ButtonAt("BACK", new Vector2(.12f,.13f), new Vector2(.25f,.20f), Panel, ShowMainMenu);
-            ButtonAt("CONTINUE TO TRAINING", new Vector2(.29f,.13f), new Vector2(.57f,.20f), Cyan, ShowHowTo);
+            ButtonAt("TAKE THE KEYS", new Vector2(.32f,.13f), new Vector2(.52f,.20f), Cyan, StartGameplay);
         }
 
         void ShowHowTo()

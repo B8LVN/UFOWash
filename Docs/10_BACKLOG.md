@@ -1,16 +1,15 @@
 # UFO WASH — Full-Game Production Backlog
 
-## Latest quality-recovery gate — 2026-11-24
+## Latest source status — 2026-11-24
 
-- **Implemented — unverified in Unity:** local area-weighted dirt/foam overlay, tool pressure audio, shared camera/spray targets, guarded input, proportional supplies, switchable fan purchase, stage-aware checklist/receipt and separate starter-bay preview source.
-- **Verified outside Unity:** 20 deterministic production coating/geometry checks and C# 9 syntax checks for 28 files. These do not move the P0 gameplay gates to verified.
-- **Blocked:** licensed Unity import, two-contract rule fixture, actual authored-scene Play Mode/screenshots and visual/audio/performance review. Exact Editor downloaded and version command succeeded; see current status for licensing retry.
-- **Next:** finish this verification gate and resolve defects. Station growth and the first attendant are now on the same test branch, but remain unverified and should be checked alongside the cleaning loop in Unity.
-- Evidence and acceptance steps: `Docs/reports/QUALITY_RECOVERY_2026-11-24.md`. Older entries below remain historical.
+- **Implemented — unverified in Unity:** local area-weighted dirt/foam overlay, tool pressure audio, shared camera/spray targets, guarded input, proportional supplies, switchable fan purchase, stage-aware checklist/receipt and separate starter-bay preview source. The title now starts directly; story/help are optional and the hull map toggles with Tab.
+- **Also implemented — unverified in Unity:** versioned company save, first hireable attendant, persisted washer level and starter land claim.
+- **Unity blocker:** this workspace has no valid Unity Editor license, so import, Play Mode, visuals, audio balance and save/reload behavior were not verified here.
+- **Next:** continue direct source development on `ufo-wash/cleaning-recovery`; ask the owner for Unity review only when a new testable milestone is ready.
 
 ## 2026-11-24 — Import handover
 
-Owner reaffirmed the Steam-game quality target and Moon Sweepers / Schedule I / Aquapark Tycoon references. Recommended first task combines current P0 stabilization with a focused P1 cleaning/control/starter-station recovery, judged by repeat jobs and meaningful reinvestment. Follow with persistent, physical tycoon progression. These are recommendations awaiting task selection, not implemented features. Unity Editor verification access must be established; none was demonstrated in this environment.
+Owner reaffirmed the Steam-game quality target and Moon Sweepers / Schedule I / Aquapark Tycoon references. The next direction is a small Vesper garage that grows through repeat jobs, visible upgrades and useful staff. Unity Editor verification remains unavailable in this workspace.
 
 **Canonical design:** Docs/GDD.md, version 2.2.
 
@@ -26,14 +25,13 @@ Owner reaffirmed the Steam-game quality target and Moon Sweepers / Schedule I / 
 | Restrict FPS handoff to actively targeted contracted hull | Unity-reference C# compile passed; Play Mode pending | Third person while walking/interacting; first person only while actively cleaning correct ship |
 | Customer tips, reputation and contract unlocks | Unity-reference C# compile passed; UI test pending | Disclosed terms; payout receipt and unlocks match quality |
 | Full first-shift loop, supplies, grade, customer and repeated dispatch | Partial | Complete two different jobs without reset/developer intervention |
-| Current Hierarchy and runtime Console | Needs fresh evidence | Screenshot of scene roots and clean runtime Console |
 
 ## P1 — Make Vesper feel like a place and cleaning feel tactile
 
 - Create a coherent Vesper basin surrounding the service yard: terrain silhouette, distinctive sky, landmarks, roads, plot boundaries, ambient life and weather.
 - Replace obvious placeholder forms with authored modular hangar architecture, signage, clamps, pumps, piping, service cranes and readable ship silhouettes.
 - Improve local grime response so spray clears visible areas rather than tinting a whole zone; add contamination-layer materials, foam/runoff, audio and impact feedback.
-- Replace the current debug-like HUD/contract screens with responsive, typographic service interfaces.
+- Continue replacing debug-like HUD/contract screens with responsive, typographic service interfaces; direct entry and the optional hull-map toggle are the first pass.
 - Add exploration landmarks, customer waiting behavior and clear transitions between world movement and close cleaning view.
 
 **Gate:** current Unity screenshots must show a visibly art-directed alien service world, not a greybox called finished.
@@ -57,7 +55,7 @@ Owner reaffirmed the Steam-game quality target and Moon Sweepers / Schedule I / 
 - Additional bays, buildings, six authored ship classes, alien customer archetypes, contamination types and specialist contracts.
 - Four playable Vesper sectors, weather hazards, land expansion and late-game prestige fleet traffic.
 - Boss office for prices, service tiers, shift plans, sector acquisition and network bottlenecks.
-- Audio, accessibility, input settings, save migration, performance and Steam-facing QA/presentation.
+- Audio, accessibility, input settings, save migration, performance and Steam-facing presentation.
 - Repeated owner-facing review of actual screenshots/gameplay; only the owner decides when the game is playable enough for a player build.
 
 A task is complete only with checked implementation and evidence. Code written, scene-generated or committed is not runtime verification.

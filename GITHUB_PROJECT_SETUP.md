@@ -24,7 +24,7 @@ Use these workflow statuses:
 Suggested fields:
 
 - Priority: P0 / P1 / P2 / P3
-- Area: Gameplay / Art / UI / Economy / Automation / Architecture / Performance / QA / Documentation
+- Area: Gameplay / Art / UI / Economy / Automation / Architecture / Performance / Documentation
 - Milestone: M0 / M1 / M2 / M3 / M4 / M5
 - Build or commit: text field, where useful
 
@@ -34,7 +34,7 @@ Create the following labels:
 
 **Type:** `type:feature`, `type:bug`, `type:tech-debt`, `type:research`, `type:art`, `type:documentation`  
 **Priority:** `priority:P0`, `priority:P1`, `priority:P2`, `priority:P3`  
-**Area:** `area:gameplay`, `area:art`, `area:ui`, `area:economy`, `area:automation`, `area:architecture`, `area:performance`, `area:qa`
+**Area:** `area:gameplay`, `area:art`, `area:ui`, `area:economy`, `area:automation`, `area:architecture`, `area:performance`
 
 ## 4. Milestones
 

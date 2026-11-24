@@ -1,14 +1,24 @@
-# 2026-11-24 — Integrated quality-recovery source
+# 2026-11-24 — Direct development and optional QA cleanup
+
+- Removed the optional standalone test runner, Editor validators, QA-plan/recovery
+  documents, unused bug-report templates and generated check/audit output. None
+  were runtime dependencies; ordinary play verification remains necessary.
+- Simplified the title flow so starting a shift is immediate while story/manual
+  pages remain optional. Added a Tab toggle for the hull checklist.
+- Updated project handoff documents and the setup helper to match the new workflow.
+- Kept the changes on the approved test branch; Unity visual/gameplay review still
+  requires the owner's licensed Editor.
+
+# 2026-11-24 — Cleaning and station-growth source update
 
 Local area-weighted dirt/foam, guarded camera/spray/input, supply-fraction limits,
 switchable fan purchase, effective power, readable service HUD/receipt and original
-prototype tool audio are implemented in source. Builder adds a separate bay preview
-and no longer replaces scenes on import. Existing scenes/metadata are preserved.
+prototype tool audio are implemented in source. The test branch also includes a
+versioned company ledger, a hireable wash tech and persistent starter expansion.
+Builder adds temporary Play-mode bay details and does not replace authored scenes.
 
-Fourteen deterministic production coating-state checks passed outside Unity.
-An exact-version Editor was downloaded; successful version output is not runtime
-acceptance. Import/licensing outcome is in current status. No player build or
-gameplay screenshot evidence was produced. See `reports/QUALITY_RECOVERY_2026-11-24.md`.
+Source-level checks passed, but no licensed Unity import, Play Mode run or gameplay
+screenshots were produced in this workspace. The owner can test the branch directly.
 
 # UFO WASH — Changelog
 
@@ -23,7 +33,7 @@ gameplay screenshot evidence was produced. See `reports/QUALITY_RECOVERY_2026-11
 - Added service stage and supply readouts to the HUD.
 - Expanded GDD, TDD, MVP and roadmap around the UFO WASH business fantasy and acceptance gates.
 
-**QA status:** source committed; Unity compile, Play Mode, visuals and Windows build still require local verification. No claim of tested behavior is made here.
+**Verification status:** source committed; Unity import, Play Mode, visuals and Windows build were not verified here.
 
 
 ## 2026-11-23 — Workflow, customer and inspection pass
@@ -37,21 +47,21 @@ gameplay screenshot evidence was produced. See `reports/QUALITY_RECOVERY_2026-11
 - Added a final inspection action at the contract terminal; the player chooses when to submit after meeting cleanliness/residue thresholds.
 - Added inspection grades and a quality-based payout bonus.
 - Added a small physical spray radius for more forgiving cleaning.
-- Added an Editor structural QA validator.
+- Added an optional Editor scene validator; it was later removed because it was not needed by gameplay.
 
-**QA status:** committed source only. Unity compilation, automatic scene refresh callback, Play Mode, visual result and build remain unverified locally.
+**Verification status:** committed source only. Unity compilation, automatic scene refresh callback, Play Mode, visual result and build remain unverified locally.
 
 
 ## 2026-11-23 — Job feedback and technical pass
 
 - Added three visibly distinct contamination profiles that tint the authored hull material and clear back to the original ship finish.
 - Kept the vertical slice honest about its single currently authored UFO class rather than advertising nonexistent ship prefabs.
-- Added an Editor validator for scene wiring, active URP, material shader compatibility, missing scripts and washable surface count.
+- The optional Editor validator for scene wiring was later removed at the owner's request; gameplay does not depend on it.
 - Replaced per-frame scene searches for cleanable surfaces with an active-surface registry.
 - Expanded the washer upgrade to increase cleaning power, spray coverage radius and working range.
 - Tuned customer approach distance to keep the ship clear of the rear bulkhead.
 
-**QA status:** committed source only; Unity compilation, callback behavior, Play Mode and Windows build still need local verification.
+**Verification status:** source only; Unity compilation, callback behavior, Play Mode and Windows build still need owner verification.
 
 
 ## 2026-11-23 — Final interaction corrections
@@ -70,9 +80,9 @@ gameplay screenshot evidence was produced. See `reports/QUALITY_RECOVERY_2026-11
 - Suspended first-person movement and world interaction while the contract board is open; Escape closes the board.
 - Added an interactive customer NPC with idle attention, a world-space speech bubble, talk interaction and reactions to contract acceptance/completion.
 - Attached the customer behaviour to the imported Kenney alien or procedural fallback.
-- Extended the structural validator to require the interactive customer.
+- The earlier structural validator was extended to cover the interactive customer, then removed as optional tooling.
 
-**QA status:** source committed to main. Static source review only; Unity compilation, Play Mode, foam visibility, UI input, NPC interaction and Windows build remain unverified. Owner playtest is the next gate.
+**Verification status:** source was committed. Unity compilation, Play Mode, foam visibility, UI input, NPC interaction and Windows build remain unverified. Owner playtest is the next gate.
 
 
 ## 2026-11-23 — Opening experience and scene organization
@@ -84,7 +94,7 @@ gameplay screenshot evidence was produced. See `reports/QUALITY_RECOVERY_2026-11
 - Clock In starts the simulation, restores the first-person controls and hides the menu.
 - Organized generated scene roots into eight named Hierarchy groups to make the project navigable.
 
-**QA status:** source committed only. Unity compile, scene regeneration, UI clicks, pause/resume, hierarchy output and Play Mode remain unverified. The environment is still a greybox/temporary art pass and is not being represented as finished.
+**Verification status:** source committed only. Unity compile, scene regeneration, UI clicks, pause/resume, hierarchy output and Play Mode remain unverified. The environment is still a greybox/temporary art pass and is not being represented as finished.
 
 
 ## 2026-11-23 — Local Unity stabilization check
@@ -93,7 +103,7 @@ gameplay screenshot evidence was produced. See `reports/QUALITY_RECOVERY_2026-11
 - Suppressed world labels, HUD and customer dialogue while the title screen is open.
 - Observed a clean title screen in Unity 6.6.10f1 Play Mode; stopped cleanly.
 
-**QA:** latest compile has no errors after its log entry. Obsolete API warnings remain; full job loop and foam rendering are unverified; hangar is still greybox.
+**Verification:** latest compile had no errors after its log entry. Obsolete API warnings remain; full job loop and foam rendering are unverified; hangar is still greybox.
 
 
 ## 2026-11-23 — Camera and NPC readability pass
@@ -101,7 +111,7 @@ gameplay screenshot evidence was produced. See `reports/QUALITY_RECOVERY_2026-11
 - Hide camera-mounted washer model in third-person and restore the spacer body; show the washer only in cleaning view.
 - Apply safe teal/dark materials to imported alien renderer slots and lower/enlarge customer dialogue for easier reading.
 
-**QA:** Unity compilation completed without C# errors; title/briefing/tutorial flow and third-person gameplay were observed. First-person transition, NPC final materials/dialogue in scene, full cleaning job and visuals need further verification.
+**Verification:** Unity compilation completed without C# errors; title/briefing/tutorial flow and third-person gameplay were observed. First-person transition, NPC final materials/dialogue in scene, full cleaning job and visuals need further verification.
 
 ## 2026-11-23 — Contract depth, world blueprint and full-game scope
 
@@ -112,7 +122,7 @@ gameplay screenshot evidence was produced. See `reports/QUALITY_RECOVERY_2026-11
 - Corrected contract card data refresh so the live board fills the selected client and job terms after opening.
 - No player build was made during this milestone. The newest C# changes remain uncompiled/unverified in Unity until a safe editor check.
 
-**QA status:** source/doc edits only; no current Unity compile or full Play Mode run. The commercial game remains in active development.
+**Verification status:** source/doc edits only; no current Unity compile or full Play Mode run. The commercial game remains in active development.
 
 ## 2026-11-23 — Vesper outpost art and compact planet world
 
@@ -122,7 +132,7 @@ gameplay screenshot evidence was produced. See `reports/QUALITY_RECOVERY_2026-11
 - Clarified the full-game world as four compact, connected 80 m districts with visible land gates, claimable 4 m plots and staged expansion costs. This is a dense business world, not a huge empty planet.
 - Added three persistent land claim gates: Crater Ridge (2,500 GC / 2.6 stars), Ion Flats (9,000 GC / 3.5 stars) and Glasswake Reach (25,000 GC / 4.2 stars). A successful purchase opens the physical gate and reveals its sector content.
 
-**QA status:** CC0 files and derivative texture are present and inspected. Scene and sector code is written; because Unity currently has a dirty scene open, the automatic scene refresh was intentionally guarded. The new scene dressing and gate behavior have not yet been generated or visually verified in Unity. No player build was made.
+**Verification status:** CC0 files and derivative texture are present and inspected. Scene and sector code is written; because Unity currently has a dirty scene open, the automatic scene refresh was intentionally guarded. The new scene dressing and gate behavior have not yet been generated or visually verified in Unity. No player build was made.
 
 ## 2026-11-23 — Compact-world progression and Unity-reference compile check
 

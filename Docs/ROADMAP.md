@@ -21,7 +21,7 @@
 - [x] Paid supply refill station
 - [x] HUD stage and supply readout
 - [x] Repair generated material shader assignment to URP/Lit
-- [ ] Unity compile and Play Mode QA
+- [ ] Unity import, compile and two-contract Play session
 - [ ] Fix camera, aiming, collision, surface coverage and usability issues from playtest
 - [ ] Confirm the ship is rendered correctly and visually credible
 - [ ] Improve cleaning feedback: spray, foam, runoff, sound and finish state
@@ -58,17 +58,17 @@
 - [ ] Specialist service lines and larger vessels
 - [ ] Financial reports, contracts and long-term reputation
 - [ ] Save/load, onboarding, accessibility and audio/visual polish
-- [ ] Performance profiling and Windows build QA
+- [ ] Performance profiling and Windows build review
 **Exit gate:** content-complete candidate with stable progression and no critical blockers.
 
 ## Phase 6 — Release preparation
 - [ ] Steam build, store materials and release checklist
 - [ ] Compatibility testing across target PC configurations
 - [ ] Optional Android feasibility review after PC validation
-**Exit gate:** release candidate passes functional, performance and presentation QA.
+**Exit gate:** release candidate passes functional, performance and presentation review.
 
 ## Working policy
-- No new system is added without a gameplay reason and acceptance test.
+- No new system is added without a gameplay reason and observable completion evidence.
 - Do not call greybox geometry finished art.
 - Do not add employee/automation complexity before the single-bay loop is enjoyable.
 - Track code committed, code compiled, Play Mode tested and build tested as separate states.

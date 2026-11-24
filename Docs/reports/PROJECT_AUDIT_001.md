@@ -33,7 +33,7 @@
 | Asset license | Included license states CC0 and permits commercial use |
 | UFO/customer models | Builder selects `craft_speederA` and `alien` when present |
 | Gameplay systems | First-person movement, spray, surface cleaning, ship arrival, contract/supply interactables, HUD and washer upgrade |
-| QA | Editor structural validator exists; it is not a gameplay test |
+| Verification | The optional Editor validator was removed; it was not a gameplay dependency |
 
 The customer ship, contract board and supply station classes are defined inside `UfoWashCareerLoop.cs`; they are not missing, despite not having separate files.
 
@@ -111,7 +111,7 @@ Hangar is largely procedural primitive geometry; no gameplay audio system was fo
 - `UfoWashCustomerNpc.cs`: idle attention, speech bubble, talk interaction and job-state reactions.
 - `UfoWashFirstPersonController.cs` / `UfoWashPlayerInteraction.cs`: suspend movement/world interaction while board is open.
 - `UfoWashPowerSliceBuilder.cs`: attaches NPC behaviour to imported alien or fallback.
-- `UfoWashProjectValidator.cs`: requires the interactive customer.
+- The optional structural validator described during this audit was later removed; gameplay does not depend on it.
 
 **Status:** source committed; Unity compile/runtime unverified.
 

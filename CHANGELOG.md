@@ -4,6 +4,13 @@
 - Service access/detail additions are applied in memory for the Play session and cleaned up on Stop, without regenerating scene or material assets.
 - Kept the separate scene generator as an optional developer tool. Licensed Unity runtime verification remains blocked.
 
+# 2026-11-24 — UI entry and optional tooling cleanup
+
+- Shift start now goes directly into gameplay; Story and How to Play remain optional.
+- Added a Tab toggle for the hull checklist and updated the HUD hint.
+- Removed optional standalone checks, Editor validators, QA-plan documents and generated audit/check output.
+- Preserved the existing authored scenes, free CC0 assets and test-branch workflow. Unity visuals and gameplay remain unverified here.
+
 # 2026-11-24 — Cleaning and first-contract recovery source
 
 - Replaced whole-panel tint and independent foam objects with a bounded local coating overlay whose area-weighted cells drive panel progress.
@@ -11,9 +18,9 @@
 - First equipment purchase now unlocks a switchable fan nozzle; cleaning power affects actual work.
 - Added original prototype tool pressure audio, readable zone/receipt/tool HUD feedback and removed accidental R-key job reset.
 - Builder changes add service-bay detail in a separate preview; asset import no longer overwrites the main scene.
-- Added 14 passing engine-independent C# coating checks and an unexecuted Unity Play Mode rule fixture for two contracts, supplies, payout, reputation and purchase.
+- The former optional source-check tool and Editor rule fixture were removed at the owner's request; neither was used by gameplay.
 - Downloaded exact Unity 6000.6.10f1 Editor; version command succeeds. Isolated import/licensing verification remains separately reported in current status. No player build or gameplay screenshots produced; no runtime or visual acceptance claimed.
-- Preserved authored scenes, existing metadata, engine and package versions. Updated production and QA handoff records.
+- Preserved authored scenes, existing metadata, engine and package versions. Updated project status and owner handoff notes.
 
 # 2026-11-24 — Imported-project orientation
 
@@ -29,7 +36,7 @@ All notable project changes should be recorded here. Use newest entries first. K
 
 - Created the initial GitHub-ready UFO WASH documentation structure.
 - Established the project charter: UFO WASH remains the game; the improvement target is gameplay depth, presentation, progression and automation.
-- Added GDD, production plan, technical design, visual/audio quality bible and QA strategy.
+- Added the initial GDD, production plan, technical design and visual/audio direction; optional test-plan documents were later removed at the owner's request.
 - Added persistent agent workflow, task prompt, current status, next task, decision log, lessons learned and asset register.
 - Added GitHub issue and pull-request templates.
 - No Unity implementation was changed by this documentation pack.

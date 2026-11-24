@@ -48,6 +48,6 @@ Employees, automation, multiple bays, construction, multiple locations, open wor
 12. No ship or generated material is magenta; all materials use supported URP shaders.
 13. A first-time tester can discover the process from the HUD and in-world prompts without developer coaching.
 
-## Validation status
+## Current play status
 
-Code is committed to GitHub in incremental changes. Unity compilation, Play Mode behavior, visual quality and Windows build are **not yet verified** by the developer environment. These remain required local QA gates, not implied successes.
+Code is committed to the development/test branch. Unity compilation, Play Mode behavior, visual quality and Windows build are **not yet verified** by this environment. The owner must test the direct Play flow in a licensed Unity Editor; source inspection is not gameplay evidence.

@@ -14,7 +14,7 @@ These files must always remain current:
 4. `docs/08_LESSONS_LEARNED.md` — mistakes, root causes and prevention rules.
 5. `CHANGELOG.md` — factual record of meaningful changes.
 
-The GDD, TDD, QA strategy and visual bible define the intended product and quality bar.
+The GDD, TDD and visual bible define the intended product and quality bar.
 
 ## 3. Mandatory start-of-task sequence
 
@@ -23,7 +23,7 @@ Every new task/session must:
 1. Read `AGENT_START_HERE.md`.
 2. Read `NEXT_TASK.md` and confirm the authorized task.
 3. Read `CURRENT_STATUS.md`.
-4. Read relevant GDD/TDD/visual/QA sections.
+4. Read relevant GDD/TDD/visual sections.
 5. Read decision log and lessons learned.
 6. Inspect recent Git commits, working tree and related files.
 7. Read linked GitHub Issues and previous reports.
@@ -41,7 +41,7 @@ Before a task is complete:
 - Add a changelog entry.
 - Record new decisions.
 - Record meaningful lessons/root causes.
-- Update bug/test/asset reports as appropriate.
+- Update the asset register when assets change.
 - Update the GitHub Issue with evidence and remaining risk.
 - Commit changes only if actually able and after checking staged files.
 

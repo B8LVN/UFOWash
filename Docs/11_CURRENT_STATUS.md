@@ -2,6 +2,22 @@
 
 **Last updated:** 2026-11-24
 
+## Direct development update — 2026-11-24
+
+- Removed the optional test runner, Editor validators, QA-plan/recovery files,
+  unused bug-report templates and generated audit/check output. The game does not
+  depend on any of them.
+- Kept ordinary Unity play instructions and concise acceptance notes; they are not
+  a separate QA system. Unity's test framework remains only as an indirect package
+  dependency and is not listed as a project dependency or used by game scripts.
+- The title now starts a shift directly; story and controls remain optional. The
+  hull-zone checklist can be hidden or shown with Tab.
+- Existing Kenney Space Kit and Modular Space Kit assets are CC0 and remain the
+  current free asset base. No new pack was downloaded or represented as integrated.
+- Latest source and documentation edits are on `ufo-wash/cleaning-recovery`.
+  Unity visuals and gameplay remain unverified because this workspace has no
+  licensed Editor session.
+
 ## Owner-confirmed contract fix, cleaning pace and visual asset sourcing
 
 - Owner confirmed that the upper-saucer contract acceptance now works in Unity.
@@ -10,9 +26,8 @@
   receives a sweep-to-the-next-zone hint. HUD progress now measures progress toward
   the current stage's all-zone gate rather than overall appearance cleanliness,
   which was misleading at around 37%.
-- **Twenty deterministic cleaning/geometry checks pass; C# 9 syntax is checked for
-  26 game/editor files.** Actual spray pace and zone progression still need a
-  Play Mode retest; no Unity visual screenshot is available in this environment.
+- Source changes are present, but actual spray pace and zone progression still need
+  a Unity Play Mode retest; no current gameplay screenshot is available here.
 - Sourced several additional no-cost, commercially usable asset libraries with
   official CC0 license pages. The most relevant are recorded as candidates in
   `Docs/14_VISUAL_OVERHAUL_ASSET_RESEARCH.md`; none have been downloaded or imported.
@@ -36,25 +51,26 @@ remains outstanding; the owner's Project-window screenshot does not verify it.
 - Follow-up diagnosis: the coating builder's visibility filter raycast every face against all overlapping ship colliders, which could incorrectly classify every subdivided upper-shell triangle as buried. Removed collider-based face rejection; coating cells now come from the panel's own non-degenerate triangles. Active spray still uses contracted-surface targeting and per-cell normal/radius checks.
 - Teardown restores existing references and releases the runtime mesh copy; the scene asset is untouched. Failures log once per panel and include mesh vertex/triangle counts if source geometry is empty.
 - Resized/reflowed the contract board for responsive scaling, bounded text, added selection/failure feedback, and hid lower-order HUD/subtitle canvases behind the modal.
-- **Eighteen deterministic geometry/coating tests pass; all 26 game/editor files pass C# syntax parsing.** The removal of occlusion filtering is not a Unity runtime test; colliders, successful clicks and rendering remain unverified.
+- Earlier deterministic source checks passed before the optional helper suite was
+  removed at the owner's request. They were not Unity runtime tests; colliders,
+  successful clicks and rendering remain unverified.
 - Unity verification is still blocked by unavailable Editor licensing. Next: owner tests the new update on `ufo-wash/cleaning-recovery` and shares any new Console error or screenshot.
 
-## Active quality recovery — latest source state
+## Current implementation — latest source state
 
 **Status: Implemented — unverified in Unity; acceptance remains Blocked.**
 
 - **Normal testing path:** press Unity **Play → main menu → start the shift**. No Create/Generate command is required. The Editor start-scene hook selects the existing menu scene and adds service access only in memory for Play, removing it on Stop. This supersedes the earlier manual-preview instructions; licensed runtime verification is still required.
-- **GitHub availability:** the cleaning-recovery baseline is already on `ufo-wash/cleaning-recovery`; this station-growth update is being added to that same test branch. `main` remains unchanged.
+- **GitHub availability:** cleaning recovery and station growth are pushed to `ufo-wash/cleaning-recovery`. `main` remains unchanged.
 - Local grime and persistent foam now share area-weighted surface cells; the old whole-renderer dirt tint and separate foam spheres were removed. Original hull materials and scene references are retained.
 - Camera and spray share contracted-panel targeting; valid stages/supplies gate active cleaning. Input focus/relock/menu handling and shoulder-camera interaction range were corrected in source.
 - Added a switchable wide fan nozzle as the first 200 GC purchase, actual cleaning-power effects, proportional last-drop supply use, stage-aware zone feedback, bounded HUD panels and a separate payout receipt.
 - Added original synthesized tool pressure audio. Starter-bay service details and upper-hull stairs/catwalk are source additions applied temporarily on Play, **not** a regenerated or visually reviewed scene. Their presence, traversal and cleanup require real Play Mode verification.
 - Import no longer replaces the main scene. The optional separate preview generator moved under Developer Tools; it is not a normal testing step. Existing scenes and existing metadata are unchanged.
-- **Source verification:** 20 deterministic coating/geometry checks and C# 9 syntax checks for 28 game/editor files passed. All 1,867 Unity asset GUIDs are valid and unique. These checks are not Unity API/shader compilation, physics or gameplay tests.
-- **Editor access:** downloaded the official Linux Unity 6000.6.10f1 Editor to ignored `generated-artifacts/unity-editor/`; `Editor/Unity -version` reports **6000.6.10f1**. Installed required GTK/GL/X11 libraries and ICU. Initial isolated import timed out because ICU was missing; after correction the licensing client connected, but Unity exited **198**, reporting **No valid Unity Editor license found**. Logs: ignored `generated-artifacts/unity-import.log` and `generated-artifacts/unity-import-with-icu.log`. No successful Unity script compilation/import occurred. The owner checkout was not opened in Unity.
+- **Source checks:** earlier deterministic coating/geometry and C# syntax checks passed before the owner requested removal of the optional test tooling. Those checks were not Unity import, shader, physics or gameplay tests.
+- **Editor access:** an earlier session recorded downloading the official Linux Unity 6000.6.10f1 Editor and an import exit **198**: **No valid Unity Editor license found**. The Editor files and logs are not present in this checkout; `generated-artifacts/` is currently empty. No successful Unity script compilation/import occurred here, and the owner checkout was not opened in Unity.
 - **Required unblock:** activate this Editor through the owner's licensed Unity workflow, or provide an accessible licensed exact-version session. Do not supply credentials in chat or bypass licensing. Retrying unchanged cannot resolve this gate.
-- **Still required:** successful Unity import/compilation, the included two-contract rule fixture, real authored-bay Play Mode with manual controls, gameplay screenshots, audio review and coating/camera performance measurements. No player build was created.
-- Detailed changes, evidence boundary and exact acceptance sequence: `Docs/reports/QUALITY_RECOVERY_2026-11-24.md`.
+- **Still required:** successful Unity import/compilation, two consecutive contracts in authored-bay Play Mode, owner review of visuals/audio and a save/reload check. No player build was created.
 - GitHub Issue update remains unavailable: no linked issue URL/number or connected issue workflow was supplied. Do not claim an issue update or close an issue.
 
 Older sections below are historical and do not supersede this verification boundary.
@@ -120,7 +136,7 @@ An earlier Unity Editor/Windows player observation showed the title screen, stor
 - Older notes mention a dirty Unity scene; this checkout does not provide current access to that Editor state. Preserve any unsaved scene before using the generated-scene menu action.
 - The new contract-card rendering, reputation progression, panel checklist, camera handoff and full payout loop have not been tested together in Play Mode.
 - Current scene generation after the latest builder changes has not been observed; the checked-in scene file does not yet contain the new outpost, sector gates or attendant.
-- New save/load, attendant and land-claim integration still need import, compilation and Play Mode verification, including backup/corruption cases. Full construction, utilities, additional staff AI, automated production, Rare Residue, audio, accessibility and commercial/Steam QA remain future work.
+- New save/load, attendant and land-claim integration still need Unity import and Play Mode verification, including backup recovery. Full construction, utilities, additional staff AI, automated production, Rare Residue, audio, accessibility and commercial/Steam presentation remain future work.
 - No current screenshot should be described as a finished or production-ready world.
 
 ## Development rules

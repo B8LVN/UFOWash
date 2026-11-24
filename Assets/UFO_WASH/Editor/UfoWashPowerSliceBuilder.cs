@@ -317,7 +317,7 @@ Left mouse: operate washer",
         static void BuildServiceAccess()
         {
             // Local washing needs real access above the canopy, not a global
-            // progress shortcut. This candidate catwalk still requires traversal QA.
+            // progress shortcut. This candidate catwalk still requires an in-game traversal check.
             for(int step=1;step<=16;step++)
             {
                 float height=step*.2f;

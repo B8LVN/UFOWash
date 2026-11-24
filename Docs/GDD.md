@@ -133,11 +133,11 @@ Quality = 1 − average contracted-zone contamination − 0.18 × average residu
 
 ## 4. Unity implementation and scope truth
 
-**2026-11-24 recovery source update:** localized coating cells replace whole-panel tint and separate foam patches; the first purchase installs a switchable fan nozzle; tool pressure synthesis, shared targeting, supply limits and revised HUD are implemented in source. A versioned company ledger, one hireable first attendant and a persistent starter expansion are also implemented on the test branch. Twenty engine-independent coating/geometry checks pass. The downloaded exact Editor reports its version, but this is **not** a Unity import, Play Mode or visual pass. The table's older Unity-reference compile statements apply only to the previous source revision, not this recovery pass. Current acceptance and blockers: `Docs/11_CURRENT_STATUS.md` and `Docs/reports/QUALITY_RECOVERY_2026-11-24.md`.
+**2026-11-24 recovery source update:** localized coating cells replace whole-panel tint and separate foam patches; the first purchase installs a switchable fan nozzle; tool pressure synthesis, shared targeting, supply limits and revised HUD are implemented in source. A versioned company ledger, one hireable first attendant and a persistent starter expansion are also implemented on the test branch. No licensed Unity import, Play Mode or visual pass was available in this workspace. Current acceptance and blockers: `Docs/11_CURRENT_STATUS.md`.
 
 | GDD system | Unity implementation | State |
 |---|---|---|
-| Hull contamination and local foam feedback | Assets/UFO_WASH/Scripts/Cleaning/UfoWashDirtSurface.cs | Source implemented; foam visibility and per-zone tuning still need QA |
+| Hull contamination and local foam feedback | Assets/UFO_WASH/Scripts/Cleaning/UfoWashDirtSurface.cs | Source implemented; foam visibility and per-zone tuning still need Unity visual verification |
 | Contract-only panels and staged zone gates | UfoWashCareerLoop.cs, UfoWashCustomerShip.cs | C# compile check against Unity 6.6 references passed; Editor import and Play Mode unverified |
 | Third-person exploration / aimed cleaning view | UfoWashFirstPersonController.cs | C# compile check passed; camera behavior still needs Play Mode verification |
 | Trait tips, reputation unlocks and NPC identity | UfoWashCareerLoop.cs, UfoWashCustomerNpc.cs, UfoWashContractTerminalUI.cs | C# compile check passed; UI and receipt behavior unverified |
@@ -159,7 +159,7 @@ The present Windows player output is not the product. Do not create or launch an
 3. Add saved company state, booking/queue, financial ledger, sector plots and physical construction.
 4. Add utility networks, residue processing, first visible employee and automated gantry chain.
 5. Expand sectors, ship classes, traits, contracts and boss management.
-6. Finish accessibility, controller support, sound, performance, save migration and commercial/Steam QA.
+6. Finish accessibility, controller support, sound, performance, save migration and commercial/Steam release requirements.
 
 Code written or a player launched is not proof of completion. Each milestone needs clean Unity compilation, an Editor Play Mode run, current-scene screenshots and an honest issue list.
 

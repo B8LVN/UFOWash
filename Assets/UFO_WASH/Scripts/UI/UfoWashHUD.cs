@@ -11,9 +11,11 @@ namespace UFOWASH
 
         Text creditsText, contractLabelText, clientText, shipText, contaminationText, stateText, instructionText, progressText, stageText, supplyText, zonesText;
         Image progressFill;
+        Image zonePanel;
         UfoWashCareerLoop career;
         UfoWashSprayTool tool;
         Text toolText;
+        bool zoneChecklistVisible = true;
 
         void Start()
         {
@@ -24,6 +26,11 @@ namespace UFOWASH
 
         void Update()
         {
+            if (zonePanel != null && Keyboard.current != null && Keyboard.current.tabKey.wasPressedThisFrame)
+            {
+                zoneChecklistVisible = !zoneChecklistVisible;
+                zonePanel.gameObject.SetActive(zoneChecklistVisible);
+            }
             if (career == null) career = UfoWashCareerLoop.Instance;
             RefreshInterface();
         }
@@ -71,9 +78,9 @@ namespace UFOWASH
                 new Vector2(0,1), new Vector2(0,1), new Vector2(24,-266), new Vector2(420,20), TextAnchor.MiddleLeft);
             supplyText = AddText(panel.transform, "Supplies", "WATER 100%  //  FOAM 100%", 11, new Color(.95f,.72f,.35f),
                 new Vector2(0,1), new Vector2(0,1), new Vector2(24,-292), new Vector2(420,20), TextAnchor.MiddleLeft);
-            var zonePanel = MakeImage(canvasObject.transform, "Service Checklist", new Color(.018f,.035f,.065f,.90f),
+            zonePanel = MakeImage(canvasObject.transform, "Service Checklist", new Color(.018f,.035f,.065f,.90f),
                 new Vector2(1,1), new Vector2(1,1), new Vector2(-28,-28), new Vector2(430,230));
-            AddText(zonePanel.transform, "Zone Heading", "HULL ZONES  //  ALL MUST PASS", 13, new Color(.36f,.83f,.95f),
+            AddText(zonePanel.transform, "Zone Heading", "HULL MAP  //  TAB TO TOGGLE", 13, new Color(.36f,.83f,.95f),
                 new Vector2(0,1), new Vector2(0,1), new Vector2(20,-18), new Vector2(390,24), TextAnchor.MiddleLeft);
             zonesText = AddText(zonePanel.transform, "Zone Checklist", "Accept a contract to inspect the hull.", 13,
                 new Color(.72f,.84f,.9f), new Vector2(0,1), new Vector2(0,1), new Vector2(20,-54),
@@ -81,7 +88,7 @@ namespace UFOWASH
 
             stateText = AddText(canvasObject.transform, "Contract State", "CONTRACT REQUIRED", 15, new Color(.25f,.9f,1f),
                 new Vector2(.5f,0), new Vector2(.5f,0), new Vector2(0,42), new Vector2(1000,64), TextAnchor.MiddleCenter);
-            instructionText = AddText(canvasObject.transform, "Controls", "WASD MOVE  //  E INTERACT  //  HOLD LMB WASH  //  1 PRE-RINSE  2 FOAM  3 RINSE  //  ESC CURSOR",
+            instructionText = AddText(canvasObject.transform, "Controls", "WASD MOVE  //  E INTERACT  //  LMB WASH  //  1 WATER  2 FOAM  3 RINSE  //  TAB HULL MAP",
                 12, new Color(.65f,.77f,.85f), new Vector2(.5f,0), new Vector2(.5f,0),
                 new Vector2(0,18), new Vector2(900,22), TextAnchor.MiddleCenter);
             AddText(canvasObject.transform, "Reticle", "+", 25, new Color(.6f,.95f,1f),
@@ -123,7 +130,7 @@ namespace UFOWASH
             if (tool != null)
             {
                 toolText.text = tool.Feedback;
-                instructionText.text = "WASD MOVE  //  E INTERACT  //  HOLD LMB WASH  //  1 WATER  2 FOAM  3 RINSE" +
+                instructionText.text = "WASD MOVE  //  E INTERACT  //  LMB WASH  //  1 WATER  2 FOAM  3 RINSE  //  TAB HULL MAP" +
                     (tool.FanNozzleInstalled ? "  //  Q " + (tool.FanNozzleActive ? "FAN" : "PRECISION") : "  //  ESC CURSOR");
             }
 

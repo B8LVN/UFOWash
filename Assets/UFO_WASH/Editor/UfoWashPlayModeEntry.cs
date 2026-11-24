@@ -15,7 +15,7 @@ namespace UFOWASH.Editor
 
         static UfoWashPlayModeEntry()
         {
-            if (Application.isBatchMode) return; // Keep isolated QA fixtures independent.
+            if (Application.isBatchMode) return; // Keep non-interactive editor startup independent.
             EditorApplication.delayCall += ConfigureStartScene;
             EditorApplication.playModeStateChanged -= OnPlayModeChanged;
             EditorApplication.playModeStateChanged += OnPlayModeChanged;

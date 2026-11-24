@@ -13,12 +13,11 @@ Read these files in this order:
 5. `Docs/02_PRODUCTION_PLAN.md`
 6. `Docs/03_TECHNICAL_DESIGN.md`
 7. `Docs/04_VISUAL_AUDIO_QUALITY_BIBLE.md`
-8. `Docs/05_QA_TEST_STRATEGY.md`
-9. `Docs/06_PROJECT_MEMORY_AND_WORKFLOW.md`
-10. `Docs/07_DECISION_LOG.md`
-11. `Docs/08_LESSONS_LEARNED.md`
-12. `Docs/10_BACKLOG.md`
-13. Relevant GitHub Issues, recent commits, changelog entries and files related to the assigned task.
+8. `Docs/06_PROJECT_MEMORY_AND_WORKFLOW.md`
+9. `Docs/07_DECISION_LOG.md`
+10. `Docs/08_LESSONS_LEARNED.md`
+11. `Docs/10_BACKLOG.md`
+12. Relevant recent commits, changelog entries and files related to the current request.
 
 Do not rely on ChatGPT conversation history as the only source of truth. The repository is the canonical project memory.
 
@@ -36,9 +35,11 @@ Before editing anything:
 
 ## Step 3 — Confirm task and scope
 
-Read the single task in `NEXT_TASK.md` and its GitHub Issue.
+Read the active handoff in `NEXT_TASK.md` and the owner's latest request. A linked
+GitHub Issue is useful context when one exists, but development must not stall
+because no issue is attached.
 
-If there is no clear task, ask the project owner which task to authorize. Do not invent a large task.
+Follow the owner's latest request and current branch workflow. Before a large implementation, summarize its scope, acceptance evidence, risks and any Unity access limits.
 
 Before implementation, state briefly:
 - What the task is intended to achieve.
@@ -67,14 +68,12 @@ Before calling a task complete, update the relevant repository records:
 - `NEXT_TASK.md` — one clear next task, owner and dependencies.
 - `CHANGELOG.md` — meaningful changes and test status.
 - `Docs/10_BACKLOG.md` — status, priority and next work.
-- `Docs/12_IMPROVEMENT_REGISTER.md` — problems and verified improvements.
 - `Docs/13_SESSION_LOG.md` — session history and handover.
 - `Docs/07_DECISION_LOG.md` — only when a decision was made or changed.
 - `Docs/08_LESSONS_LEARNED.md` — when a mistake, root cause or reusable lesson was discovered.
 - `Docs/09_ASSET_REGISTER.md` — when assets are added, removed or replaced.
-- QA reports / test cases / bug records — when relevant.
 
-Update the GitHub Issue with implementation summary, files changed, evidence, test results and remaining risks. Append a session entry to `Docs/13_SESSION_LOG.md` and update relevant rows in `Docs/12_IMPROVEMENT_REGISTER.md`. Close it only when all acceptance criteria are verified and the project owner accepts it. Otherwise leave it open or move it to Review/Blocked.
+Append a session entry to `Docs/13_SESSION_LOG.md`. Record verification honestly in `Docs/11_CURRENT_STATUS.md`; source checks are not a Unity playtest.
 
 ## Step 6 — Final handover
 

@@ -1,4 +1,4 @@
-# UFO WASH — Lessons Learned & Quality Recovery Log
+# UFO WASH — Lessons Learned
 
 This file records observed failures and verified learning. Do not invent root causes. Mark evidence and confidence.
 
@@ -59,7 +59,7 @@ A lesson is not “verified” until the corrective action has been tested. Keep
 - **Root cause / confidence:** High for the source-level mismatch between feedback, accounting and purchased effects; actual appearance remains untested.
 - **Correction:** Local area-weighted coating state drives both visible dirt/foam and panel totals; tool power and fan footprint feed that state.
 - **Prevention:** Test a stationary spray against untouched neighboring cells, then compare actual gameplay before/after the purchase. Do not approve local feedback based on aggregate percentages.
-- **Verification:** 14 deterministic state checks passed; Unity integration/visual acceptance remains blocked.
+- **Verification:** Earlier source-level coating checks passed; Unity integration and visual acceptance remain unverified.
 
 ### L-008 — Local coating raycasts depend on consistent hull winding
 
@@ -68,8 +68,8 @@ A lesson is not “verified” until the corrective action has been tested. Keep
 - **Expected:** Each cleanable hull shell should expose outward-facing coating cells.
 - **Root cause:** Reconstructed the upper-shell profile and builder triangle order; its closed-mesh signed volume was negative, while the lower shell's order is outward. Confidence high for the geometry math; Unity runtime behavior is not yet verified.
 - **Fix:** At runtime, clone and reverse triangles only for inward closed meshes. Removed collider-based occlusion filtering from coating generation because intersecting hull/cockpit colliders can reject every subdivided surface cell. Spray targeting still respects actual raycast blockers.
-- **Regression test:** Deterministic reproduction asserts the exact upper-shell profile is inward, reversed indices are outward, and source indices remain unchanged. Also check flat open QA surfaces are not reversed.
-- **Verification status:** Geometry rule checks pass; mesh-collider repair and full-shell cell generation require actual Unity Play Mode verification.
+- **Regression check:** The earlier source-level reproduction asserted the upper-shell winding and that source indices remain unchanged. Unity mesh-collider behavior remains unverified.
+- **Verification status:** Source review passed; mesh-collider repair and full-shell cell generation require actual Unity Play Mode verification.
 
 
 ### L-005 — A whole-renderer foam tint is not readable foam application
