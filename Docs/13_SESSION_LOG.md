@@ -1,7 +1,8 @@
 # 2026-11-24 — Branch approval rule and local Git guidance
 
+- **Correction from owner:** use one existing Unity project/repository and switch between two branches; do not create another project folder or clone for normal testing. Removed the separate-copy recommendation from the active handoff and saved the clarified rule.
 - Owner confirmed main is user-facing, the development branch is for development/testing, and changes reach main only after the owner's explicit OK. Recorded the rule in the decision log, handoff and project memory.
-- Owner's screenshot shows Git commands executed outside a Git repository. Recommended a fresh, separate development-branch clone without modifying the existing Unity project.
+- Owner's screenshot shows Git commands executed outside a Git repository. The earlier separate-clone recommendation was rejected; the correct guidance is to open a terminal inside the existing project repository and switch branches there.
 - No runtime code or main-branch changes were made for this support step.
 
 # 2026-11-24 — Owner-requested direct Play workflow
