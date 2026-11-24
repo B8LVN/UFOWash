@@ -4,6 +4,7 @@ Record decisions that affect scope, architecture, design or production. Newest f
 
 | ID | Date | Decision | Status | Rationale / notes |
 |---|---|---|---|---|
+| D-018 | 2026-11-24 | Keep main user-facing; develop/test on ufo-wash/cleaning-recovery and merge into main only after the owner's explicit OK. | Approved by owner | Owner defined the release gate; successful checks or a development-branch push do not authorize merging main. |
 | D-017 | 2026-11-24 | Normal owner testing must be Play → main menu → start game, with no generation menu step. | Owner requested; implemented — unverified in Unity | Select the existing main scene automatically and apply temporary service access in Play rather than overwriting the authored scene. |
 | D-014 | 2026-11-24 | Prototype UV-independent local coating cells for the existing static hull, using one state for visible dirt/foam and panel summaries. | Implemented — unverified in Unity | Existing procedural saucer has no authored UVs. Locality and weighted totals pass deterministic checks; the technique remains provisional until curved-hull visual/performance comparison. |
 | D-015 | 2026-11-24 | Never replace the authored scene merely because builder source was imported; offer a separate quality preview and require explicit confirmation for canonical replacement. | Implemented — unverified in Unity | Preserves owner scene work and keeps source import separate from visual acceptance. |

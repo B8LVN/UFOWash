@@ -1,2 +1,3 @@
 - [Hosted Unity verification](hosted-unity-verification.md) — Editor installation and version output do not establish licensed import or gameplay access.
 - [Direct Play workflow](direct-play-workflow.md) — owner requires Play → main menu → start game, with no Create/Generate menu step.
+- [Release branch approval](release-branch-approval.md) — main is user-facing; develop/test on the dev branch and merge only after the owner's explicit OK.

@@ -1,3 +1,9 @@
+# 2026-11-24 — Branch approval rule and local Git guidance
+
+- Owner confirmed main is user-facing, the development branch is for development/testing, and changes reach main only after the owner's explicit OK. Recorded the rule in the decision log, handoff and project memory.
+- Owner's screenshot shows Git commands executed outside a Git repository. Recommended a fresh, separate development-branch clone without modifying the existing Unity project.
+- No runtime code or main-branch changes were made for this support step.
+
 # 2026-11-24 — Owner-requested direct Play workflow
 
 - **GitHub follow-through:** owner connected GitHub; retried the branch push successfully. `ufo-wash/cleaning-recovery` is now available remotely and main remains unchanged. Download by fetching origin and switching to that branch. This resolves the upload blocker below, not the separate Unity licensing/runtime-verification blocker.

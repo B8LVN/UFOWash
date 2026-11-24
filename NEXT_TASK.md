@@ -1,5 +1,7 @@
 # Next Production Milestone
 
+**Owner's branch rule:** `main` is user-facing. Develop and test on `ufo-wash/cleaning-recovery`; merge changes into `main` only after the owner explicitly says OK.
+
 ## Active handoff — cleaning and first-contract verification
 
 **Task:** Finish the integrated quality-recovery milestone in the existing Unity game.
@@ -13,6 +15,8 @@
 **Next single action:** Establish the working Editor session and run the complete acceptance sequence in `Docs/reports/QUALITY_RECOVERY_2026-11-24.md`. Fix any discovered defects before declaring this milestone complete.
 
 **Download for testing:** the source is on GitHub branch `ufo-wash/cleaning-recovery` in `B8LVN/UFOWash`, not merged into `main`. Close Unity, preserve local edits, run `git fetch origin`, then `git switch ufo-wash/cleaning-recovery` and `git pull --ff-only`. Open Unity 6000.6.10f1 and press Play; no scene-generation command is needed.
+
+Run existing-repository Git commands inside the cloned project folder, not the Windows home folder. For a separate test copy, use `git clone --branch ufo-wash/cleaning-recovery https://github.com/B8LVN/UFOWash.git UFOWash-Dev`, then open `UFOWash-Dev` through Unity Hub. This leaves the old project untouched.
 
 The exact Linux Editor has been downloaded into ignored `generated-artifacts/unity-editor/`; its version command succeeds. After installing required Linux libraries and ICU, the isolated import exited **198**: **No valid Unity Editor license found**. Activate the exact Editor or provide an accessible licensed session; do not send credentials in chat. No further import retry is useful until licensing changes.
 
