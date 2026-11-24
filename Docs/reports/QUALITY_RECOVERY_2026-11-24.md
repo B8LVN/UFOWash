@@ -5,7 +5,12 @@
 **User-reported error follow-up:** the closed upper-shell profile uses inward
 triangle winding. Production code now creates an outward-facing runtime mesh copy
 and updates its mesh collider only after the owner accepts/starts a contract.
-The contract board is expanded/reflowed and suppresses underlying gameplay overlays.
+The first correction did not clear the reported error. Removed an additional
+creation-time occlusion raycast that tested the shell against every overlapping
+ship/cockpit collider and could reject all upper-shell faces. Coating now builds
+from the current panel mesh's non-degenerate triangles only; in-play spray targeting
+still respects blockers and cell-facing normals. The contract board is
+expanded/reflowed and suppresses underlying gameplay overlays.
 Eighteen deterministic checks now cover the precise legacy shell profile and copy
 orientation. These results establish the geometry math only: use the authored
 Unity Game view to verify collider visibility, button operation and layout.

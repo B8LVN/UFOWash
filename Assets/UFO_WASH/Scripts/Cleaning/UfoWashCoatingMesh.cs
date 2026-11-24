@@ -34,12 +34,12 @@ namespace UFOWASH
             Mesh source = filter.sharedMesh;
             var points = source.vertices;
             var triangles = source.triangles;
-            var ship = surface.GetComponentInParent<UfoWashCustomerShip>();
-            var colliders = ship != null ? ship.GetComponentsInChildren<Collider>() : surface.GetComponents<Collider>();
-            float clearance = Mathf.Max(2f, surface.GetComponent<Renderer>().bounds.size.magnitude + 1f);
             for (int i = 0; i < triangles.Length; i += 3)
                 Subdivide(points[triangles[i]], points[triangles[i + 1]], points[triangles[i + 2]],
-                    0, vertices, weights, colliders, clearance);
+                    0, vertices, weights);
+            if (weights.Count == 0)
+                throw new InvalidOperationException("Mesh contains no non-degenerate triangles: " +
+                    surface.name + " (vertices=" + points.Length + ", triangles=" + triangles.Length + ")");
             State = new UfoWashCoatingState(weights.ToArray(), surface.dirt, surface.foam);
             mesh = new Mesh { name = surface.name + " // local coating", indexFormat = IndexFormat.UInt32 };
             mesh.MarkDynamic();
@@ -63,7 +63,7 @@ namespace UFOWASH
         }
 
         void Subdivide(Vector3 a, Vector3 b, Vector3 c, int depth, List<Vector3> vertices,
-            List<float> weights, Collider[] colliders, float clearance)
+            List<float> weights)
         {
             Vector3 wa = owner.TransformPoint(a), wb = owner.TransformPoint(b), wc = owner.TransformPoint(c);
             Vector3 cross = Vector3.Cross(wb - wa, wc - wa);
@@ -76,32 +76,30 @@ namespace UFOWASH
                 if (ab >= bc && ab >= ca)
                 {
                     Vector3 mid = (a + b) * 0.5f;
-                    Subdivide(a, mid, c, depth + 1, vertices, weights, colliders, clearance);
-                    Subdivide(mid, b, c, depth + 1, vertices, weights, colliders, clearance);
+                    Subdivide(a, mid, c, depth + 1, vertices, weights);
+                    Subdivide(mid, b, c, depth + 1, vertices, weights);
                 }
                 else if (bc >= ca)
                 {
                     Vector3 mid = (b + c) * 0.5f;
-                    Subdivide(a, b, mid, depth + 1, vertices, weights, colliders, clearance);
-                    Subdivide(a, mid, c, depth + 1, vertices, weights, colliders, clearance);
+                    Subdivide(a, b, mid, depth + 1, vertices, weights);
+                    Subdivide(a, mid, c, depth + 1, vertices, weights);
                 }
                 else
                 {
                     Vector3 mid = (c + a) * 0.5f;
-                    Subdivide(a, b, mid, depth + 1, vertices, weights, colliders, clearance);
-                    Subdivide(mid, b, c, depth + 1, vertices, weights, colliders, clearance);
+                    Subdivide(a, b, mid, depth + 1, vertices, weights);
+                    Subdivide(mid, b, c, depth + 1, vertices, weights);
                 }
                 return;
             }
-            Vector3 normal = cross.normalized;
             Vector3 center = (a + b + c) / 3f;
-            Vector3 worldCenter = owner.TransformPoint(center);
-            // Exclude buried faces (e.g. the cockpit inside the upper shell) from
-            // both visuals and area-based stage gates. Ship decorations are solid.
-            var ray = new Ray(worldCenter + normal * clearance, -normal);
-            foreach (var collider in colliders)
-                if (collider.enabled && !collider.isTrigger &&
-                    collider.Raycast(ray, out var hit, clearance - 0.045f)) return;
+            Vector3 normal = cross.normalized;
+            // Do not use physics occlusion tests here. The saucer contains overlapping
+            // hull/cockpit colliders; raycasting those against every subdivided face
+            // incorrectly classified the entire upper shell as buried. The coating is
+            // generated from this renderer's own triangles. During spraying, the shared
+            // target query and per-cell normals still restrict work to the visible side.
             if (centers.Count >= MaxCells)
                 throw new InvalidOperationException("Hull coating cell budget exceeded: " + owner.name);
             Vector3 offset = owner.InverseTransformVector(normal * 0.006f);

@@ -1,5 +1,12 @@
 # 2026-11-24 — Fixed contract acceptance geometry and modal layout
 
+- **User follow-up:** the inward-winding correction alone did not clear the error.
+  Traced another source-level failure path to collider-based surface-visibility
+  rejection. Removed creation-time occlusion raycasts; included actual nondegenerate
+  panel triangles instead and improved the empty-mesh diagnostic.
+- Fixed update is pushed as an additional commit on the existing development branch.
+- **Executed after this change:** rerun 18 deterministic coating/geometry checks and
+  C# syntax validation. Unity Play Mode remains required to confirm the fix.
 - Owner supplied Console/Game-view screenshots showing repeated coating setup
   failures on the upper saucer and overlapping contract text/visible HUD.
 - Recreated the legacy upper-shell profile and triangle order. Its signed volume is

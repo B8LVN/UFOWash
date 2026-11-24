@@ -14,10 +14,11 @@ remains outstanding; the owner's Project-window screenshot does not verify it.
 ## User-reported contract board / coating errors — 2026-11-24
 
 - Screenshot showed contract acceptance failing with repeated `A coating requires exposed surface cells` for the upper saucer; board text and gameplay overlays overlapped.
-- Reconstructed the exact upper shell from the scene builder and verified its closed triangle winding has negative signed volume. Local coating relies on outward triangles.
-- Added runtime-only outward correction on a private mesh copy and associated collider. Teardown restores existing references and releases the copy. Scene asset is untouched. Logs now report each panel's failure once.
+- Reconstructed the exact upper shell from the scene builder and verified its closed triangle winding has negative signed volume. Added runtime-only outward correction on a private mesh copy and associated collider. This alone did not resolve the user's reproduction.
+- Follow-up diagnosis: the coating builder's visibility filter raycast every face against all overlapping ship colliders, which could incorrectly classify every subdivided upper-shell triangle as buried. Removed collider-based face rejection; coating cells now come from the panel's own non-degenerate triangles. Active spray still uses contracted-surface targeting and per-cell normal/radius checks.
+- Teardown restores existing references and releases the runtime mesh copy; the scene asset is untouched. Failures log once per panel and include mesh vertex/triangle counts if source geometry is empty.
 - Resized/reflowed the contract board for responsive scaling, bounded text, added selection/failure feedback, and hid lower-order HUD/subtitle canvases behind the modal.
-- **Eighteen deterministic geometry/coating tests pass; all 26 game/editor files pass C# syntax parsing.** These do not prove Unity colliders, successful clicks or correct rendering.
+- **Eighteen deterministic geometry/coating tests pass; all 26 game/editor files pass C# syntax parsing.** The removal of occlusion filtering is not a Unity runtime test; colliders, successful clicks and rendering remain unverified.
 - Unity verification is still blocked by unavailable Editor licensing. Next: owner tests the new update on `ufo-wash/cleaning-recovery` and shares any new Console error or screenshot.
 
 ## Active quality recovery — latest source state
