@@ -93,3 +93,14 @@ A lesson is not “verified” until the corrective action has been tested. Keep
 - **Fix applied:** Added talk interaction, idle attention, speech bubble and contract-state reactions.
 - **Regression test:** Approach the NPC, use E, accept a job and complete it; confirm dialogue and reactions.
 - **Verification status:** Implemented — unverified.
+
+### L-007 — Backup recovery needs a distinct next-save path
+
+- **Date:** 2026-11-24
+- **Observation:** Static review found that after loading a valid backup over a damaged primary, the next write could attempt to copy the backup onto itself.
+- **Expected behaviour:** Preserve the damaged primary separately, keep the valid backup intact, then atomically write the current save.
+- **Root cause:** The ordinary save-rotation path was also executed after the backup had just been restored.
+- **Confidence:** High from control-flow inspection; no Unity runtime test was available.
+- **Fix applied:** The recovery write now skips ordinary backup rotation after copying the valid backup back to the primary path.
+- **Regression test:** Corrupt the primary while retaining a valid backup, load the backup, save progress, restart, and verify both the recovered progress and preserved `.corrupt` file.
+- **Verification status:** Code-level fix applied; filesystem and Unity regression test pending.

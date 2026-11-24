@@ -9,13 +9,19 @@ namespace UFOWASH
         [SerializeField] private float sprayCoverageIncrease = 0.06f;
         [SerializeField] private float rangeIncrease = 0.5f;
         [SerializeField] private int maxLevel = 5;
+        [SerializeField] private string saveKey = "ion-washer";
 
         private int level;
         private UfoWashSprayTool sprayTool;
 
+        public string SaveKey => saveKey;
+        public int Level => level;
+
         private void Start()
         {
             sprayTool = FindAnyObjectByType<UfoWashSprayTool>();
+            if (UfoWashProgressSave.Instance != null)
+                SetLevelFromSave(UfoWashProgressSave.Instance.GetUpgradeLevel(saveKey));
         }
 
         public override string GetPrompt()
@@ -44,6 +50,15 @@ namespace UFOWASH
             sprayTool.range += rangeIncrease;
             UfoWashCareerLoop.Instance?.NotifyBossMessage("NOZZLE FITTED // -"+cost+" CR // Q TO SWITCH FAN / PRECISION");
             Debug.Log($"[UFO WASH] Ion washer level {level}: power {sprayTool.cleanPerSecond:0.00}/s, coverage radius {sprayTool.sprayRadius:0.00}, range {sprayTool.range:0.0}m.");
+        }
+
+        public void SetLevelFromSave(int savedLevel)
+        {
+            level = Mathf.Clamp(savedLevel, 0, maxLevel);
+            if (sprayTool == null) return;
+            sprayTool.cleanPerSecond += cleaningPowerIncrease * level;
+            sprayTool.sprayRadius += sprayCoverageIncrease * level;
+            sprayTool.range += rangeIncrease * level;
         }
 
         private int GetCost() => baseCost * (level + 1);

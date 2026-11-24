@@ -68,6 +68,15 @@ Older sections below are historical and do not supersede this verification bound
 - Earlier local Editor observations below are historical, not confirmation that this environment can control that Editor.
 - Recommended next milestone: integrated cleaning/control/presentation recovery with repeat-job and reinvestment acceptance checks. Subsequent work: persistent, visible tycoon progression. Development task selection and Unity verification access remain outstanding.
 
+## Station growth implementation — 2026-11-24
+
+- Owner reported the separate cleaning-recovery task had stalled awaiting input and asked development to continue here. The station-growth task proceeded with a separate implementation; no changes from the other workspace were available to inspect or merge.
+- Added a schema-versioned company JSON ledger for credits, reputation, supplies, completed jobs, washer levels, attendant hiring and purchased sector claims. It writes a backup, restores a valid backup when the primary is damaged, and visibly blocks saving if no valid copy exists.
+- Added a 120 GC Vesper wash tech, matching the GDD's prototype hiring target, who automatically pre-rinses only active contracted hull panels, stops at the service-stage boundary and reports idle/working/water-blocked status. The builder uses the included Kenney CC0 astronaut model when available and a primitive fallback otherwise. Recurring shift wages are not yet simulated.
+- Added save/load wiring for washer upgrades and sector expansion content. Legacy sector claims in PlayerPrefs are imported when the ledger loads.
+- Unfinished contracts intentionally reset on restart; company progress and supplies persist.
+- Implementation is unverified. No Unity Editor executable, C# compilation, scene regeneration, Play Mode, save round-trip or visual check was available in this checkout. Builder code now creates the save service and attendant when the generated scene is rebuilt.
+
 ## Previous production record
 
 **Product target:** Full commercial single-player PC/Steam game; a first-shift slice is a milestone, not the final product.  
@@ -80,9 +89,9 @@ Older sections below are historical and do not supersede this verification bound
 - Unity Editor version: 6000.6.10f1; URP 17.6.0; Input System 1.20.1; uGUI 2.6.0.
 - Main authored scene: Assets/UFO_WASH/Scenes/UFO_WASH_PowerSlice.unity.
 - Included Kenney Space Kit is CC0; no paid assets have been added.
-- The scene builder creates one custom procedural saucer, an imported alien when available, a Vesper Belt panorama, hangar dressing, player, UI, contracts and supply/upgrade stations.
+- The scene builder creates one custom procedural saucer, an imported alien when available, a Vesper Belt panorama, hangar dressing, player, UI, contracts, supply/upgrade stations and the new Vesper service tech.
 - Kenney Modular Space Kit 1.0 is now imported: 40 CC0 modular station FBX models plus its source atlas/license. A tailored Vesper palette derivative is at Assets/UFO_WASH/Art/Textures/Vesper_ModularSpace_Colormap.png.
-- Generated scene source now describes a walkable arrival ramp/outpost and three purchasable sector gates. The scene has not regenerated because Unity currently reports a dirty active scene; the builder skips such a refresh safely.
+- Generated scene source describes a walkable arrival ramp/outpost and three purchasable sector gates. The checked-in scene has not been refreshed in this environment; the builder has a guard that skips regeneration when its active scene contains unsaved edits.
 - Vesper terrain/sky materials and generated textures exist in the repository. The world and hangar remain an early procedural art pass; no production-quality open planet exists yet.
 
 ## Previous local observations
@@ -101,16 +110,17 @@ An earlier Unity Editor/Windows player observation showed the title screen, stor
 - A compact connected world is defined: four 80 m districts, 4 m build cells, a 40 m × 48 m starting yard and staged GC/reputation-gated expansion.
 - Crater Ridge, Ion Flats and Glasswake gate purchase/persistence are implemented in source. Runtime and editor C# compilation checks passed against Unity 6.6 references; Unity import and Play Mode remain outstanding.
 - Career-loop panel discovery now runs in `Start`, after all scene `Awake` calls, preventing an initialization-order race with the customer's cached surfaces.
+- A versioned save service, save-backed upgrades/sector claims and one bounded pre-rinse attendant are implemented in source but have not been imported or tested in Unity.
 
 ## Verification honestly outstanding
 
 - Runtime and editor C# assemblies compiled against Unity 6.6 generated project references with zero errors. The runtime compile had zero warnings; the editor compile reported six existing API deprecation warnings. This is a compiler check, not a live Unity Editor import.
-- Unity's open main project did not refresh after the source timestamp change. The new kit models and script still need Unity-generated `.meta` files in the main checkout.
+- Unity import has not been run. The two new progression scripts include Unity metadata, but their component references and runtime behavior have not been imported or checked.
 - An isolated batch-mode import was attempted in a disposable project copy and stopped during Unity LicensingClient access-token validation, before asset import. The disposable copy was removed; the owner's main project was not touched by the attempt.
-- The Unity window currently has the generated scene marked dirty. The automatic builder intentionally skips a dirty active scene to protect unsaved work; preserve that scene before using the generated-scene menu action.
+- Older notes mention a dirty Unity scene; this checkout does not provide current access to that Editor state. Preserve any unsaved scene before using the generated-scene menu action.
 - The new contract-card rendering, reputation progression, panel checklist, camera handoff and full payout loop have not been tested together in Play Mode.
-- Current scene generation after the latest builder changes has not been observed; the checked-in scene file does not yet contain the new outpost and sector gates.
-- Multi-sector construction, utilities, save/load, staff AI, automated production, Rare Residue, audio, accessibility and commercial/Steam QA are not yet implemented.
+- Current scene generation after the latest builder changes has not been observed; the checked-in scene file does not yet contain the new outpost, sector gates or attendant.
+- New save/load, attendant and land-claim integration still need import, compilation and Play Mode verification, including backup/corruption cases. Full construction, utilities, additional staff AI, automated production, Rare Residue, audio, accessibility and commercial/Steam QA remain future work.
 - No current screenshot should be described as a finished or production-ready world.
 
 ## Development rules
@@ -118,6 +128,6 @@ An earlier Unity Editor/Windows player observation showed the title screen, stor
 - Keep code, generated scene, current GDD, backlog and project memory synchronized.
 - Preserve owner files and review the entire working-tree diff before commit or push.
 - Use included/free assets or original assets; no paid content without approval.
-- Keep the owner’s running application untouched. Source compilation is checked; import, scene generation and Play Mode need a safe editor refresh with the dirty scene preserved.
+- Keep the owner’s running application untouched. Previous source compile reports apply only to earlier source; current progression changes have not been compiled. Import, scene generation and Play Mode need a safe Editor refresh with any dirty scene preserved.
 - Continue through all six pillars. Stop/pause only at the owner’s direction or a genuine blocking dependency.
 

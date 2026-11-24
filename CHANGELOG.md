@@ -33,4 +33,13 @@ All notable project changes should be recorded here. Use newest entries first. K
 - Added persistent agent workflow, task prompt, current status, next task, decision log, lessons learned and asset register.
 - Added GitHub issue and pull-request templates.
 - No Unity implementation was changed by this documentation pack.
+
+## 2026-11-24 — Persistent company progression and first attendant
+
+- Added a versioned company ledger for credits, reputation, supplies, completed jobs, washer levels, attendant hiring and sector claims. The save rotates a backup, restores a valid backup when possible and blocks writes if all copies are invalid.
+- Added a hireable Vesper wash tech for 120 GC, matching the GDD's prototype hiring target. When hired, the tech pre-rinses only the active contract's hull panels and visibly reports idle, working or blocked-on-water status.
+- The scene builder uses the included Kenney CC0 astronaut model for the tech when available, with an explicitly temporary primitive fallback.
+- Restored washer upgrades and sector gates from the ledger; preserved earlier sector claims stored in PlayerPrefs.
+- Active contracts do not resume after reload; finished company progression does.
+- Source implementation only. Unity import, scene regeneration, C# compilation, Play Mode, save corruption tests and visual verification remain outstanding.
 - Existing Unity project status remains unverified pending UW-000 audit.

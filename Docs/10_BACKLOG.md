@@ -40,7 +40,10 @@ Owner reaffirmed the Steam-game quality target and Moon Sweepers / Schedule I / 
 
 ## P2 — Turn the station into a management game
 
-- Saveable company ledger: GC, reputation, inventory, active contract, unlocks and expenses.
+- **Implemented — unverified:** Versioned company save for credits, reputation, water/chemical, completed jobs, washer upgrades, the first hired wash tech and land claims. Active contracts reset on reload; Unity round-trip and corrupt-file recovery tests remain outstanding.
+- **Implemented — unverified:** A 120 GC wash tech hire performs automatic pre-rinse on the active contracted hull zones and exposes working/idle/water-blocked states. Recurring wages are not simulated. Unity Play Mode, affordability and supply recovery checks remain outstanding.
+
+- Extend the company ledger with inventory beyond wash supplies, expenses and safe migration. Active contracts intentionally reset on reload; serializing their live hull state remains future work.
 - Contract board with ship/customer archetypes, recipes, deadlines/preferences and transparent gross/net quote.
 - Physical land plot ownership, snapping placement, collision/access checks and visible building upgrades.
 - Power/fluid network with capacities, routing, load, outages and readable failure recovery.

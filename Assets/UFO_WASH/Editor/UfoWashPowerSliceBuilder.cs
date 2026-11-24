@@ -236,6 +236,7 @@ namespace UFOWASH.Editor
             AreaLight(new Vector3(0,7,17),new Color(.12f,.65f,1f),6);
             // Contract terminal and career loop: player must accept a customer order before spraying.
             var career = new GameObject("CAREER LOOP // CUSTOMER CONTRACTS");
+            career.AddComponent<UfoWashProgressSave>();
             career.AddComponent<UfoWashCareerLoop>();
             var contractTerminal = Cube("CONTRACT TERMINAL // ACCEPT JOB", new Vector3(4.2f,1.25f,-3.7f), new Vector3(1.55f,2.5f,1.0f), matBlue);
             contractTerminal.AddComponent<UfoWashJobBoard>();
@@ -251,6 +252,8 @@ namespace UFOWASH.Editor
             Cube("Supply station display", new Vector3(-4.2f,1.75f,-4.23f),
                 new Vector3(1.25f,.82f,.045f), matGlow).GetComponent<Collider>().enabled = false;
             Sign("SUPPLIES // 65 CR", new Vector3(-4.2f,2.42f,-4.25f), .24f, matWhite);
+
+            BuildWashAttendant(new Vector3(-5.2f, 0f, 1.2f));
 
             var hud=new GameObject("GAME HUD"); hud.AddComponent<UfoWashHUD>();
             var frontEnd = new GameObject("GAME FRONT END // STORY + TUTORIAL");
@@ -333,6 +336,111 @@ Left mouse: operate washer",
             Sign("UPPER HULL ACCESS",new Vector3(6.2f,1.1f,-6.7f),.22f,matWhite);
         }
 
+        static void BuildWashAttendant(Vector3 position)
+        {
+            var attendant = new GameObject("WASH ATTENDANT // VESPER SERVICE TECH");
+            attendant.transform.position = position;
+            var capsule = attendant.AddComponent<CapsuleCollider>();
+            capsule.height = 1.9f;
+            capsule.radius = .34f;
+            capsule.center = new Vector3(0f, .94f, 0f);
+
+            if (!AttachImportedWashTech(attendant))
+                BuildWashTechFallback(attendant);
+
+            Part(attendant, "Tech tool // ion lance", PrimitiveType.Cylinder,
+                new Vector3(.49f, .78f, .34f), new Vector3(.11f, .34f, .11f), matDark);
+            Part(attendant, "Tech tool // status lens", PrimitiveType.Sphere,
+                new Vector3(.49f, .96f, .34f), new Vector3(.14f, .12f, .14f), matGlow);
+            Part(attendant, "Tech boot // left", PrimitiveType.Cube,
+                new Vector3(-.2f, .12f, .1f), new Vector3(.3f, .22f, .43f), matDark);
+            Part(attendant, "Tech boot // right", PrimitiveType.Cube,
+                new Vector3(.2f, .12f, .1f), new Vector3(.3f, .22f, .43f), matDark);
+
+            var worker = attendant.AddComponent<UfoWashWashAttendant>();
+            Set(worker, "nozzle", attendant.transform.Find("Tech tool // ion lance"));
+            Sign("VESPER SERVICE TECH // BAY 01",
+                position + new Vector3(0f, 2.8f, 0f), .22f, matOrange);
+        }
+
+        static bool AttachImportedWashTech(GameObject attendant)
+        {
+            const string importedFolder = "Assets/UFO_WASH/Art/Imported/KenneySpaceKit";
+            string[] guids = AssetDatabase.FindAssets("astronautA t:Model", new[] { importedFolder });
+            string modelPath = null;
+            for (int i = 0; i < guids.Length; i++)
+            {
+                string candidate = AssetDatabase.GUIDToAssetPath(guids[i]);
+                if (System.IO.Path.GetFileNameWithoutExtension(candidate)
+                    .Equals("astronautA", System.StringComparison.OrdinalIgnoreCase))
+                {
+                    modelPath = candidate;
+                    break;
+                }
+            }
+
+            if (string.IsNullOrEmpty(modelPath)) return false;
+            var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(modelPath);
+            if (prefab == null) return false;
+            var model = PrefabUtility.InstantiatePrefab(prefab) as GameObject;
+            if (model == null) return false;
+
+            model.name = "KENNEY CC0 // ASTRONAUT WASH TECH";
+            model.transform.SetParent(attendant.transform, false);
+            model.transform.localPosition = Vector3.zero;
+            model.transform.localRotation = Quaternion.identity;
+            model.transform.localScale = Vector3.one;
+
+            var renderers = model.GetComponentsInChildren<Renderer>(true);
+            if (renderers.Length == 0)
+            {
+                Object.DestroyImmediate(model);
+                return false;
+            }
+
+            Bounds bounds = renderers[0].bounds;
+            for (int i = 1; i < renderers.Length; i++) bounds.Encapsulate(renderers[i].bounds);
+            float targetHeight = 1.9f;
+            float scale = targetHeight / Mathf.Max(.01f, bounds.size.y);
+            model.transform.localScale = Vector3.one * scale;
+            bounds = renderers[0].bounds;
+            for (int i = 1; i < renderers.Length; i++) bounds.Encapsulate(renderers[i].bounds);
+            model.transform.position += attendant.transform.position +
+                Vector3.up * (targetHeight * .5f) - bounds.center;
+
+            for (int i = 0; i < renderers.Length; i++)
+            {
+                string partName = renderers[i].gameObject.name.ToLowerInvariant();
+                Material replacement = partName.Contains("visor") || partName.Contains("glass")
+                    ? matCyan : partName.Contains("dark") || partName.Contains("boot")
+                        ? matDark : partName.Contains("blue") || partName.Contains("shoulder")
+                            ? matBlue : matWhite;
+                var source = renderers[i].sharedMaterials;
+                var materials = new Material[Mathf.Max(1, source != null ? source.Length : 0)];
+                for (int slot = 0; slot < materials.Length; slot++) materials[slot] = replacement;
+                renderers[i].sharedMaterials = materials;
+            }
+            return true;
+        }
+
+        static void BuildWashTechFallback(GameObject attendant)
+        {
+            Part(attendant, "Tech torso // ceramic suit", PrimitiveType.Capsule,
+                new Vector3(0f, .95f, 0f), new Vector3(.62f, .92f, .5f), matWhite);
+            Part(attendant, "Tech head // sealed helmet", PrimitiveType.Sphere,
+                new Vector3(0f, 1.72f, .02f), new Vector3(.58f, .5f, .48f), matMetal);
+            Part(attendant, "Tech visor // cyan glass", PrimitiveType.Cube,
+                new Vector3(0f, 1.75f, .25f), new Vector3(.43f, .17f, .055f), matCyan);
+            Part(attendant, "Tech shoulder // left", PrimitiveType.Sphere,
+                new Vector3(-.43f, 1.22f, 0f), new Vector3(.28f, .25f, .3f), matBlue);
+            Part(attendant, "Tech shoulder // right", PrimitiveType.Sphere,
+                new Vector3(.43f, 1.22f, 0f), new Vector3(.28f, .25f, .3f), matBlue);
+            Part(attendant, "Tech arm // left", PrimitiveType.Capsule,
+                new Vector3(-.46f, .82f, .12f), new Vector3(.19f, .52f, .2f), matWhite);
+            Part(attendant, "Tech arm // right", PrimitiveType.Capsule,
+                new Vector3(.46f, .82f, .12f), new Vector3(.19f, .52f, .2f), matWhite);
+        }
+
         static void OrganizeHierarchy(Scene scene)
         {
             // Keep the generated scene readable in the Hierarchy. Preserve world transforms
@@ -360,6 +468,7 @@ Left mouse: operate washer",
                 else if (n.Contains("career loop") || n.Contains("contract terminal")) target = systems;
                 else if (n.Contains("terminal") || n.Contains("supply") || n.Contains("upgrade") ||
                     n.Contains("chemical drum") || n.Contains("drum lid") || n.Contains("drum hazard") ||
+                    n.Contains("attendant") ||
                     n.Contains("gantry") || n.Contains("spray nozzle") || n.Contains("nozzle hose") ||
                     n.Contains("washer") || n.Contains("hose reel")) target = equipment;
 

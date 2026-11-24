@@ -15,6 +15,9 @@ namespace UFOWASH
         private bool isUnlocked;
         private string PreferenceKey => "UFOWASH_SECTOR_" + sectorKey.ToUpperInvariant();
 
+        public string SectorKey => sectorKey;
+        public bool IsUnlocked => isUnlocked;
+
         private void Awake()
         {
             isUnlocked = PlayerPrefs.GetInt(PreferenceKey, 0) == 1;
@@ -61,11 +64,22 @@ namespace UFOWASH
             }
 
             UfoWashHUD.Credits -= purchaseCost;
-            isUnlocked = true;
-            PlayerPrefs.SetInt(PreferenceKey, 1);
-            PlayerPrefs.Save();
-            ApplyWorldState();
+            SetUnlockedFromSave(true);
+            if (UfoWashProgressSave.Instance != null)
+                UfoWashProgressSave.Instance.MarkSectorUnlocked(sectorKey);
             career.NotifyBossMessage("LAND CLAIM APPROVED // " + sectorName + " IS OPEN. NEW PLOTS AND CONTRACTS ARE NOW AVAILABLE.");
+        }
+
+        public void SetUnlockedFromSave(bool unlocked)
+        {
+            isUnlocked = unlocked;
+            int savedValue = isUnlocked ? 1 : 0;
+            if (PlayerPrefs.GetInt(PreferenceKey, 0) != savedValue)
+            {
+                PlayerPrefs.SetInt(PreferenceKey, savedValue);
+                PlayerPrefs.Save();
+            }
+            ApplyWorldState();
         }
 
         private void ApplyWorldState()

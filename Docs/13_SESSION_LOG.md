@@ -155,3 +155,18 @@ Append one entry at the end of every meaningful development session. This is a c
 
 ## 2026-11-23 — Camera and presentation stabilization
 Pulled origin/main (already current). Updated third-person exploration camera, conditional first-person washer mode, player/tool visibility, alien material assignment and dialogue placement. Unity compile succeeded; observed title/briefing/tutorial and third-person gameplay. The working scene still has obvious oversized labels and greybox environment; the complete loop and first-person transition remain unverified. Do not mark the demo complete.
+
+---
+
+## Session 003 — Persistent company growth and first wash tech
+
+- **Date:** 2026-11-24
+- **Task:** Continue the station-growth task after the owner reported that the separate cleaning recovery had stalled. The task's changes were not available in this checkout; the career loop and generated-scene builder were touched, so reconciliation with that work may be needed.
+- **Files created:** `Assets/UFO_WASH/Scripts/Progression/UfoWashProgressSave.cs`; `Assets/UFO_WASH/Scripts/Progression/UfoWashWashAttendant.cs` and Unity metadata.
+- **Files modified:** `Assets/UFO_WASH/Scripts/Core/UfoWashCareerLoop.cs`; `Assets/UFO_WASH/Scripts/Progression/UfoWashSectorGate.cs`; `Assets/UFO_WASH/Scripts/Progression/UfoWashUpgradeStation.cs`; `Assets/UFO_WASH/Editor/UfoWashPowerSliceBuilder.cs`.
+- **Work implemented:** Versioned JSON company ledger for credits, reputation, water/chemical, completed jobs, washer upgrades, attendant hiring and land claims; backup recovery and non-overwriting corrupt-save handling; legacy land-claim migration; one 120 GC attendant that pre-rinses only active contracted surfaces and exposes idle/working/water-blocked status; scene-builder hookup using the included Kenney CC0 astronaut model with a simple fallback; save warnings.
+- **Design boundary:** Unfinished contracts are not resumed after restart. Recurring staff wages, full staff schedules and broader construction remain out of scope. The worker presentation remains unverified and may need polish; the fallback is explicitly greybox, not production art.
+- **Checks performed:** Read affected source and project design/QA guidance; `git diff --check` passed, a lightweight C# delimiter-balance scan passed for all six touched C# files, and all 1,860 Unity asset GUIDs passed format/uniqueness checks.
+- **Not tested:** C# compilation, Unity import, scene regeneration, Play Mode, purchase/reward duplication, persistence round-trip, corrupt-save recovery or visual quality. Unity Editor and C# compiler are unavailable in this checkout.
+- **Risks:** Task #2 may also change the career loop and scene builder. Reconcile those files before merging. Static review found and corrected a backup-recovery self-copy path; filesystem/Unity recovery tests remain necessary. Worker gameplay requires Unity test coverage; active job state is intentionally reset.
+- **Next task:** Open the generated scene safely in Unity 6.6.10f1, run the ledger and attendant QA checklist in `Docs/05_QA_TEST_STRATEGY.md`, then resolve any overlap with the cleaning-recovery work.

@@ -32,6 +32,7 @@ namespace UFOWASH
 
         public bool JobAccepted { get; private set; }
         public int CompletedJobs { get; private set; }
+        public UfoWashDirtSurface[] ContractSurfaces => contractSurfaces;
         public string LastMessage { get; private set; } = "A new contract is waiting";
         public UfoWashToolMode CurrentStage { get; private set; } = UfoWashToolMode.PreRinse;
         public float Water { get; private set; } = 100f;
@@ -156,6 +157,21 @@ namespace UFOWASH
             if (contractSurfaces == null) contractSurfaces = System.Array.Empty<UfoWashDirtSurface>();
             customerNpc = FindAnyObjectByType<UfoWashCustomerNpc>();
             if (UfoWashHUD.Credits == 0) UfoWashHUD.Credits = 750;
+            if (UfoWashProgressSave.Instance != null)
+                UfoWashProgressSave.Instance.RestoreCareer(this);
+        }
+
+        public void RestoreProgress(int credits, float reputation, float water, float chemical, int completedJobs)
+        {
+            UfoWashHUD.Credits = Mathf.Max(0, credits);
+            Reputation = Mathf.Clamp(reputation, 1f, 5f);
+            Water = Mathf.Clamp(water, 0f, 100f);
+            Chemical = Mathf.Clamp(chemical, 0f, 100f);
+            CompletedJobs = Mathf.Max(0, completedJobs);
+            JobAccepted = false;
+            activeOfferIndex = -1;
+            CurrentStage = UfoWashToolMode.PreRinse;
+            UfoWashHUD.JobComplete = false;
         }
 
         void OnDestroy()
@@ -279,6 +295,8 @@ namespace UFOWASH
             Water = 100f;
             Chemical = 100f;
             LastMessage = "SUPPLIES REFILLED // -65 CR";
+            if (UfoWashProgressSave.Instance != null)
+                UfoWashProgressSave.Instance.SaveNow();
         }
 
         public void CompleteJob()
@@ -306,6 +324,8 @@ namespace UFOWASH
             UfoWashHUD.JobComplete = true;
             LastMessage = "INSPECTION PASSED // GRADE " + grade + " // BASE " + basePayout +
                 " + QUALITY BONUS " + qualityBonus + " + CUSTOMER TIP " + tip + " CR // REPUTATION " + Reputation.ToString("0.0");
+            if (UfoWashProgressSave.Instance != null)
+                UfoWashProgressSave.Instance.SaveNow();
         }
 
         public void ResetActiveJob()
