@@ -43,6 +43,7 @@ namespace UFOWASH
         SaveData loadedData;
         string lastSnapshot;
         UfoWashUpgradeStation[] upgradeStations = Array.Empty<UfoWashUpgradeStation>();
+        UfoWashBayRecoveryStation[] bayRecoveryStations = Array.Empty<UfoWashBayRecoveryStation>();
         UfoWashWashAttendant[] attendants = Array.Empty<UfoWashWashAttendant>();
         UfoWashSectorGate[] sectorGates = Array.Empty<UfoWashSectorGate>();
         bool hasLoadedData;
@@ -293,6 +294,10 @@ namespace UFOWASH
                 if (upgradeStations[i] != null)
                     SetUpgrade(data, upgradeStations[i].SaveKey, upgradeStations[i].Level);
 
+            for (int i = 0; i < bayRecoveryStations.Length; i++)
+                if (bayRecoveryStations[i] != null)
+                    SetUpgrade(data, bayRecoveryStations[i].SaveKey, bayRecoveryStations[i].Level);
+
             if (attendants.Length > 0 && attendants[0] != null)
                 data.attendantHired = attendants[0].IsHired;
 
@@ -310,6 +315,7 @@ namespace UFOWASH
         void RefreshWorldReferences()
         {
             upgradeStations = FindObjectsByType<UfoWashUpgradeStation>(FindObjectsSortMode.None);
+            bayRecoveryStations = FindObjectsByType<UfoWashBayRecoveryStation>(FindObjectsSortMode.None);
             attendants = FindObjectsByType<UfoWashWashAttendant>(FindObjectsSortMode.None);
             sectorGates = FindObjectsByType<UfoWashSectorGate>(FindObjectsSortMode.None);
         }

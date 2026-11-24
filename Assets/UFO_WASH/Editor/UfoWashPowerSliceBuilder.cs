@@ -40,6 +40,7 @@ namespace UFOWASH.Editor
         }
 
         static GameObject playModeDetails;
+        static Material playModeModularMaterial;
         static readonly List<KeyValuePair<Transform, Vector3>> movedPlayModeProps =
             new List<KeyValuePair<Transform, Vector3>>();
 
@@ -54,6 +55,8 @@ namespace UFOWASH.Editor
             matBlue = LoadPlayMaterial("PS_BluePaint");
             matOrange = LoadPlayMaterial("PS_HazardOrange");
             matGlow = LoadPlayMaterial("PS_EmissiveCyan");
+            if (matVesperModular == null)
+                matVesperModular = CreatePlayModeModularMaterial();
 
             var originalRoots = new HashSet<GameObject>(scene.GetRootGameObjects());
             playModeDetails = new GameObject("PLAY MODE // SERVICE ACCESS") { hideFlags = HideFlags.DontSave };
@@ -81,6 +84,8 @@ namespace UFOWASH.Editor
                 playModeDetails.AddComponent<UfoWashProgressSave>();
             if (Object.FindAnyObjectByType<UfoWashWashAttendant>() == null)
                 BuildWashAttendant(new Vector3(-5.2f, 0f, 1.2f));
+            if (Object.FindAnyObjectByType<UfoWashBayRecoveryStation>() == null)
+                BuildBayRecoveryUpgrade();
 
             foreach (var root in scene.GetRootGameObjects())
                 if (root != playModeDetails && !originalRoots.Contains(root))
@@ -101,6 +106,31 @@ namespace UFOWASH.Editor
             movedPlayModeProps.Clear();
             if (playModeDetails != null) Object.DestroyImmediate(playModeDetails);
             playModeDetails = null;
+            if (playModeModularMaterial != null)
+            {
+                if (matVesperModular == playModeModularMaterial) matVesperModular = null;
+                Object.DestroyImmediate(playModeModularMaterial);
+                playModeModularMaterial = null;
+            }
+        }
+
+        static Material CreatePlayModeModularMaterial()
+        {
+            const string palettePath = "Assets/UFO_WASH/Art/Textures/Vesper_ModularSpace_Colormap.png";
+            var palette = AssetDatabase.LoadAssetAtPath<Texture2D>(palettePath);
+            var shader = Shader.Find("Universal Render Pipeline/Lit");
+            if (palette == null || shader == null)
+            {
+                Debug.LogWarning("UFO WASH: Vesper modular palette or URP/Lit is missing; recovery annex uses brushed steel.");
+                return null;
+            }
+
+            playModeModularMaterial = new Material(shader) { hideFlags = HideFlags.DontSave };
+            if (playModeModularMaterial.HasProperty("_BaseMap"))
+                playModeModularMaterial.SetTexture("_BaseMap", palette);
+            else if (playModeModularMaterial.HasProperty("_MainTex"))
+                playModeModularMaterial.SetTexture("_MainTex", palette);
+            return playModeModularMaterial;
         }
 
         static void BuildScene(bool showDialog, string outputPath = ScenePath)
@@ -262,6 +292,7 @@ namespace UFOWASH.Editor
             Sign("SUPPLIES // 65 CR", new Vector3(-4.2f,2.42f,-4.25f), .24f, matWhite);
 
             BuildWashAttendant(new Vector3(-5.2f, 0f, 1.2f));
+            BuildBayRecoveryUpgrade();
 
             var hud=new GameObject("GAME HUD"); hud.AddComponent<UfoWashHUD>();
             var frontEnd = new GameObject("GAME FRONT END // STORY + TUTORIAL");
@@ -312,6 +343,42 @@ Left mouse: operate washer",
             }
             Sign("01  PRE-RINSE    /    02  FOAM    /    03  RINSE",new Vector3(0,5.9f,19.02f),.27f,matWhite);
             Sign("DUST BASIN  /  INDEPENDENT SERVICE",new Vector3(0,5.25f,19.02f),.20f,matCyan);
+        }
+
+        static void BuildBayRecoveryUpgrade()
+        {
+            var console = Cube("BAY SYSTEMS // RECOVERY LOOP", new Vector3(8.8f,1.25f,-3.5f),
+                new Vector3(1.7f,2.5f,1.1f), matBlue);
+            Cube("Bay recovery console screen", new Vector3(8.8f,1.75f,-4.08f),
+                new Vector3(1.35f,.8f,.06f), matGlow).GetComponent<Collider>().enabled = false;
+            var consoleSign = Sign("BAY RECOVERY // UPGRADE", new Vector3(8.8f,2.75f,-4.08f), .22f, matWhite);
+            consoleSign.transform.rotation = Quaternion.Euler(0f,180f,0f);
+
+            var firstModule = new GameObject("VESPER ANNEX // WATER RECOVERY");
+            firstModule.SetActive(false);
+            var waterRoom = SpawnModularKitModel("room-small-variation",
+                new Vector3(9.2f,-.25f,13.2f), Quaternion.identity, 6f);
+            if (waterRoom == null)
+                throw new System.InvalidOperationException("The included Kenney room-small-variation model is required for the bay recovery upgrade.");
+            waterRoom.name = "VESPER ANNEX // WATER RECOVERY // CC0 KENNEY";
+            waterRoom.transform.SetParent(firstModule.transform, true);
+            var waterSign = Sign("WATER RECOVERY // BAY 01", new Vector3(9.2f,3.3f,10.1f), .25f, matCyan);
+            waterSign.transform.rotation = Quaternion.Euler(0f,180f,0f);
+            waterSign.transform.SetParent(firstModule.transform, true);
+
+            var secondModule = new GameObject("VESPER ANNEX // DUAL-STAGE RECLAIMER");
+            secondModule.SetActive(false);
+            var dualStageRoom = SpawnModularKitModel("room-wide-variation",
+                new Vector3(9.2f,-.25f,13.2f), Quaternion.identity, 7.4f);
+            if (dualStageRoom == null)
+                throw new System.InvalidOperationException("The included Kenney room-wide-variation model is required for the second bay recovery tier.");
+            dualStageRoom.name = "VESPER ANNEX // DUAL-STAGE RECLAIMER // CC0 KENNEY";
+            dualStageRoom.transform.SetParent(secondModule.transform, true);
+            var dualStageSign = Sign("DUAL-STAGE RECOVERY // BAY 01", new Vector3(9.2f,3.3f,9.6f), .25f, matCyan);
+            dualStageSign.transform.rotation = Quaternion.Euler(0f,180f,0f);
+            dualStageSign.transform.SetParent(secondModule.transform, true);
+
+            console.AddComponent<UfoWashBayRecoveryStation>().Configure(firstModule, secondModule);
         }
 
         static void BuildServiceAccess()

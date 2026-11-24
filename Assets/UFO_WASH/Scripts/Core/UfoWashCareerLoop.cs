@@ -46,7 +46,9 @@ namespace UFOWASH
         UfoWashDirtSurface[] contractSurfaces = System.Array.Empty<UfoWashDirtSurface>();
         int activeOfferIndex = -1;
         float activeJobStartedAt;
+        float supplyUseMultiplier = 1f;
         public float Reputation { get; private set; } = 2.1f;
+        public int SupplyEfficiencyPercent => Mathf.RoundToInt((1f - supplyUseMultiplier) * 100f);
         public bool CanAcceptJob => !JobAccepted && contractSurfaces.Length > 0 && (customerShip == null || customerShip.IsDocked);
         public float Quality => Mathf.Clamp01(1f - UfoWashDirtSurface.AverageDirt(contractSurfaces) -
             UfoWashDirtSurface.AverageFoam(contractSurfaces) * 0.18f);
@@ -127,6 +129,12 @@ namespace UFOWASH
 
         public bool CanUseTool(UfoWashToolMode mode) => JobAccepted && mode == CurrentStage &&
             (mode == UfoWashToolMode.Foam ? Chemical > 0f : Water > 0f);
+
+        public void SetBayRecoveryTier(int tier)
+        {
+            int safeTier = Mathf.Clamp(tier, 0, 2);
+            supplyUseMultiplier = safeTier == 0 ? 1f : safeTier == 1 ? 0.85f : 0.70f;
+        }
 
         public string ToolBlockReason(UfoWashToolMode mode)
         {
@@ -265,7 +273,7 @@ namespace UFOWASH
             }
 
             if (!surface.CoatingReady) return false;
-            float rate = mode == UfoWashToolMode.Foam ? 1.2f : 0.65f;
+            float rate = (mode == UfoWashToolMode.Foam ? 1.2f : 0.65f) * supplyUseMultiplier;
             // A nearly empty tank buys only the remaining fraction of a frame.
             // Pauses/stalls cannot grant seconds of free work for the last drop.
             float available = mode == UfoWashToolMode.Foam ? Chemical : Water;

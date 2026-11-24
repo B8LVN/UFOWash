@@ -41,6 +41,7 @@ Owner reaffirmed the Steam-game quality target and Moon Sweepers / Schedule I / 
 - **Implemented — unverified:** Versioned company save for credits, reputation, water/chemical, completed jobs, washer upgrades, the first hired wash tech and land claims. Active contracts reset on reload; Unity round-trip and corrupt-file recovery tests remain outstanding.
 - **Implemented — unverified:** A 120 GC wash tech hire performs automatic pre-rinse on the active contracted hull zones and exposes working/idle/water-blocked states. Recurring wages are not simulated. Unity Play Mode, affordability and supply recovery checks remain outstanding.
 - **Implemented — unverified:** Quick Decontamination offers +45 GC for passing inspection within five minutes. The deadline is disclosed, other contracts have no timer, and missing it has no payout penalty.
+- **Implemented — unverified:** A saved two-tier Bay Recovery upgrade reduces water/foam use by 15%, then 30%, and replaces the starter annex with a larger Kenney CC0 room module. Unity purchase, reload and visual checks remain.
 
 - Extend the company ledger with inventory beyond wash supplies, expenses and safe migration. Active contracts intentionally reset on reload; serializing their live hull state remains future work.
 - Expand the contract board with more ship/customer archetypes, service recipes, optional preferences and a transparent gross/net quote.

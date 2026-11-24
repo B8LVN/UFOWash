@@ -6,6 +6,7 @@
 
 # 2026-11-24 — UI entry and optional tooling cleanup
 
+- Added a persistent two-stage Bay Recovery annex: lower water/foam use and a visible Kenney CC0 room expansion.
 - Shift start now goes directly into gameplay; Story and How to Play remain optional.
 - Added a Tab toggle for the hull checklist and updated the HUD hint.
 - Added an optional five-minute, +45 GC express bonus to the quick contract; late completion has no penalty.

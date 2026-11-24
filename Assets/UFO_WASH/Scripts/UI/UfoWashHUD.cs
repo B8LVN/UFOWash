@@ -135,7 +135,9 @@ namespace UFOWASH
             shipText.text = "VESSEL // " + career.Ship + (career.JobAccepted ? "     PAYOUT // " + career.Reward + " CR" : string.Empty);
             contaminationText.text = career.JobAccepted ? "HAZARD // " + career.ContaminationType : "HAZARD // INSPECT AT CONTRACT BOARD";
             stageText.text = career.JobAccepted ? "SERVICE PROCESS // " + career.StageLabel : "SERVICE PROCESS // AWAITING DISPATCH";
-            supplyText.text = "WATER " + Mathf.RoundToInt(career.Water) + "%  //  FOAM CHEMICAL " + Mathf.RoundToInt(career.Chemical) + "%";
+            supplyText.text = "WATER " + Mathf.RoundToInt(career.Water) + "%  //  FOAM " +
+                Mathf.RoundToInt(career.Chemical) + "%" +
+                (career.SupplyEfficiencyPercent > 0 ? "  //  LOOP -" + career.SupplyEfficiencyPercent + "%" : string.Empty);
             zonesText.text = career.JobAccepted ? career.GetZoneChecklist() :
                 JobComplete ? career.LastReceipt : "01  ACCEPT DISPATCH\n02  SWEEP EACH HULL ZONE\n03  INSPECT AND GET PAID\n04  FIT A FAN NOZZLE AT EQUIPMENT";
             if (tool != null)

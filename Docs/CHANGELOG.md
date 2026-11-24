@@ -1,5 +1,7 @@
 # 2026-11-24 — Direct development and optional QA cleanup
 
+- Added a two-tier, saved Bay Recovery purchase with real supply savings and
+  visible Kenney CC0 annex growth; Unity behavior and visuals remain unverified.
 - Removed the optional standalone test runner, Editor validators, QA-plan/recovery
   documents, unused bug-report templates and generated check/audit output. None
   were runtime dependencies; ordinary play verification remains necessary.

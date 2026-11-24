@@ -9,6 +9,10 @@
   Added a Tab shortcut to show/hide the hull checklist.
 - Added a disclosed five-minute / +45 GC express bonus to the quick contract.
   The bonus never penalizes the base payout or other rewards.
+- Added a saved Bay Recovery investment with two prices, actual 15%/30% supply
+  savings, and small-to-large annex visuals using existing Kenney CC0 room models.
+- The builder attaches the annex to the existing bay floor; no authored scene was
+  replaced. Unity purchase, persistence and visual review are still required.
 - Existing Kenney Space Kit and Modular Space Kit remain the free CC0 art base;
   this update did not download or falsely claim integration of additional packs.
 - The earlier Unity Editor download and import logs are not present in this checkout;

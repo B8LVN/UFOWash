@@ -76,6 +76,7 @@ Buildings occupy a snap grid of 4 m cells on purchasable plots. Placement checks
 | Structure | Gameplay role and visible upgrade |
 |---|---|
 | Landing & Wash Bay | Dirt pad → covered bay → automated multi-arch tunnel; capacity and ship-size clearance |
+| Bay Recovery Annex | Closed-loop water/foam reclamation lowers supply use; a modular annex is visibly expanded as the station improves |
 | Fluid & Chemical Plant | Pressurized silos and mixer produce water/foam/degreaser; exposed pipes show flow |
 | Fusion / Solar Hub | Generator, solar field, capacitor bank or crystal reactor; capacity, upkeep and surge resistance trade off |
 | Crew Quarters | Trailer, lockers and break room add worker slots and stamina recovery |
@@ -116,6 +117,8 @@ Opening quotes: 250 / 420 / 600 GC. Tip rules: 8% of base at 84% quality, 16% at
 
 The opening Quick Decontamination contract also offers a transparent, optional express bonus: pass inspection within five minutes for +45 GC. Missing the window only loses that bonus; it never reduces base pay, quality rewards, tips or reputation. The other opening offers have no time limit.
 
+Bay 01 has a two-step recovery investment: the first module costs 650 GC and reduces wash-supply use by 15%; a 1,400 GC second stage replaces it with a larger annex and raises total savings to 30%. Both prices and effects are shown before purchase; these effects are implemented in source but need Unity play testing.
+
 Show gross and net separately. Receipts break out base fee, quality bonus, tip, consumables, wages, utilities and maintenance. Pricing/service packages affect demand and reputation. Lounge comfort × premium polish × fast turnaround can synergize, with a visible cap and quote breakdown.
 
 ## 3. First-shift service rules
@@ -148,6 +151,7 @@ Quality = 1 − average contracted-zone contamination − 0.18 × average residu
 | Sector land claims and gate unlocks | UfoWashSectorGate.cs, UfoWashProgressSave.cs, UfoWashPowerSliceBuilder.cs | Three physical gates are authored; JSON save integration is source-implemented; Play Mode restoration is unverified |
 | Company ledger and washer upgrades | UfoWashProgressSave.cs, UfoWashCareerLoop.cs, UfoWashUpgradeStation.cs | Versioned JSON, backup recovery and progression restoration implemented in source; Unity round-trip and corruption cases unverified |
 | First attendant | UfoWashWashAttendant.cs, UfoWashPowerSliceBuilder.cs | Hireable for 120 GC, matching the GDD target; pre-rinses contracted zones and reports water blockage; temporary Play Mode injection and task-loop behavior unverified |
+| Bay recovery investment | UfoWashBayRecoveryStation.cs, UfoWashProgressSave.cs, UfoWashPowerSliceBuilder.cs | Two persistent tiers reduce actual water/chemical use and reveal CC0 Kenney annex modules; Unity persistence and appearance unverified |
 | Physical building placement and utility routing | None | Designed, not implemented; sector claim currently unlocks land only |
 | Full staff AI, work orders and automation | None beyond the bounded attendant prototype | Full navigation, rosters, wages, work-order configuration and automated lines remain design/future work |
 | Ship roster, chemistry damage, Rare Residue and full multi-sector progression | Partial or absent | Future production work; only basic sector purchase persistence is implemented |
