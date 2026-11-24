@@ -1,5 +1,6 @@
 # 2026-11-24 — Owner-requested direct Play workflow
 
+- **GitHub follow-through:** owner connected GitHub; retried the branch push successfully. `ufo-wash/cleaning-recovery` is now available remotely and main remains unchanged. Download by fetching origin and switching to that branch. This resolves the upload blocker below, not the separate Unity licensing/runtime-verification blocker.
 - Owner explicitly wants Unity Play → main menu → start game, without a UFO WASH/Create step.
 - Added an Editor start-scene hook and temporary Play-session service details; retained the existing menu and authored scene. Stop restores moved props and removes temporary additions.
 - Existing scene generation is no longer an owner test prerequisite. The optional generator is under Developer Tools.

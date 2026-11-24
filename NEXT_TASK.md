@@ -12,6 +12,8 @@
 
 **Next single action:** Establish the working Editor session and run the complete acceptance sequence in `Docs/reports/QUALITY_RECOVERY_2026-11-24.md`. Fix any discovered defects before declaring this milestone complete.
 
+**Download for testing:** the source is on GitHub branch `ufo-wash/cleaning-recovery` in `B8LVN/UFOWash`, not merged into `main`. Close Unity, preserve local edits, run `git fetch origin`, then `git switch ufo-wash/cleaning-recovery` and `git pull --ff-only`. Open Unity 6000.6.10f1 and press Play; no scene-generation command is needed.
+
 The exact Linux Editor has been downloaded into ignored `generated-artifacts/unity-editor/`; its version command succeeds. After installing required Linux libraries and ICU, the isolated import exited **198**: **No valid Unity Editor license found**. Activate the exact Editor or provide an accessible licensed session; do not send credentials in chat. No further import retry is useful until licensing changes.
 
 Source now contains local dirt/foam, tool pressure audio, shared target acquisition, guarded input, a switchable fan purchase, supply limits, revised HUD and a non-destructive bay-preview generator. Fourteen engine-independent coating checks pass. Neither these checks nor the new two-contract Unity rule fixture count as authored-scene gameplay acceptance.

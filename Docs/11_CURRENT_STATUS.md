@@ -7,7 +7,7 @@
 **Status: Implemented — unverified in Unity; acceptance remains Blocked.**
 
 - **Normal testing path:** press Unity **Play → main menu → start the shift**. No Create/Generate command is required. The Editor start-scene hook selects the existing menu scene and adds service access only in memory for Play, removing it on Stop. This supersedes the earlier manual-preview instructions; licensed runtime verification is still required.
-- **GitHub availability:** source is committed locally on `ufo-wash/cleaning-recovery`. Push was attempted but rejected because this environment has no accessible GitHub connection for `B8LVN/UFOWash`. Nothing new is available to pull yet; connect GitHub and retry. Main was not updated.
+- **GitHub availability:** after the owner connected GitHub, `ufo-wash/cleaning-recovery` was successfully pushed to `B8LVN/UFOWash`. Fetch and switch to that test branch to download the changes; pulling `main` alone will not get them. Main was not updated. Unity runtime acceptance remains blocked.
 - Local grime and persistent foam now share area-weighted surface cells; the old whole-renderer dirt tint and separate foam spheres were removed. Original hull materials and scene references are retained.
 - Camera and spray share contracted-panel targeting; valid stages/supplies gate active cleaning. Input focus/relock/menu handling and shoulder-camera interaction range were corrected in source.
 - Added a switchable wide fan nozzle as the first 200 GC purchase, actual cleaning-power effects, proportional last-drop supply use, stage-aware zone feedback, bounded HUD panels and a separate payout receipt.
