@@ -3,7 +3,8 @@
 - Owner explicitly wants Unity Play → main menu → start game, without a UFO WASH/Create step.
 - Added an Editor start-scene hook and temporary Play-session service details; retained the existing menu and authored scene. Stop restores moved props and removes temporary additions.
 - Existing scene generation is no longer an owner test prerequisite. The optional generator is under Developer Tools.
-- Preparing a separate GitHub test branch for download; do not represent it as merged into main. Exact push outcome is reported separately after verification.
+- Committed direct-entry changes locally on `ufo-wash/cleaning-recovery`, which also contains the earlier cleaning recovery. GitHub push failed: the secure proxy reported no accessible GitHub connection. No remote test branch was created and main was not updated. Connect GitHub with access to `B8LVN/UFOWash`, then retry the branch push.
+- Fourteen deterministic coating checks and syntax checks for 25 game/editor files passed. Tracked scenes, materials, existing metadata, package versions and project settings remained unchanged.
 - Unity runtime evidence remains blocked by the previously confirmed missing license; no unchanged import retry or player build.
 
 # 2026-11-24 — Local cleaning and first-contract recovery
