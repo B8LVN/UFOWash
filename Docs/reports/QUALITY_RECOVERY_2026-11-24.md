@@ -11,6 +11,14 @@ ship/cockpit collider and could reject all upper-shell faces. Coating now builds
 from the current panel mesh's non-degenerate triangles only; in-play spray targeting
 still respects blockers and cell-facing normals. The contract board is
 expanded/reflowed and suppresses underlying gameplay overlays.
+
+**Owner follow-up:** owner confirmed contract acceptance now works. The cleaning
+bar had been labelled overall cleanliness even though the contract waits for every
+zone to meet each stage gate; a low-seeming number was confusing. The bar now tracks
+current-stage completion across zones. Local spray treatment has a wider base
+footprint and faster work rate. Repeated spray over cells already at the current
+stage target returns a move-to-untreated-zone hint without consuming supplies.
+Actual feel, water use and full-ship performance still need Unity Play Mode review.
 Eighteen deterministic checks now cover the precise legacy shell profile and copy
 orientation. These results establish the geometry math only: use the authored
 Unity Game view to verify collider visibility, button operation and layout.

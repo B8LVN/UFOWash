@@ -109,11 +109,12 @@ namespace UFOWASH
             weights.Add(area);
         }
 
-        public void Process(UfoWashToolMode mode, float seconds, Vector3 point, Vector3 normal, float radius)
+        public bool Process(UfoWashToolMode mode, float seconds, Vector3 point, Vector3 normal, float radius)
         {
             float radiusSquared = radius * radius;
             Matrix4x4 toWorld = owner.localToWorldMatrix;
             Matrix4x4 normalMatrix = owner.worldToLocalMatrix.transpose;
+            bool changed = false;
             for (int i = 0; i < centers.Count; i++)
             {
                 Vector3 worldCenter = toWorld.MultiplyPoint3x4(centers[i]);
@@ -121,9 +122,11 @@ namespace UFOWASH
                 if (Vector3.Dot(cellNormal, normal) < 0.25f || (worldCenter - point).sqrMagnitude > radiusSquared) continue;
                 // Do not wrap a brush through thin hulls or around sharp corners.
                 if (Mathf.Abs(Vector3.Dot(worldCenter - point, normal)) > 0.16f) continue;
-                State.Treat(i, (int)mode, seconds);
+                changed |= State.Treat(i, (int)mode, seconds);
             }
+            if (!changed) return false;
             Refresh();
+            return true;
         }
 
         public void Reset(Color tint, float dirt, float foam = 0f)

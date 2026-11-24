@@ -46,6 +46,29 @@ namespace UFOWASH
         public bool CanAcceptJob => !JobAccepted && contractSurfaces.Length > 0 && (customerShip == null || customerShip.IsDocked);
         public float Quality => Mathf.Clamp01(1f - UfoWashDirtSurface.AverageDirt(contractSurfaces) -
             UfoWashDirtSurface.AverageFoam(contractSurfaces) * 0.18f);
+        public float StageProgress
+        {
+            get
+            {
+                if (!JobAccepted || contractSurfaces.Length == 0) return 0f;
+                float sum = 0f;
+                int count = 0;
+                float startingDirt = OfferStartingDirt[Mathf.Clamp(activeOfferIndex, 0, OfferStartingDirt.Length - 1)];
+                foreach (var surface in contractSurfaces)
+                {
+                    if (surface == null) continue;
+                    float progress = CurrentStage == UfoWashToolMode.PreRinse
+                        ? Mathf.InverseLerp(startingDirt, 0.58f, surface.dirt)
+                        : CurrentStage == UfoWashToolMode.Foam
+                            ? Mathf.Clamp01(surface.foam / 0.62f)
+                            : Mathf.Clamp01((0.62f - surface.foam) / 0.52f) *
+                              Mathf.Clamp01((0.58f - surface.dirt) / 0.43f);
+                    sum += progress;
+                    count++;
+                }
+                return count == 0 ? 0f : sum / count;
+            }
+        }
         public bool CanSubmit => JobAccepted && CurrentStage == UfoWashToolMode.FinalRinse &&
             AllZonesAtMost(0.15f, 0.10f);
         public string QualityGrade => Quality >= 0.985f ? "S" : Quality >= 0.95f ? "A" :
@@ -197,24 +220,24 @@ namespace UFOWASH
             }
 
             if (!surface.CoatingReady) return false;
-            float rate = mode == UfoWashToolMode.Foam ? 1.5f : 0.8f;
+            float rate = mode == UfoWashToolMode.Foam ? 1.2f : 0.65f;
             // A nearly empty tank buys only the remaining fraction of a frame.
             // Pauses/stalls cannot grant seconds of free work for the last drop.
             float available = mode == UfoWashToolMode.Foam ? Chemical : Water;
             float actualSeconds = Mathf.Min(seconds, available / rate);
             float supplyCost = actualSeconds * rate;
-            if (mode == UfoWashToolMode.Foam)
-            {
-                if (Chemical <= 0f) { LastMessage = "CHEMICAL EMPTY // REFILL AT SUPPLY STATION"; return false; }
-                Chemical = Mathf.Max(0f, Chemical - supplyCost);
-            }
-            else
-            {
-                if (Water <= 0f) { LastMessage = "WATER TANK EMPTY // REFILL AT SUPPLY STATION"; return false; }
-                Water = Mathf.Max(0f, Water - supplyCost);
-            }
+            if (mode == UfoWashToolMode.Foam && Chemical <= 0f)
+            { LastMessage = "CHEMICAL EMPTY // REFILL AT SUPPLY STATION"; return false; }
+            if (mode != UfoWashToolMode.Foam && Water <= 0f)
+            { LastMessage = "WATER TANK EMPTY // REFILL AT SUPPLY STATION"; return false; }
 
-            surface.Process(mode, actualSeconds * power, hitPoint, hitNormal, sprayRadius);
+            if (!surface.Process(mode, actualSeconds * power, hitPoint, hitNormal, sprayRadius))
+            {
+                LastMessage = "ALREADY TREATED HERE // SWEEP TO AN UNFINISHED HULL ZONE";
+                return false;
+            }
+            if (mode == UfoWashToolMode.Foam) Chemical = Mathf.Max(0f, Chemical - supplyCost);
+            else Water = Mathf.Max(0f, Water - supplyCost);
             AdvanceStageIfReady();
             return true;
         }

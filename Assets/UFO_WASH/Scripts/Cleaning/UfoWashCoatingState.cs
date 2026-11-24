@@ -43,24 +43,29 @@ namespace UFOWASH
 
         // Only the caller's actual brush footprint is modified; repeating one spot
         // cannot clear or coat the rest of a panel.
-        public void Treat(int index, int mode, float seconds)
+        public bool Treat(int index, int mode, float seconds)
         {
-            if (!Finite(seconds) || seconds <= 0f) return;
+            if (!Finite(seconds) || seconds <= 0f) return false;
+            float oldDirt = dirt[index];
+            float oldFoam = foam[index];
             switch (mode)
             {
                 case 0:
-                    dirt[index] = Math.Min(dirt[index], Math.Max(0.50f, dirt[index] - seconds * 0.80f));
+                    // Pre-rinse visibly removes loose dirt but leaves embedded grime
+                    // for the foam/rinse stages to finish.
+                    dirt[index] = Math.Min(dirt[index], Math.Max(0.50f, dirt[index] - seconds * 1.20f));
                     break;
                 case 1:
-                    foam[index] = Clamp01(foam[index] + seconds * 1.6f);
+                    foam[index] = Clamp01(foam[index] + seconds * 2.2f);
                     break;
                 case 2:
                     // Rinse remains effective after the last visible suds disappear,
                     // avoiding a stranded final-rinse stage.
-                    dirt[index] = Math.Max(0f, dirt[index] - seconds * (foam[index] > 0.01f ? 0.95f : 0.25f));
-                    foam[index] = Math.Max(0f, foam[index] - seconds * 0.85f);
+                    dirt[index] = Math.Max(0f, dirt[index] - seconds * (foam[index] > 0.01f ? 1.35f : 0.35f));
+                    foam[index] = Math.Max(0f, foam[index] - seconds * 1.1f);
                     break;
             }
+            return dirt[index] != oldDirt || foam[index] != oldFoam;
         }
 
         float Average(float[] values)

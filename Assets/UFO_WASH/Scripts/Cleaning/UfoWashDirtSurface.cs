@@ -96,15 +96,17 @@ namespace UFOWASH
             return true;
         }
 
-        public void Process(UfoWashToolMode mode, float seconds)
+        public bool Process(UfoWashToolMode mode, float seconds)
             => Process(mode, seconds, transform.position, transform.up, 0.65f);
 
-        public void Process(UfoWashToolMode mode, float seconds, Vector3 hitPoint, Vector3 hitNormal, float sprayRadius)
+        public bool Process(UfoWashToolMode mode, float seconds, Vector3 hitPoint, Vector3 hitNormal, float sprayRadius)
         {
-            if (seconds <= 0f || !float.IsFinite(seconds) || !PrepareCoating()) return;
-            coating.Process(mode, seconds, hitPoint, hitNormal.normalized, Mathf.Clamp(sprayRadius, 0.15f, 1.5f));
+            if (seconds <= 0f || !float.IsFinite(seconds) || !PrepareCoating()) return false;
+            if (!coating.Process(mode, seconds, hitPoint, hitNormal.normalized, Mathf.Clamp(sprayRadius, 0.15f, 1.5f)))
+                return false;
             dirt = coating.State.Dirt;
             foam = coating.State.Foam;
+            return true;
         }
 
         public void Clean(float amount) => Process(UfoWashToolMode.PreRinse, amount);

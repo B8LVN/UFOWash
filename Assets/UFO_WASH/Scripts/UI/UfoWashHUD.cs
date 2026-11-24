@@ -93,13 +93,15 @@ namespace UFOWASH
         void RefreshInterface()
         {
             if (creditsText == null) return;
-            float cleanliness = career != null && (career.JobAccepted || JobComplete) ? career.Quality : 0f;
+            float cleanliness = career != null && career.JobAccepted ? career.StageProgress : JobComplete ? 1f : 0f;
             creditsText.text = Credits.ToString("0000") + " GC" +
                 (career != null ? "    //    REP " + career.Reputation.ToString("0.00") + " / 5" : string.Empty);
             // Plain Images have no sprite: resize the track rather than relying on
             // Filled mode, which Unity ignores for a sprite-less Image.
             progressFill.rectTransform.anchorMax = new Vector2(cleanliness, 1f);
-            progressText.text = "CLEANLINESS  //  " + Mathf.RoundToInt(cleanliness * 100f) + "%";
+            progressText.text = career != null && career.JobAccepted
+                ? career.StageLabel + "  //  ALL-ZONE TARGET " + Mathf.RoundToInt(cleanliness * 100f) + "%"
+                : JobComplete ? "CONTRACT CERTIFIED" : "ACCEPT A CONTRACT TO BEGIN";
 
             if (career == null)
             {

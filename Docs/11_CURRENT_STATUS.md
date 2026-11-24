@@ -2,6 +2,24 @@
 
 **Last updated:** 2026-11-24
 
+## Owner-confirmed contract fix, cleaning pace and visual asset sourcing
+
+- Owner confirmed that the upper-saucer contract acceptance now works in Unity.
+- Cleaning treatment has been tuned to cover more area at a higher work rate. Spray
+  on already-treated cells is now a no-op (and costs no water/chemical); the player
+  receives a sweep-to-the-next-zone hint. HUD progress now measures progress toward
+  the current stage's all-zone gate rather than overall appearance cleanliness,
+  which was misleading at around 37%.
+- **Twenty deterministic cleaning/geometry checks pass; C# 9 syntax is checked for
+  26 game/editor files.** Actual spray pace and zone progression still need a
+  Play Mode retest; no Unity visual screenshot is available in this environment.
+- Sourced several additional no-cost, commercially usable asset libraries with
+  official CC0 license pages. The most relevant are recorded as candidates in
+  `Docs/14_VISUAL_OVERHAUL_ASSET_RESEARCH.md`; none have been downloaded or imported.
+- Initial visual direction remains the owner's small-planet frontier garage.
+  New art will be a selective, coherent set of hero ship, bay, lighting/materials
+  and UI changes—not an indiscriminate asset dump. Current scenes are preserved.
+
 ## Latest design planning — garage to spaceport
 
 Owner requested a major UI/UX, model and world improvement around a small-planet,

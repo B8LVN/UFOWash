@@ -72,7 +72,20 @@ A build is not accepted until:
 - Known issues are listed.
 - Owner acceptance is recorded.
 
-## 8. Evidence rules
+## 8. Local coating and cleaning feel
+
+- A panel already at its current stage target gives a clear "already treated;
+  sweep to an unfinished zone" message and consumes no water or chemical.
+- Treating an unfinished zone still changes only the local brush footprint and
+  consumes supplies in proportion to time actually applied.
+- The HUD progress bar describes the current stage's all-zone gate (pre-rinse,
+  foam, final rinse), not overall cleanliness or grade. Verify it advances as
+  the remaining zones are treated.
+- Base-nozzle cleaning should feel responsive; the purchased fan should retain a
+  meaningful coverage advantage. Measure runtime performance and supply use on
+  the full customer ship before further tuning.
+
+## 9. Evidence rules
 
 Evidence can include Unity Console screenshots, Editor screenshots, gameplay recordings, build version, commit hash, automated test reports and reproduction notes. Always date evidence and tie it to a specific build or commit when possible.
 

@@ -1,5 +1,14 @@
 # 2026-11-24 — Fixed contract acceptance geometry and modal layout
 
+- Owner confirmed the contract-acceptance fix works. In this follow-up, tuned the
+  localized spray rate and area, made already-treated spots stop consuming supplies,
+  added direct no-op feedback, and changed the HUD bar to current service-stage gate
+  progress so a percentage like 37% is actionable rather than misleading.
+- Official asset pages/licenses were checked for three Quaternius CC0 model packs,
+  Poly Haven's CC0 models/HDRIs/textures, and ambientCG CC0 materials. The curated
+  candidates and selection cautions are in `Docs/14_VISUAL_OVERHAUL_ASSET_RESEARCH.md`.
+- None of these candidates has been downloaded/imported yet; actual presentation
+  work must be checked in the owner-run Unity Game view.
 - **User follow-up:** the inward-winding correction alone did not clear the error.
   Traced another source-level failure path to collider-based surface-visibility
   rejection. Removed creation-time occlusion raycasts; included actual nondegenerate

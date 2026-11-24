@@ -9,7 +9,7 @@ namespace UFOWASH
         public Camera viewCamera;
         public float range = 9f;
         public float cleanPerSecond = 0.38f;
-        public float sprayRadius = 0.65f;
+        public float sprayRadius = 0.85f;
         public bool spraying;
         public UfoWashToolMode selectedMode = UfoWashToolMode.PreRinse;
 
@@ -22,7 +22,7 @@ namespace UFOWASH
         readonly RaycastHit[] targetHits = new RaycastHit[64];
         public bool FanNozzleInstalled { get; private set; }
         public bool FanNozzleActive { get; private set; }
-        public float ActiveRadius => FanNozzleActive ? Mathf.Max(sprayRadius, 1.05f) : Mathf.Max(sprayRadius, 0.65f);
+        public float ActiveRadius => FanNozzleActive ? Mathf.Max(sprayRadius, 1.25f) : Mathf.Max(sprayRadius, 0.85f);
         public string Feedback { get; private set; } = "AIM AT A CONTRACTED HULL PANEL";
 
         public void InstallFanNozzle()
@@ -109,6 +109,7 @@ namespace UFOWASH
                         Mathf.RoundToInt(surface.foam * 100f) + "%";
                     EmitImpact(target);
                 }
+                else Feedback = career.LastMessage;
             }
             bool active = spraying;
             toolAudio.SetFlow(active, selectedMode);
