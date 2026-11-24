@@ -1,3 +1,9 @@
+# Import orientation — 2026-11-24
+
+- Owner still reports the game's quality as unacceptable. This is owner feedback, not a new runtime diagnosis.
+- Source inspection confirms whole-surface dirt tint remains a limitation; local foam patches do not prove local dirt removal.
+- Recommended improvement: integrated cleaning, controls and starter-station recovery with actual Unity evidence before visual acceptance. Status: proposed, not implemented.
+
 # UFO WASH — Improvement Register
 
 Use this file to track recurring quality gaps, what must improve, what has changed and whether the improvement was actually verified. A code change alone is never verification.

@@ -1,5 +1,11 @@
 # Next Production Milestone
 
+## 2026-11-24 — Imported-project direction
+
+The owner wants continued development toward a Steam-quality UFO WASH inspired by Moon Sweepers, Schedule I and Aquapark Tycoon, not merely a runnable import. Recommended next work is an integrated playable quality-recovery pass before expanding the tycoon systems. This recommendation awaits task selection; no gameplay changes or new runtime verification occurred during import orientation.
+
+This checkout has no Unity Editor command on PATH. Establish an accessible Unity 6000.6.10f1 Editor verification route before claiming gameplay, visual or performance acceptance. Historical references below to an open local Editor or dirty scene are not observations of this environment. Preserve authored scenes and the no-player-build policy.
+
 **Task ID:** UW-104  
 **Title:** Contracted hull zones, client satisfaction and service economy  
 **Product scope:** Full commercial single-player PC/Steam game. The first shift is one milestone inside that game.  

@@ -1,3 +1,11 @@
+# 2026-11-24 — Imported checkout and development direction
+
+- Owner requested a developed Steam-style UFO WASH inspired by Moon Sweepers, Schedule I and Aquapark Tycoon.
+- Read project guidance and canonical design, inspected source organization and the cleaning implementation, and confirmed a clean initial working tree.
+- No Unity Editor command was available on PATH. No compilation, Editor import, gameplay test, screenshot, player build, push or gameplay-code change was performed.
+- Recommended a playable quality-recovery milestone followed by persistent, visible tycoon systems. Both require task selection; actual Editor verification remains an explicit dependency.
+- Updated status, next work, backlog, improvement register and changelog. Existing Unity structure and assets were preserved.
+
 # UFO WASH — Development Session Log
 
 Append one entry at the end of every meaningful development session. This is a compact memory of what the agent inspected, changed, learned and left for the next session.

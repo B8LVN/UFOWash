@@ -1,6 +1,18 @@
 # UFO WASH — Current Project Status
 
-**Last updated:** 2026-11-23  
+**Last updated:** 2026-11-24
+
+## Imported checkout orientation — 2026-11-24
+
+- Owner requested development toward a Steam-quality game using Moon Sweepers, Schedule I and Aquapark Tycoon as references, rather than import/run setup.
+- Inspected project guidance, canonical design, source organization and cleaning implementation. No gameplay code, scenes, packages or run workflow were changed.
+- The cleaning source still uses a whole-surface dirt tint with separate local foam patches; this is not evidence of precise local dirt removal.
+- No Unity Editor command was found on PATH in this environment. No fresh Unity import, compilation, Play Mode, screenshot or performance test was performed.
+- Earlier local Editor observations below are historical, not confirmation that this environment can control that Editor.
+- Recommended next milestone: integrated cleaning/control/presentation recovery with repeat-job and reinvestment acceptance checks. Subsequent work: persistent, visible tycoon progression. Development task selection and Unity verification access remain outstanding.
+
+## Previous production record
+
 **Product target:** Full commercial single-player PC/Steam game; a first-shift slice is a milestone, not the final product.  
 **Current milestone:** UW-104 — contracted hull zones, customer satisfaction and service economy.  
 **Build policy:** No Windows/standalone/player build until the game is genuinely playable and the owner requests one.
