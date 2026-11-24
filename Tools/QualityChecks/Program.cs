@@ -49,7 +49,34 @@ var slow = new UfoWashCoatingState(new[] { 1f }, 0.9f);
 var fast = new UfoWashCoatingState(new[] { 1f }, 0.9f);
 slow.Treat(0, 0, 0.1f); fast.Treat(0, 0, 0.2f);
 Check(fast.Dirt < slow.Dirt, "Increased effective tool power changes work rate");
-Console.WriteLine($"{passed} deterministic coating checks passed. Not Unity import, gameplay or visual acceptance.");
+// Reproduce the actual upper-shell profile and index order from the saucer builder.
+var profile = new (float r, float y)[] { (0,1.42f),(.45f,1.38f),(.95f,1.22f),
+    (1.35f,.94f),(1.62f,.62f),(1.7f,.42f),(0,.4f) };
+var positions = new float[profile.Length * 64 * 3];
+var indices = new System.Collections.Generic.List<int>();
+for (int ring = 0; ring < profile.Length; ring++)
+    for (int segment = 0; segment < 64; segment++)
+    {
+        int index = (ring * 64 + segment) * 3;
+        double angle = segment / 64.0 * Math.PI * 2;
+        positions[index] = (float)Math.Cos(angle) * profile[ring].r;
+        positions[index + 1] = profile[ring].y;
+        positions[index + 2] = (float)Math.Sin(angle) * profile[ring].r;
+        if (ring == profile.Length - 1) continue;
+        int a = ring * 64 + segment, b = ring * 64 + (segment + 1) % 64;
+        int c = a + 64, d = b + 64;
+        indices.AddRange(new[] { a,c,b,b,c,d });
+    }
+var legacyIndices = indices.ToArray();
+Check(UfoWashHullWinding.IsInward(positions, legacyIndices), "Legacy upper saucer profile is inward-facing");
+var repaired = (int[])legacyIndices.Clone();
+for (int i = 0; i < repaired.Length; i += 3)
+    (repaired[i + 1], repaired[i + 2]) = (repaired[i + 2], repaired[i + 1]);
+Check(!UfoWashHullWinding.IsInward(positions, repaired), "Reversing upper-shell triangles makes winding outward");
+Check(UfoWashHullWinding.IsInward(positions, legacyIndices), "Original hull indices remain unchanged");
+Check(!UfoWashHullWinding.IsInward(new float[] {0,0,0, 0,0,1, 1,0,0}, new[] {0,1,2}),
+    "Open flat QA panel is not reversed");
+Console.WriteLine($"{passed} deterministic coating/geometry checks passed. Not Unity import, gameplay or visual acceptance.");
 var parseOptions = new CSharpParseOptions(LanguageVersion.CSharp9, preprocessorSymbols: new[] { "UNITY_EDITOR" });
 int parsed = 0;
 foreach (string path in Directory.EnumerateFiles("Assets/UFO_WASH", "*.cs", SearchOption.AllDirectories))

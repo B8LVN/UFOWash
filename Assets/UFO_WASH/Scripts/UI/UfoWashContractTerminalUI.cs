@@ -22,6 +22,9 @@ namespace UFOWASH
         readonly Text[] cardBriefTexts = new Text[3];
         readonly Text[] cardHazardTexts = new Text[3];
         readonly Text[] cardPayoutTexts = new Text[3];
+        Text acceptanceMessage;
+        readonly System.Collections.Generic.List<Canvas> hiddenCanvases =
+            new System.Collections.Generic.List<Canvas>();
         int selectedOffer;
 
         public static bool IsOpen => instance != null && instance.canvas != null && instance.canvas.enabled;
@@ -57,6 +60,16 @@ namespace UFOWASH
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
             canvas.enabled = true;
+            // Hide gameplay HUD/subtitles while a modal owns the screen.
+            hiddenCanvases.Clear();
+            foreach (var other in FindObjectsByType<Canvas>(FindObjectsSortMode.None))
+                if (other != canvas && other.enabled && other.renderMode == RenderMode.ScreenSpaceOverlay &&
+                    other.sortingOrder < canvas.sortingOrder)
+                {
+                    hiddenCanvases.Add(other);
+                    other.enabled = false;
+                }
+            acceptanceMessage.text = "SELECT A JOB, THEN ACCEPT THE CONTRACT.";
             RefreshCards();
             EventSystem.current?.SetSelectedGameObject(null);
         }
@@ -64,6 +77,7 @@ namespace UFOWASH
         public void Close()
         {
             if (canvas != null) canvas.enabled = false;
+            RestoreGameplayCanvases();
             if (playerController != null) playerController.SetInputSuspended(false);
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
@@ -74,13 +88,20 @@ namespace UFOWASH
             if (career == null) { Close(); return; }
             career.AcceptJob(selectedOffer);
             if (career.JobAccepted) Close();
-            else RefreshCards();
+            else
+            {
+                RefreshCards();
+                acceptanceMessage.text = career.LastMessage;
+                acceptanceMessage.color = new Color(1f, 0.65f, 0.35f);
+            }
         }
 
         void SelectOffer(int index)
         {
             if (career != null && !career.GetOfferUnlocked(index)) return;
             selectedOffer = Mathf.Clamp(index, 0, 2);
+            acceptanceMessage.text = "SELECTED: " + career.GetOfferTitle(selectedOffer);
+            acceptanceMessage.color = new Color(0.61f, 0.84f, 0.9f);
             RefreshCards();
         }
 
@@ -123,32 +144,38 @@ namespace UFOWASH
             var scaler = root.GetComponent<CanvasScaler>();
             scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
             scaler.referenceResolution = new Vector2(1920f, 1080f);
-            scaler.matchWidthOrHeight = 0.5f;
+            scaler.screenMatchMode = CanvasScaler.ScreenMatchMode.Expand;
 
             var shade = MakeImage(root.transform, "Backdrop", new Color(0.005f, 0.012f, 0.024f, 0.82f),
                 new Vector2(0f, 0f), new Vector2(1f, 1f), Vector2.zero, Vector2.zero);
+            // Stretch anchors with a zero pivot otherwise offset the entire shade.
+            shade.rectTransform.offsetMin = Vector2.zero;
+            shade.rectTransform.offsetMax = Vector2.zero;
             var panel = MakeImage(shade.transform, "Main Panel", new Color(0.018f, 0.045f, 0.07f, 0.99f),
-                new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(1120f, 690f));
+                new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(1560f, 920f));
 
             MakeText(panel.transform, "Eyebrow", "U F O   /   W A S H     —     BAY 01 OPERATIONS", 17,
                 new Color(0.25f, 0.85f, 0.96f), new Vector2(0f, 1f), new Vector2(0f, 1f),
                 new Vector2(48f, -38f), new Vector2(800f, 28f), TextAnchor.MiddleLeft);
             MakeText(panel.transform, "Heading", "AVAILABLE SERVICE CONTRACTS", 36, Color.white,
                 new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(48f, -78f),
-                new Vector2(900f, 52f), TextAnchor.MiddleLeft);
+                new Vector2(1400f, 52f), TextAnchor.MiddleLeft);
             MakeText(panel.transform, "Subheading", "Choose a customer job. Higher contamination pays more, but takes longer to finish.", 18,
                 new Color(0.61f, 0.74f, 0.82f), new Vector2(0f, 1f), new Vector2(0f, 1f),
-                new Vector2(48f, -132f), new Vector2(1000f, 32f), TextAnchor.MiddleLeft);
+                new Vector2(48f, -140f), new Vector2(1400f, 32f), TextAnchor.MiddleLeft);
 
             for (int i = 0; i < 3; i++) BuildOfferCard(panel.transform, i);
 
-            MakeText(panel.transform, "Footer Hint", "WASD / MOUSE PAUSED WHILE THE CONTRACT BOARD IS OPEN   •   ESC TO CLOSE", 14,
+            MakeText(panel.transform, "Footer Hint", "ESC TO CLOSE  //  PLAYER CONTROLS PAUSED", 17,
                 new Color(0.46f, 0.61f, 0.7f), new Vector2(0f, 0f), new Vector2(0f, 0f),
-                new Vector2(48f, 30f), new Vector2(720f, 26f), TextAnchor.MiddleLeft);
+                new Vector2(48f, 42f), new Vector2(680f, 30f), TextAnchor.MiddleLeft);
+            acceptanceMessage = MakeText(panel.transform, "Acceptance Status", "", 20,
+                new Color(0.61f, 0.84f, 0.9f), Vector2.zero, Vector2.zero,
+                new Vector2(48f, 108f), new Vector2(1464f, 54f), TextAnchor.MiddleLeft);
 
-            MakeButton(panel.transform, "ACCEPT SELECTED CONTRACT", new Vector2(245f, 30f),
+            MakeButton(panel.transform, "ACCEPT SELECTED CONTRACT", new Vector2(330f, 30f),
                 new Vector2(330f, 58f), new Color(0.02f, 0.55f, 0.62f), AcceptSelected);
-            MakeButton(panel.transform, "CLOSE", new Vector2(495f, 30f),
+            MakeButton(panel.transform, "CLOSE", new Vector2(640f, 30f),
                 new Vector2(150f, 58f), new Color(0.13f, 0.19f, 0.25f), Close);
 
             canvas.enabled = false;
@@ -156,32 +183,32 @@ namespace UFOWASH
 
         void BuildOfferCard(Transform parent, int index)
         {
-            float x = -365f + index * 365f;
+            float x = -492f + index * 492f;
             var card = MakeImage(parent, "Contract Card " + (index + 1), new Color(0.025f, 0.065f, 0.095f, 0.97f),
-                new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(x, 8f), new Vector2(330f, 400f));
+                new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(x, -8f), new Vector2(468f, 560f));
             cardImages[index] = card;
 
             MakeText(card.transform, "Contract Number", "JOB 0" + (index + 1), 15,
                 new Color(0.28f, 0.84f, 0.93f), new Vector2(0f, 1f), new Vector2(0f, 1f),
-                new Vector2(24f, -22f), new Vector2(280f, 26f), TextAnchor.MiddleLeft);
+                new Vector2(24f, -22f), new Vector2(420f, 26f), TextAnchor.MiddleLeft);
             cardTitleTexts[index] = MakeText(card.transform, "Contract Name", career != null ? career.GetOfferTitle(index) : "SERVICE CONTRACT", 25,
                 Color.white, new Vector2(0f, 1f), new Vector2(0f, 1f),
-                new Vector2(24f, -62f), new Vector2(280f, 60f), TextAnchor.MiddleLeft);
+                new Vector2(24f, -62f), new Vector2(420f, 72f), TextAnchor.UpperLeft);
             cardClientTexts[index] = MakeText(card.transform, "Customer", career != null ? career.GetOfferClient(index) : "CUSTOMER", 16,
                 new Color(0.7f, 0.82f, 0.9f), new Vector2(0f, 1f), new Vector2(0f, 1f),
-                new Vector2(24f, -128f), new Vector2(280f, 30f), TextAnchor.MiddleLeft);
+                new Vector2(24f, -142f), new Vector2(420f, 44f), TextAnchor.UpperLeft);
             cardBriefTexts[index] = MakeText(card.transform, "Description", career != null ? career.GetOfferBrief(index) : "Inspect and service the arriving vessel.", 15,
                 new Color(0.73f, 0.82f, 0.87f), new Vector2(0f, 1f), new Vector2(0f, 1f),
-                new Vector2(24f, -174f), new Vector2(280f, 135f), TextAnchor.UpperLeft);
+                new Vector2(24f, -200f), new Vector2(420f, 164f), TextAnchor.UpperLeft);
             cardHazardTexts[index] = MakeText(card.transform, "Contamination", career != null ? career.GetOfferContamination(index) : "CONTAMINATION", 14,
                 new Color(1f, 0.62f, 0.34f), new Vector2(0f, 1f), new Vector2(0f, 1f),
-                new Vector2(24f, -292f), new Vector2(280f, 32f), TextAnchor.MiddleLeft);
+                new Vector2(24f, -378f), new Vector2(420f, 44f), TextAnchor.UpperLeft);
             cardPayoutTexts[index] = MakeText(card.transform, "Payout", career != null ? career.GetOfferReward(index).ToString("N0") + " CR" : "250 CR", 22,
                 new Color(1f, 0.75f, 0.34f), new Vector2(0f, 0f), new Vector2(0f, 0f),
-                new Vector2(24f, 66f), new Vector2(280f, 38f), TextAnchor.MiddleLeft);
+                new Vector2(24f, 84f), new Vector2(420f, 42f), TextAnchor.MiddleLeft);
 
             var select = MakeButton(card.transform, "SELECT CONTRACT", new Vector2(0f, 18f),
-                new Vector2(282f, 46f), new Color(0.08f, 0.2f, 0.27f), () => SelectOffer(index));
+                new Vector2(420f, 52f), new Color(0.08f, 0.2f, 0.27f), () => SelectOffer(index));
             cardButtons[index] = select;
             cardSelectionLabels[index] = select.GetComponentInChildren<Text>();
         }
@@ -221,7 +248,8 @@ namespace UFOWASH
             text.alignment = alignment;
             text.fontStyle = FontStyle.Bold;
             text.horizontalOverflow = HorizontalWrapMode.Wrap;
-            text.verticalOverflow = VerticalWrapMode.Overflow;
+            text.verticalOverflow = VerticalWrapMode.Truncate;
+            text.raycastTarget = false;
             return text;
         }
 
@@ -248,8 +276,8 @@ namespace UFOWASH
             var labelRect = labelObject.GetComponent<RectTransform>();
             labelRect.anchorMin = Vector2.zero;
             labelRect.anchorMax = Vector2.one;
-            labelRect.offsetMin = Vector2.zero;
-            labelRect.offsetMax = Vector2.zero;
+            labelRect.offsetMin = new Vector2(12f, 4f);
+            labelRect.offsetMax = new Vector2(-12f, -4f);
             var text = labelObject.GetComponent<Text>();
             text.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
             text.text = label;
@@ -258,7 +286,8 @@ namespace UFOWASH
             text.color = Color.white;
             text.alignment = TextAnchor.MiddleCenter;
             text.horizontalOverflow = HorizontalWrapMode.Wrap;
-            text.verticalOverflow = VerticalWrapMode.Overflow;
+            text.verticalOverflow = VerticalWrapMode.Truncate;
+            text.raycastTarget = false;
             return button;
         }
 
@@ -276,8 +305,16 @@ namespace UFOWASH
 
         void OnDestroy()
         {
+            RestoreGameplayCanvases();
             if (playerController != null) playerController.SetInputSuspended(false);
             if (instance == this) instance = null;
+        }
+
+        void RestoreGameplayCanvases()
+        {
+            foreach (var other in hiddenCanvases)
+                if (other != null) other.enabled = true;
+            hiddenCanvases.Clear();
         }
     }
 }

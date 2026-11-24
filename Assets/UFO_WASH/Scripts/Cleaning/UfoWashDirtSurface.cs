@@ -15,20 +15,82 @@ namespace UFOWASH
         public static int RewardCredits = 250;
         static readonly List<UfoWashDirtSurface> activeSurfaces = new List<UfoWashDirtSurface>(32);
         UfoWashCoatingMesh coating;
+        Mesh correctedHull;
+        Mesh originalHull;
+        Mesh originalColliderMesh;
+        bool reportedCoatingFailure;
         Color contaminationTint = new Color(0.48f, 0.30f, 0.16f);
         public bool CoatingReady => coating != null;
 
         void OnEnable() { if (!activeSurfaces.Contains(this)) activeSurfaces.Add(this); }
         void OnDisable() { activeSurfaces.Remove(this); }
-        void OnDestroy() { coating?.Dispose(); }
+        void OnDestroy()
+        {
+            coating?.Dispose();
+            if (correctedHull == null) return;
+            var filter = GetComponent<MeshFilter>();
+            if (filter != null && filter.sharedMesh == correctedHull) filter.sharedMesh = originalHull;
+            var collider = GetComponent<MeshCollider>();
+            if (collider != null && collider.sharedMesh == correctedHull) collider.sharedMesh = originalColliderMesh;
+            Destroy(correctedHull);
+        }
+
+        void RepairHullWinding()
+        {
+            if (correctedHull != null) return;
+            var filter = GetComponent<MeshFilter>();
+            if (filter == null || filter.sharedMesh == null || !filter.sharedMesh.isReadable) return;
+            Mesh source = filter.sharedMesh;
+            var vertices = source.vertices;
+            var xyz = new float[vertices.Length * 3];
+            for (int i = 0; i < vertices.Length; i++)
+            {
+                xyz[i * 3] = vertices[i].x;
+                xyz[i * 3 + 1] = vertices[i].y;
+                xyz[i * 3 + 2] = vertices[i].z;
+            }
+            if (!UfoWashHullWinding.IsInward(xyz, source.triangles)) return;
+            originalHull = source;
+            correctedHull = Instantiate(source);
+            correctedHull.name = source.name + " // outward runtime copy";
+            // Preserve material/submesh assignments.
+            for (int submesh = 0; submesh < correctedHull.subMeshCount; submesh++)
+            {
+                var indices = correctedHull.GetTriangles(submesh);
+                for (int i = 0; i < indices.Length; i += 3)
+                {
+                    int swap = indices[i + 1];
+                    indices[i + 1] = indices[i + 2];
+                    indices[i + 2] = swap;
+                }
+                correctedHull.SetTriangles(indices, submesh);
+            }
+            correctedHull.RecalculateNormals();
+            correctedHull.RecalculateBounds();
+            filter.sharedMesh = correctedHull;
+            var collider = GetComponent<MeshCollider>();
+            if (collider != null && collider.sharedMesh == source)
+            {
+                originalColliderMesh = collider.sharedMesh;
+                collider.sharedMesh = correctedHull;
+            }
+        }
 
         public bool PrepareCoating()
         {
             if (coating != null) return true;
-            try { coating = new UfoWashCoatingMesh(this, contaminationTint); }
+            try
+            {
+                RepairHullWinding();
+                Physics.SyncTransforms();
+                coating = new UfoWashCoatingMesh(this, contaminationTint);
+                reportedCoatingFailure = false;
+            }
             catch (System.Exception exception)
             {
-                Debug.LogError("UFO WASH // Local coating unavailable on " + name + ": " + exception.Message, this);
+                if (!reportedCoatingFailure)
+                    Debug.LogError("UFO WASH // Local coating unavailable on " + name + ": " + exception.Message, this);
+                reportedCoatingFailure = true;
                 return false;
             }
             return true;
