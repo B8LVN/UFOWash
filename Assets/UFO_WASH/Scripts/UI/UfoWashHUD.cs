@@ -8,10 +8,15 @@ namespace UFOWASH
     {
         public static int Credits;
         public static bool JobComplete;
+        static Sprite roundedPanelSprite;
+        static Texture2D roundedPanelTexture;
 
         Text creditsText, contractLabelText, clientText, shipText, contaminationText, stateText, instructionText, progressText, stageText, supplyText, zonesText, rushText;
         Image progressFill;
         Image zonePanel;
+        Image waterFill, foamFill;
+        Image[] toolModeCards = System.Array.Empty<Image>();
+        Text[] toolModeLabels = System.Array.Empty<Text>();
         UfoWashCareerLoop career;
         UfoWashSprayTool tool;
         Text toolText;
@@ -37,6 +42,7 @@ namespace UFOWASH
 
         void BuildInterface()
         {
+            EnsureRoundedPanelSprite();
             var canvasObject = new GameObject("UFO WASH // DIEGETIC HUD", typeof(Canvas), typeof(CanvasScaler), typeof(GraphicRaycaster));
             canvasObject.transform.SetParent(transform, false);
             var canvas = canvasObject.GetComponent<Canvas>();
@@ -47,8 +53,9 @@ namespace UFOWASH
             scaler.referenceResolution = new Vector2(1920, 1080);
             scaler.matchWidthOrHeight = .5f;
 
-            var panel = MakeImage(canvasObject.transform, "Mission Panel", new Color(.018f,.035f,.065f,.94f),
+            var panel = MakePanel(canvasObject.transform, "Mission Panel", new Color(.018f,.035f,.065f,.88f),
                 new Vector2(0,1), new Vector2(0,1), new Vector2(28,-28), new Vector2(470,350));
+            AddPanelChrome(panel, new Color(.18f,.86f,1f,.95f));
             AddText(panel.transform, "Brand", "U F O   /   W A S H", 23, new Color(.24f,.88f,1f),
                 new Vector2(0,1), new Vector2(0,1), new Vector2(24,-18), new Vector2(420,34), TextAnchor.MiddleLeft);
             AddText(panel.transform, "Subbrand", "INTERGALACTIC VEHICLE CARE  //  BAY 01", 11, new Color(.48f,.66f,.78f),
@@ -80,23 +87,41 @@ namespace UFOWASH
                 new Vector2(0,1), new Vector2(0,1), new Vector2(24,-292), new Vector2(420,20), TextAnchor.MiddleLeft);
             rushText = AddText(panel.transform, "Express Bonus", "", 11, new Color(1f,.75f,.34f),
                 new Vector2(0,1), new Vector2(0,1), new Vector2(24,-317), new Vector2(420,18), TextAnchor.MiddleLeft);
-            zonePanel = MakeImage(canvasObject.transform, "Service Checklist", new Color(.018f,.035f,.065f,.90f),
-                new Vector2(1,1), new Vector2(1,1), new Vector2(-28,-28), new Vector2(430,230));
+            zonePanel = MakePanel(canvasObject.transform, "Service Checklist", new Color(.018f,.035f,.065f,.86f),
+                new Vector2(1,1), new Vector2(1,1), new Vector2(-28,-28), new Vector2(430,280));
+            AddPanelChrome(zonePanel, new Color(1f,.57f,.24f,.95f));
             AddText(zonePanel.transform, "Zone Heading", "HULL MAP  //  TAB TO TOGGLE", 13, new Color(.36f,.83f,.95f),
                 new Vector2(0,1), new Vector2(0,1), new Vector2(20,-18), new Vector2(390,24), TextAnchor.MiddleLeft);
             zonesText = AddText(zonePanel.transform, "Zone Checklist", "Accept a contract to inspect the hull.", 13,
                 new Color(.72f,.84f,.9f), new Vector2(0,1), new Vector2(0,1), new Vector2(20,-54),
-                new Vector2(390,160), TextAnchor.UpperLeft);
+                new Vector2(390,145), TextAnchor.UpperLeft);
+            AddText(zonePanel.transform, "Water label", "WATER", 10, new Color(.44f,.82f,1f),
+                new Vector2(0,1), new Vector2(0,1), new Vector2(20,-214), new Vector2(175,18), TextAnchor.MiddleLeft);
+            AddText(zonePanel.transform, "Foam label", "FOAM MIX", 10, new Color(1f,.68f,.34f),
+                new Vector2(0,1), new Vector2(0,1), new Vector2(220,-214), new Vector2(175,18), TextAnchor.MiddleLeft);
+            var waterBack = MakeImage(zonePanel.transform, "Water supply track", new Color(.045f,.11f,.16f,1f),
+                new Vector2(0,1), new Vector2(0,1), new Vector2(20,-238), new Vector2(175,8));
+            waterFill = MakeImage(waterBack.transform, "Water supply fill", new Color(.2f,.78f,1f,1f),
+                new Vector2(0,0), new Vector2(1,1), Vector2.zero, Vector2.zero);
+            var foamBack = MakeImage(zonePanel.transform, "Foam supply track", new Color(.15f,.09f,.055f,1f),
+                new Vector2(0,1), new Vector2(0,1), new Vector2(220,-238), new Vector2(175,8));
+            foamFill = MakeImage(foamBack.transform, "Foam supply fill", new Color(1f,.58f,.24f,1f),
+                new Vector2(0,0), new Vector2(1,1), Vector2.zero, Vector2.zero);
 
+            var statePanel = MakePanel(canvasObject.transform, "Shift Status Banner", new Color(.018f,.035f,.065f,.82f),
+                new Vector2(.5f,0), new Vector2(.5f,0), new Vector2(0,50), new Vector2(850,46));
+            AddPanelChrome(statePanel, new Color(.18f,.86f,1f,.95f));
             stateText = AddText(canvasObject.transform, "Contract State", "CONTRACT REQUIRED", 15, new Color(.25f,.9f,1f),
-                new Vector2(.5f,0), new Vector2(.5f,0), new Vector2(0,42), new Vector2(1000,64), TextAnchor.MiddleCenter);
+                new Vector2(.5f,0), new Vector2(.5f,0), new Vector2(0,50), new Vector2(810,42), TextAnchor.MiddleCenter);
             instructionText = AddText(canvasObject.transform, "Controls", "WASD MOVE  //  E INTERACT  //  LMB WASH  //  1 WATER  2 FOAM  3 RINSE  //  TAB HULL MAP",
                 12, new Color(.65f,.77f,.85f), new Vector2(.5f,0), new Vector2(.5f,0),
                 new Vector2(0,18), new Vector2(900,22), TextAnchor.MiddleCenter);
-            AddText(canvasObject.transform, "Reticle", "+", 25, new Color(.6f,.95f,1f),
+            AddText(canvasObject.transform, "Reticle", "·", 28, new Color(.72f,.97f,1f),
                 new Vector2(.5f,.5f), new Vector2(.5f,.5f), Vector2.zero, new Vector2(30,30), TextAnchor.MiddleCenter);
             toolText = AddText(canvasObject.transform, "Tool Feedback", "", 13, new Color(.83f,.95f,1f),
                 new Vector2(.5f,.5f), new Vector2(.5f,.5f), new Vector2(0,-55), new Vector2(660,48), TextAnchor.MiddleCenter);
+            AddReticleBrackets(canvasObject.transform);
+            BuildToolHotbar(canvasObject.transform);
         }
 
         void RefreshInterface()
@@ -138,11 +163,16 @@ namespace UFOWASH
             supplyText.text = "WATER " + Mathf.RoundToInt(career.Water) + "%  //  FOAM " +
                 Mathf.RoundToInt(career.Chemical) + "%" +
                 (career.SupplyEfficiencyPercent > 0 ? "  //  LOOP -" + career.SupplyEfficiencyPercent + "%" : string.Empty);
+            if (waterFill != null)
+                waterFill.rectTransform.anchorMax = new Vector2(Mathf.Clamp01(career.Water / 100f), 1f);
+            if (foamFill != null)
+                foamFill.rectTransform.anchorMax = new Vector2(Mathf.Clamp01(career.Chemical / 100f), 1f);
             zonesText.text = career.JobAccepted ? career.GetZoneChecklist() :
                 JobComplete ? career.LastReceipt : "01  ACCEPT DISPATCH\n02  SWEEP EACH HULL ZONE\n03  INSPECT AND GET PAID\n04  FIT A FAN NOZZLE AT EQUIPMENT";
             if (tool != null)
             {
                 toolText.text = tool.Feedback;
+                UpdateToolHotbar();
                 instructionText.text = "WASD MOVE  //  E INTERACT  //  LMB WASH  //  1 WATER  2 FOAM  3 RINSE  //  TAB HULL MAP" +
                     (tool.FanNozzleInstalled ? "  //  Q " + (tool.FanNozzleActive ? "FAN" : "PRECISION") : "  //  ESC CURSOR");
             }
@@ -195,6 +225,116 @@ namespace UFOWASH
             image.color = color;
             image.raycastTarget = false;
             return image;
+        }
+
+        static Image MakePanel(Transform parent, string objectName, Color color,
+            Vector2 anchorMin, Vector2 anchorMax, Vector2 position, Vector2 size)
+        {
+            var panel = MakeImage(parent, objectName, color, anchorMin, anchorMax, position, size);
+            if (roundedPanelSprite != null)
+            {
+                panel.sprite = roundedPanelSprite;
+                panel.type = Image.Type.Sliced;
+            }
+            return panel;
+        }
+
+        static void EnsureRoundedPanelSprite()
+        {
+            if (roundedPanelSprite != null) return;
+            const int size = 64;
+            const float radius = 10f;
+            roundedPanelTexture = new Texture2D(size, size, TextureFormat.RGBA32, false)
+            {
+                name = "UFO WASH // ROUNDED HUD PANEL",
+                filterMode = FilterMode.Bilinear,
+                wrapMode = TextureWrapMode.Clamp,
+                hideFlags = HideFlags.DontSave
+            };
+            var pixels = new Color[size * size];
+            for (int y = 0; y < size; y++)
+            for (int x = 0; x < size; x++)
+            {
+                float nearestX = Mathf.Clamp(x, radius, size - radius - 1);
+                float nearestY = Mathf.Clamp(y, radius, size - radius - 1);
+                bool inside = (x - nearestX) * (x - nearestX) +
+                    (y - nearestY) * (y - nearestY) <= radius * radius;
+                pixels[y * size + x] = inside ? Color.white : new Color(1f,1f,1f,0f);
+            }
+            roundedPanelTexture.SetPixels(pixels);
+            roundedPanelTexture.Apply(false, false);
+            roundedPanelSprite = Sprite.Create(roundedPanelTexture, new Rect(0f,0f,size,size),
+                new Vector2(.5f,.5f), size, 0, SpriteMeshType.FullRect, new Vector4(12f,12f,12f,12f));
+            roundedPanelSprite.name = "UFO WASH // ROUNDED HUD PANEL";
+            roundedPanelSprite.hideFlags = HideFlags.DontSave;
+        }
+
+        void OnDestroy()
+        {
+            if (roundedPanelSprite != null) Destroy(roundedPanelSprite);
+            if (roundedPanelTexture != null) Destroy(roundedPanelTexture);
+            roundedPanelSprite = null;
+            roundedPanelTexture = null;
+        }
+
+        void BuildToolHotbar(Transform parent)
+        {
+            var hotbar = MakePanel(parent, "WASHER LOADOUT", new Color(.018f,.035f,.065f,.84f),
+                new Vector2(.5f,0), new Vector2(.5f,0), new Vector2(0,111), new Vector2(500,56));
+            AddPanelChrome(hotbar, new Color(.18f,.86f,1f,.95f));
+            toolModeCards = new Image[3];
+            toolModeLabels = new Text[3];
+            string[] modes = { "1  PRE-RINSE", "2  FOAM", "3  FINAL RINSE" };
+            for (int i = 0; i < modes.Length; i++)
+            {
+                toolModeCards[i] = MakeImage(hotbar.transform, "TOOL MODE // " + modes[i],
+                    new Color(.035f,.085f,.12f,.95f), new Vector2(0,1), new Vector2(0,1),
+                    new Vector2(10 + i * 162,-9), new Vector2(156,38));
+                toolModeLabels[i] = AddText(toolModeCards[i].transform, "Mode label", modes[i], 11,
+                    new Color(.65f,.78f,.84f), Vector2.zero, Vector2.one, new Vector2(5,2),
+                    new Vector2(-10,-4), TextAnchor.MiddleCenter);
+            }
+        }
+
+        void UpdateToolHotbar()
+        {
+            if (tool == null || toolModeCards == null) return;
+            for (int i = 0; i < toolModeCards.Length; i++)
+            {
+                bool selected = i == (int)tool.selectedMode;
+                toolModeCards[i].color = selected
+                    ? new Color(.08f,.40f,.49f,.98f)
+                    : new Color(.035f,.085f,.12f,.95f);
+                toolModeLabels[i].color = selected ? Color.white : new Color(.65f,.78f,.84f);
+            }
+        }
+
+        static void AddReticleBrackets(Transform parent)
+        {
+            Color tint = new Color(.35f,.92f,1f,.82f);
+            Vector2 center = new Vector2(.5f,.5f);
+            Vector2[] offsets =
+            {
+                new Vector2(-15,-15), new Vector2(15,-15),
+                new Vector2(-15,15), new Vector2(15,15)
+            };
+            for (int i = 0; i < offsets.Length; i++)
+            {
+                var corner = MakeImage(parent, "Reticle bracket " + i, tint,
+                    center, center, offsets[i], new Vector2(8,2));
+                corner.transform.localRotation = Quaternion.Euler(0f,0f,(i % 2 == 0) ? 0f : 90f);
+                var leg = MakeImage(parent, "Reticle bracket leg " + i, tint,
+                    center, center, offsets[i], new Vector2(2,8));
+                leg.transform.localRotation = Quaternion.Euler(0f,0f,(i % 2 == 0) ? 0f : 90f);
+            }
+        }
+
+        static void AddPanelChrome(Image panel, Color accent)
+        {
+            MakeImage(panel.transform, "Top edge", accent, new Vector2(0,1), new Vector2(1,1),
+                new Vector2(0,-1), new Vector2(0,2));
+            MakeImage(panel.transform, "Left edge", accent, new Vector2(0,0), new Vector2(0,1),
+                new Vector2(1,0), new Vector2(2,0));
         }
 
         static Text AddText(Transform parent, string objectName, string value, int size, Color color,

@@ -127,13 +127,21 @@ namespace UFOWASH
             ButtonAt("STORY", new Vector2(.08f,.235f), new Vector2(.22f,.29f), Panel, ShowStory);
             ButtonAt("HOW TO PLAY", new Vector2(.245f,.235f), new Vector2(.39f,.29f), Panel, ShowHowTo);
 
-            PanelAt(new Vector2(.65f,.24f), new Vector2(.91f,.78f), Panel);
+            var stationPanel = PanelAt(new Vector2(.65f,.24f), new Vector2(.91f,.78f), Panel);
+            AddPanelChrome(stationPanel, Cyan);
             AddText(pageRoot, "YOUR STATION // BAY 01", 16, Cyan,
                 new Vector2(.68f,.70f), new Vector2(.89f,.75f), TextAnchor.MiddleLeft, FontStyle.Bold);
             AddText(pageRoot, "A forgotten wash bay.\nA mountain of debt.\nA whole galaxy that leaves a mess.", 25, White,
                 new Vector2(.68f,.48f), new Vector2(.89f,.68f), TextAnchor.UpperLeft);
             AddText(pageRoot, "ONE SHIP AT A TIME. BUILD SOMETHING THAT LASTS.", 13, Muted,
                 new Vector2(.68f,.29f), new Vector2(.89f,.39f), TextAnchor.MiddleLeft);
+            var routePanel = PanelAt(new Vector2(.65f,.13f), new Vector2(.91f,.21f),
+                new Color(.025f,.055f,.08f,.92f));
+            AddPanelChrome(routePanel, new Color(1f,.58f,.26f,1f));
+            AddText(pageRoot, "LOCATION   VESPER BELT", 13, White,
+                new Vector2(.68f,.155f), new Vector2(.88f,.195f), TextAnchor.MiddleLeft, FontStyle.Bold);
+            AddText(pageRoot, "OPERATION   INDEPENDENT BAY 01", 10, Muted,
+                new Vector2(.68f,.128f), new Vector2(.89f,.155f), TextAnchor.MiddleLeft);
             AddText(pageRoot, "VESPER BELT  //  BAY 01", 12, Muted,
                 new Vector2(.08f,.06f), new Vector2(.48f,.10f), TextAnchor.MiddleLeft);
         }
@@ -206,15 +214,21 @@ namespace UFOWASH
             var image = page.GetComponent<Image>();
             image.color = new Color(.012f,.025f,.045f,.38f);
             pageRoot = page.transform;
+            PanelAt(new Vector2(0f,.994f), new Vector2(1f,1f), new Color(.22f,.83f,.93f,.84f));
+            PanelAt(new Vector2(.055f,.08f), new Vector2(.057f,.92f), new Color(.22f,.83f,.93f,.70f));
+            PanelAt(new Vector2(.055f,.08f), new Vector2(.94f,.082f), new Color(.22f,.83f,.93f,.24f));
         }
 
-        void PanelAt(Vector2 min, Vector2 max, Color color)
+        Image PanelAt(Vector2 min, Vector2 max, Color color)
         {
             var panel = new GameObject("PANEL", typeof(RectTransform), typeof(Image));
             panel.transform.SetParent(pageRoot, false);
             var rect = panel.GetComponent<RectTransform>();
             rect.anchorMin = min; rect.anchorMax = max; rect.offsetMin = Vector2.zero; rect.offsetMax = Vector2.zero;
-            panel.GetComponent<Image>().color = color;
+            var image = panel.GetComponent<Image>();
+            image.color = color;
+            image.raycastTarget = false;
+            return image;
         }
 
         void ButtonAt(string label, Vector2 min, Vector2 max, Color color, UnityEngine.Events.UnityAction action)
@@ -225,14 +239,19 @@ namespace UFOWASH
             rect.anchorMin = min; rect.anchorMax = max; rect.offsetMin = Vector2.zero; rect.offsetMax = Vector2.zero;
             var image = buttonObject.GetComponent<Image>();
             image.color = color;
+            image.raycastTarget = true;
             var button = buttonObject.GetComponent<Button>();
             button.targetGraphic = image;
             var colors = button.colors;
             colors.normalColor = color;
             colors.highlightedColor = Color.Lerp(color, Color.white, .18f);
             colors.pressedColor = Color.Lerp(color, Color.black, .2f);
+            colors.fadeDuration = .12f;
             button.colors = colors;
             button.onClick.AddListener(action);
+            var outline = buttonObject.AddComponent<Outline>();
+            outline.effectColor = color == Cyan ? new Color(.43f,.95f,1f,.82f) : new Color(.42f,.72f,.82f,.48f);
+            outline.effectDistance = new Vector2(1.5f,-1.5f);
 
             var textObject = new GameObject("LABEL", typeof(RectTransform), typeof(Text));
             textObject.transform.SetParent(buttonObject.transform, false);
@@ -243,6 +262,30 @@ namespace UFOWASH
             text.font = font; text.text = label; text.fontSize = 17; text.fontStyle = FontStyle.Bold;
             text.alignment = TextAnchor.MiddleCenter; text.color = color == Cyan ? Ink : White;
             text.horizontalOverflow = HorizontalWrapMode.Wrap;
+        }
+
+        static void AddPanelChrome(Image panel, Color accent)
+        {
+            AddRule(panel.transform, "Top accent", new Vector2(0,1), new Vector2(1,1),
+                new Vector2(0,-1), new Vector2(0,2), accent);
+            AddRule(panel.transform, "Left accent", new Vector2(0,0), new Vector2(0,1),
+                new Vector2(1,0), new Vector2(2,0), accent);
+        }
+
+        static void AddRule(Transform parent, string name, Vector2 anchorMin, Vector2 anchorMax,
+            Vector2 position, Vector2 size, Color color)
+        {
+            var rule = new GameObject(name, typeof(RectTransform), typeof(Image));
+            rule.transform.SetParent(parent, false);
+            var rect = rule.GetComponent<RectTransform>();
+            rect.anchorMin = anchorMin;
+            rect.anchorMax = anchorMax;
+            rect.pivot = anchorMin;
+            rect.anchoredPosition = position;
+            rect.sizeDelta = size;
+            var image = rule.GetComponent<Image>();
+            image.color = color;
+            image.raycastTarget = false;
         }
 
         void AddText(Transform parent, string value, int size, Color color,

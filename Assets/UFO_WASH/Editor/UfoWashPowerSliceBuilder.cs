@@ -41,6 +41,16 @@ namespace UFOWASH.Editor
 
         static GameObject playModeDetails;
         static Material playModeModularMaterial;
+        static Material playModeFloorMaterial, playModeWallMaterial, playModeBasaltMaterial;
+        static Texture2D playModeFloorTexture, playModeWallTexture, playModeBasaltTexture;
+        static bool hasSavedPlayModeLighting;
+        static UnityEngine.Rendering.AmbientMode savedAmbientMode;
+        static Color savedAmbientSky, savedAmbientEquator, savedAmbientGround, savedFogColor;
+        static float savedAmbientIntensity, savedFogDensity;
+        static bool savedFog;
+        static FogMode savedFogMode;
+        static readonly List<KeyValuePair<Renderer, Material[]>> playModeMaterialOverrides =
+            new List<KeyValuePair<Renderer, Material[]>>();
         static readonly List<KeyValuePair<Transform, Vector3>> movedPlayModeProps =
             new List<KeyValuePair<Transform, Vector3>>();
 
@@ -61,6 +71,7 @@ namespace UFOWASH.Editor
             var originalRoots = new HashSet<GameObject>(scene.GetRootGameObjects());
             playModeDetails = new GameObject("PLAY MODE // SERVICE ACCESS") { hideFlags = HideFlags.DontSave };
             SceneManager.MoveGameObjectToScene(playModeDetails, scene);
+            ApplyPlayModeVisualOverhaul();
             bool hasAuthoredAccess = false;
             foreach (var root in originalRoots)
                 foreach (var child in root.GetComponentsInChildren<Transform>(true))
@@ -86,6 +97,7 @@ namespace UFOWASH.Editor
                 BuildWashAttendant(new Vector3(-5.2f, 0f, 1.2f));
             if (Object.FindAnyObjectByType<UfoWashBayRecoveryStation>() == null)
                 BuildBayRecoveryUpgrade();
+            BuildPlayModeEquipmentProps();
 
             foreach (var root in scene.GetRootGameObjects())
                 if (root != playModeDetails && !originalRoots.Contains(root))
@@ -104,14 +116,220 @@ namespace UFOWASH.Editor
             foreach (var prop in movedPlayModeProps)
                 if (prop.Key != null) prop.Key.position = prop.Value;
             movedPlayModeProps.Clear();
+            for (int i = playModeMaterialOverrides.Count - 1; i >= 0; i--)
+                if (playModeMaterialOverrides[i].Key != null)
+                    playModeMaterialOverrides[i].Key.sharedMaterials = playModeMaterialOverrides[i].Value;
+            playModeMaterialOverrides.Clear();
+            if (hasSavedPlayModeLighting)
+            {
+                RenderSettings.ambientMode = savedAmbientMode;
+                RenderSettings.ambientSkyColor = savedAmbientSky;
+                RenderSettings.ambientEquatorColor = savedAmbientEquator;
+                RenderSettings.ambientGroundColor = savedAmbientGround;
+                RenderSettings.ambientIntensity = savedAmbientIntensity;
+                RenderSettings.fog = savedFog;
+                RenderSettings.fogMode = savedFogMode;
+                RenderSettings.fogColor = savedFogColor;
+                RenderSettings.fogDensity = savedFogDensity;
+                hasSavedPlayModeLighting = false;
+            }
             if (playModeDetails != null) Object.DestroyImmediate(playModeDetails);
             playModeDetails = null;
+            DestroyPlayModeMaterial(ref playModeFloorMaterial, ref playModeFloorTexture);
+            DestroyPlayModeMaterial(ref playModeWallMaterial, ref playModeWallTexture);
+            DestroyPlayModeMaterial(ref playModeBasaltMaterial, ref playModeBasaltTexture);
             if (playModeModularMaterial != null)
             {
                 if (matVesperModular == playModeModularMaterial) matVesperModular = null;
                 Object.DestroyImmediate(playModeModularMaterial);
                 playModeModularMaterial = null;
             }
+        }
+
+        static void ApplyPlayModeVisualOverhaul()
+        {
+            savedAmbientMode = RenderSettings.ambientMode;
+            savedAmbientSky = RenderSettings.ambientSkyColor;
+            savedAmbientEquator = RenderSettings.ambientEquatorColor;
+            savedAmbientGround = RenderSettings.ambientGroundColor;
+            savedAmbientIntensity = RenderSettings.ambientIntensity;
+            savedFog = RenderSettings.fog;
+            savedFogMode = RenderSettings.fogMode;
+            savedFogColor = RenderSettings.fogColor;
+            savedFogDensity = RenderSettings.fogDensity;
+            hasSavedPlayModeLighting = true;
+
+            RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Trilight;
+            RenderSettings.ambientSkyColor = new Color(.18f,.30f,.43f);
+            RenderSettings.ambientEquatorColor = new Color(.31f,.34f,.35f);
+            RenderSettings.ambientGroundColor = new Color(.075f,.065f,.09f);
+            RenderSettings.ambientIntensity = 1.05f;
+            RenderSettings.fog = true;
+            RenderSettings.fogMode = FogMode.ExponentialSquared;
+            RenderSettings.fogColor = new Color(.075f,.13f,.20f);
+            RenderSettings.fogDensity = .00115f;
+
+            playModeFloorMaterial = CreatePlayModeSurfaceMaterial("BAY FLOOR // TEXTURED DECK",
+                new Color(.18f,.23f,.27f), .34f, .48f, false, 9101, out playModeFloorTexture);
+            playModeWallMaterial = CreatePlayModeSurfaceMaterial("BAY WALL // RIBBED COMPOSITE",
+                new Color(.115f,.18f,.23f), .22f, .34f, false, 9102, out playModeWallTexture);
+            playModeBasaltMaterial = CreatePlayModeSurfaceMaterial("VESPER // TEXTURED BASALT",
+                new Color(.19f,.23f,.31f), .08f, .18f, true, 9103, out playModeBasaltTexture);
+
+            if (playModeFloorMaterial != null) OverrideNamedMaterial("Polished graphite floor", playModeFloorMaterial);
+            if (playModeWallMaterial != null)
+            {
+                OverrideNamedMaterial("Left bulkhead", playModeWallMaterial);
+                OverrideNamedMaterial("Right bulkhead", playModeWallMaterial);
+                OverrideNamedMaterial("Rear bulkhead left", playModeWallMaterial);
+                OverrideNamedMaterial("Rear bulkhead right", playModeWallMaterial);
+            }
+            if (playModeBasaltMaterial != null)
+                OverrideNamedMaterial("VESPER BELT // BASALT APRON", playModeBasaltMaterial);
+
+            AddPlayModeSpotlight("BAY KEY // WARM ARRIVAL", new Vector3(-6.5f,9.6f,5.3f),
+                new Vector3(0f,2.3f,3.4f), new Color(1f,.64f,.38f), 9f, 19f, 54f);
+            AddPlayModeSpotlight("BAY FILL // COOL CEILING", new Vector3(6.5f,9.4f,5.1f),
+                new Vector3(0f,2.0f,3.3f), new Color(.28f,.72f,1f), 7.5f, 19f, 56f);
+            AddPlayModeSpotlight("BAY RIM // SERVICE DECK", new Vector3(0f,10f,14f),
+                new Vector3(0f,2.7f,4f), new Color(.12f,.72f,.9f), 6f, 18f, 48f);
+        }
+
+        static void OverrideNamedMaterial(string objectName, Material material)
+        {
+            var target = GameObject.Find(objectName);
+            if (target == null) return;
+            foreach (var renderer in target.GetComponentsInChildren<Renderer>(true))
+            {
+                if (renderer == null) continue;
+                playModeMaterialOverrides.Add(new KeyValuePair<Renderer, Material[]>(renderer, renderer.sharedMaterials));
+                renderer.sharedMaterial = material;
+            }
+        }
+
+        static Material CreatePlayModeSurfaceMaterial(string materialName, Color baseColor,
+            float metallic, float smoothness, bool basalt, int seed, out Texture2D texture)
+        {
+            texture = null;
+            var shader = Shader.Find("Universal Render Pipeline/Lit");
+            if (shader == null) return null;
+            texture = CreatePlayModeSurfaceTexture(materialName, baseColor, basalt, seed);
+            var material = new Material(shader) { name = materialName, hideFlags = HideFlags.DontSave };
+            material.SetColor("_BaseColor", Color.white);
+            material.SetTexture("_BaseMap", texture);
+            material.SetFloat("_Metallic", metallic);
+            material.SetFloat("_Smoothness", smoothness);
+            material.SetTextureScale("_BaseMap", basalt ? new Vector2(12f,10f) : new Vector2(2.5f,2.5f));
+            return material;
+        }
+
+        static Texture2D CreatePlayModeSurfaceTexture(string textureName, Color baseColor, bool basalt, int seed)
+        {
+            const int size = 256;
+            const int tile = 64;
+            var texture = new Texture2D(size, size, TextureFormat.RGBA32, false)
+            {
+                name = textureName,
+                wrapMode = TextureWrapMode.Repeat,
+                filterMode = FilterMode.Bilinear,
+                anisoLevel = 4,
+                hideFlags = HideFlags.DontSave
+            };
+            var random = new System.Random(seed);
+            var noise = new float[size * size];
+            for (int i = 0; i < noise.Length; i++)
+                noise[i] = (float)random.NextDouble();
+            var pixels = new Color[size * size];
+            for (int y = 0; y < size; y++)
+            for (int x = 0; x < size; x++)
+            {
+                float grain = (noise[y * size + x] - .5f) * (basalt ? .12f : .055f);
+                float variation;
+                if (basalt)
+                {
+                    float broad = Mathf.PerlinNoise(x / 38f, y / 38f);
+                    variation = .72f + broad * .36f + grain;
+                }
+                else
+                {
+                    int localX = x % tile;
+                    int localY = y % tile;
+                    bool seam = localX < 3 || localY < 3 || localX > tile - 4 || localY > tile - 4;
+                    bool edgeBand = localX < 6 || localY < 6 || localX > tile - 7 || localY > tile - 7;
+                    variation = seam ? .46f : edgeBand ? 1.08f : .91f + grain;
+                    int boltX = localX < tile / 2 ? 9 : tile - 10;
+                    int boltY = localY < tile / 2 ? 9 : tile - 10;
+                    if (Mathf.Abs(localX - boltX) <= 1 && Mathf.Abs(localY - boltY) <= 1)
+                        variation = .52f;
+                }
+                pixels[y * size + x] = new Color(
+                    Mathf.Clamp01(baseColor.r * variation),
+                    Mathf.Clamp01(baseColor.g * variation),
+                    Mathf.Clamp01(baseColor.b * variation), 1f);
+            }
+            texture.SetPixels(pixels);
+            texture.Apply(false, false);
+            return texture;
+        }
+
+        static void AddPlayModeSpotlight(string name, Vector3 position, Vector3 target,
+            Color color, float intensity, float range, float angle)
+        {
+            var go = new GameObject(name) { hideFlags = HideFlags.DontSave };
+            go.transform.SetParent(playModeDetails.transform, true);
+            go.transform.position = position;
+            go.transform.rotation = Quaternion.LookRotation(target - position);
+            var light = go.AddComponent<Light>();
+            light.type = LightType.Spot;
+            light.color = color;
+            light.intensity = intensity;
+            light.range = range;
+            light.spotAngle = angle;
+            light.shadows = LightShadows.None;
+        }
+
+        static void DestroyPlayModeMaterial(ref Material material, ref Texture2D texture)
+        {
+            if (material != null) Object.DestroyImmediate(material);
+            if (texture != null) Object.DestroyImmediate(texture);
+            material = null;
+            texture = null;
+        }
+
+        static void BuildPlayModeEquipmentProps()
+        {
+            AddPlayModeSpaceProp("machine_generatorLarge", "BAY 01 // SERVICE GENERATOR",
+                new Vector3(-9.7f,0f,13.2f), Quaternion.Euler(0f,90f,0f), 2.8f);
+            AddPlayModeSpaceProp("machine_generator", "BAY 01 // AUXILIARY PUMP",
+                new Vector3(-9.3f,0f,16.6f), Quaternion.Euler(0f,90f,0f), 1.75f);
+            AddPlayModeSpaceProp("machine_wireless", "BAY 01 // COMMS RELAY",
+                new Vector3(-10.7f,0f,10.5f), Quaternion.identity, 1.55f);
+            AddPlayModeSpaceProp("machine_barrelLarge", "BAY 01 // SEALED CHEMICAL DRUM",
+                new Vector3(-8.7f,0f,10.7f), Quaternion.identity, .95f);
+        }
+
+        static void AddPlayModeSpaceProp(string assetName, string displayName,
+            Vector3 floorPosition, Quaternion rotation, float targetFootprint)
+        {
+            var prop = SpawnImportedModel(assetName, floorPosition, rotation, 1f, false);
+            if (prop == null) return;
+
+            var renderers = prop.GetComponentsInChildren<Renderer>(true);
+            if (renderers.Length > 0)
+            {
+                Bounds bounds = renderers[0].bounds;
+                for (int i = 1; i < renderers.Length; i++) bounds.Encapsulate(renderers[i].bounds);
+                float currentFootprint = Mathf.Max(bounds.size.x, bounds.size.z);
+                float scale = currentFootprint > .001f ? targetFootprint / currentFootprint : 1f;
+                prop.transform.localScale *= scale;
+                bounds = renderers[0].bounds;
+                for (int i = 1; i < renderers.Length; i++) bounds.Encapsulate(renderers[i].bounds);
+                prop.transform.position += floorPosition - new Vector3(bounds.center.x, bounds.min.y, bounds.center.z);
+            }
+
+            prop.name = displayName;
+            foreach (var collider in prop.GetComponentsInChildren<Collider>(true))
+                collider.enabled = false;
         }
 
         static Material CreatePlayModeModularMaterial()
