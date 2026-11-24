@@ -21,6 +21,7 @@ namespace UFOWASH
         public override string GetPrompt()
         {
             if (level >= maxLevel) return "E  EQUIPMENT MAXED";
+            if (level == 0) return $"E  FIT FAN NOZZLE  |  {GetCost()} CR  |  WIDER SWEEPS + Q TO SWITCH";
             return $"E  UPGRADE ION WASHER  |  {GetCost()} CR  |  LVL {level}/{maxLevel}  |  +POWER +COVERAGE";
         }
 
@@ -29,13 +30,19 @@ namespace UFOWASH
             if (level >= maxLevel || sprayTool == null) return;
 
             int cost = GetCost();
-            if (UfoWashHUD.Credits < cost) return;
+            if (UfoWashHUD.Credits < cost)
+            {
+                UfoWashCareerLoop.Instance?.NotifyBossMessage("INSUFFICIENT CREDITS // NOZZLE COST " + cost + " CR");
+                return;
+            }
 
             UfoWashHUD.Credits -= cost;
             level++;
+            if (level == 1) sprayTool.InstallFanNozzle();
             sprayTool.cleanPerSecond += cleaningPowerIncrease;
             sprayTool.sprayRadius += sprayCoverageIncrease;
             sprayTool.range += rangeIncrease;
+            UfoWashCareerLoop.Instance?.NotifyBossMessage("NOZZLE FITTED // -"+cost+" CR // Q TO SWITCH FAN / PRECISION");
             Debug.Log($"[UFO WASH] Ion washer level {level}: power {sprayTool.cleanPerSecond:0.00}/s, coverage radius {sprayTool.sprayRadius:0.00}, range {sprayTool.range:0.0}m.");
         }
 

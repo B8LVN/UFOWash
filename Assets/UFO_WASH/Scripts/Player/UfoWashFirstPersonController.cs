@@ -3,6 +3,7 @@ using UnityEngine.InputSystem;
 
 namespace UFOWASH
 {
+    [DefaultExecutionOrder(-100)]
     [RequireComponent(typeof(CharacterController))]
     public class UfoWashFirstPersonController : MonoBehaviour
     {
@@ -23,8 +24,12 @@ namespace UFOWASH
         bool inputSuspended;
         bool isCleaningView;
         bool discardMouseDelta;
+        bool hasFocus = true;
+        bool swallowHeldClick;
 
         public bool IsCleaningView => isCleaningView;
+        public bool CanControl => enabled && !inputSuspended && hasFocus && !swallowHeldClick &&
+            Cursor.lockState == CursorLockMode.Locked && Time.timeScale > 0f;
 
         public void SetCharacterVisible(bool visible) => SetRenderers(bodyRenderers, visible && !isCleaningView);
 
@@ -34,7 +39,7 @@ namespace UFOWASH
             Cursor.lockState = suspended ? CursorLockMode.None : CursorLockMode.Locked;
             Cursor.visible = suspended;
             if (suspended) ApplyView(false);
-            else discardMouseDelta = true;
+            else { discardMouseDelta = true; swallowHeldClick = true; }
         }
 
         void Awake()
@@ -64,6 +69,8 @@ namespace UFOWASH
         {
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
+            discardMouseDelta = true;
+            swallowHeldClick = true;
         }
 
         void Update()
@@ -72,20 +79,42 @@ namespace UFOWASH
                 controller == null || !controller.enabled || cameraPivot == null ||
                 Keyboard.current == null || Mouse.current == null) return;
 
-            bool wantsCleaningView = IsActivelyAimingAtWashableShip();
-            if (wantsCleaningView != isCleaningView) ApplyView(wantsCleaningView);
+            if (!hasFocus || Time.timeScale <= 0f) { ApplyView(false); return; }
+            if (!Mouse.current.leftButton.isPressed) swallowHeldClick = false;
 
             if (Keyboard.current.escapeKey.wasPressedThisFrame)
             {
                 Cursor.lockState = CursorLockMode.None;
                 Cursor.visible = true;
+                ApplyView(false);
+                discardMouseDelta = true;
+                return;
             }
             if (Mouse.current.leftButton.wasPressedThisFrame && Cursor.lockState != CursorLockMode.Locked)
             {
                 Cursor.lockState = CursorLockMode.Locked;
                 Cursor.visible = false;
+                discardMouseDelta = true;
+                swallowHeldClick = true;
+                return;
             }
-            if (Cursor.lockState != CursorLockMode.Locked) return;
+            if (Cursor.lockState != CursorLockMode.Locked) { ApplyView(false); return; }
+
+            bool wantsCleaningView = IsActivelyAimingAtWashableShip(out var aimPoint);
+            if (wantsCleaningView != isCleaningView)
+            {
+                ApplyView(wantsCleaningView);
+                if (wantsCleaningView)
+                {
+                    // Keep the same hull point under the reticle across the
+                    // shoulder-to-eye translation, rather than toggling every frame.
+                    Vector3 direction = aimPoint - playerCamera.transform.position;
+                    Vector3 angles = Quaternion.LookRotation(direction).eulerAngles;
+                    transform.rotation = Quaternion.Euler(0f, angles.y, 0f);
+                    pitch = Mathf.DeltaAngle(0f, angles.x);
+                    cameraPivot.localRotation = Quaternion.Euler(pitch, 0f, 0f);
+                }
+            }
 
             Vector2 mouse = discardMouseDelta ? Vector2.zero : Mouse.current.delta.ReadValue() * mouseSensitivity;
             discardMouseDelta = false;
@@ -107,25 +136,27 @@ namespace UFOWASH
             ResolveExplorationCameraCollision();
         }
 
-        bool IsActivelyAimingAtWashableShip()
+        bool IsActivelyAimingAtWashableShip(out Vector3 aimPoint)
         {
+            aimPoint = Vector3.zero;
             if (Mouse.current == null || !Mouse.current.leftButton.isPressed ||
-                Cursor.lockState != CursorLockMode.Locked || playerCamera == null) return false;
+                !CanControl || playerCamera == null || sprayTool == null) return false;
             var career = UfoWashCareerLoop.Instance;
-            if (career == null || !career.JobAccepted) return false;
-            var hits = Physics.RaycastAll(playerCamera.transform.position, playerCamera.transform.forward,
-                14f, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore);
-            System.Array.Sort(hits, (a, b) => a.distance.CompareTo(b.distance));
-            for (int i = 0; i < hits.Length; i++)
-            {
-                var collider = hits[i].collider;
-                if (collider == null || collider.transform == transform || collider.transform.IsChildOf(transform))
-                    continue;
-                var surface = collider.GetComponentInParent<UfoWashDirtSurface>();
-                if (surface != null && career.IsContractSurface(surface)) return true;
-            }
-            return false;
+            if (career == null || !career.CanUseTool(sprayTool.selectedMode) ||
+                !sprayTool.TryGetWashTarget(out var hit, out _)) return false;
+            aimPoint = hit.point;
+            return true;
         }
+
+        void OnApplicationFocus(bool focused)
+        {
+            hasFocus = focused;
+            discardMouseDelta = true;
+            swallowHeldClick = true;
+            if (!focused) { ApplyView(false); Cursor.lockState = CursorLockMode.None; Cursor.visible = true; }
+        }
+
+        void OnDisable() { ApplyView(false); }
 
         void ApplyView(bool cleaning)
         {

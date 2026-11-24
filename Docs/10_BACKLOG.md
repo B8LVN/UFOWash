@@ -1,5 +1,17 @@
 # UFO WASH — Full-Game Production Backlog
 
+## Latest quality-recovery gate — 2026-11-24
+
+- **Implemented — unverified in Unity:** local area-weighted dirt/foam overlay, tool pressure audio, shared camera/spray targets, guarded input, proportional supplies, switchable fan purchase, stage-aware checklist/receipt and separate starter-bay preview source.
+- **Verified outside Unity:** 14 deterministic production coating-state checks. This does not move the P0 gameplay gates to verified.
+- **Blocked:** licensed Unity import, two-contract rule fixture, actual authored-scene Play Mode/screenshots and visual/audio/performance review. Exact Editor downloaded and version command succeeded; see current status for licensing retry.
+- **Next:** finish this verification gate and resolve defects. Saveable station growth/first-worker work is separately assigned, not implemented here.
+- Evidence and acceptance steps: `Docs/reports/QUALITY_RECOVERY_2026-11-24.md`. Older entries below remain historical.
+
+## 2026-11-24 — Import handover
+
+Owner reaffirmed the Steam-game quality target and Moon Sweepers / Schedule I / Aquapark Tycoon references. Recommended first task combines current P0 stabilization with a focused P1 cleaning/control/starter-station recovery, judged by repeat jobs and meaningful reinvestment. Follow with persistent, physical tycoon progression. These are recommendations awaiting task selection, not implemented features. Unity Editor verification access must be established; none was demonstrated in this environment.
+
 **Canonical design:** Docs/GDD.md, version 2.2.
 
 **Product target:** Full commercial PC/Steam game. A vertical slice is a validation milestone, never the delivery target.

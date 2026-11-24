@@ -52,6 +52,15 @@ This file records observed failures and verified learning. Do not invent root ca
 
 A lesson is not “verified” until the corrective action has been tested. Keep observations, hypotheses and confirmed root causes separate.
 
+### L-007 — Visual work and progress must use the same local state
+
+- **Date:** 2026-11-24
+- **Observed source behavior:** Dirt was decremented for a whole renderer; separate foam patches all faded from the panel-wide foam number. The advertised power upgrade modified an unused tool field.
+- **Root cause / confidence:** High for the source-level mismatch between feedback, accounting and purchased effects; actual appearance remains untested.
+- **Correction:** Local area-weighted coating state drives both visible dirt/foam and panel totals; tool power and fan footprint feed that state.
+- **Prevention:** Test a stationary spray against untouched neighboring cells, then compare actual gameplay before/after the purchase. Do not approve local feedback based on aggregate percentages.
+- **Verification:** 14 deterministic state checks passed; Unity integration/visual acceptance remains blocked.
+
 
 ### L-005 — A whole-renderer foam tint is not readable foam application
 

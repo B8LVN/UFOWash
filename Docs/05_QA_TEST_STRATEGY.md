@@ -125,3 +125,11 @@ The first narrative and tutorial are draft content. Owner feedback is required b
 ## 11. Unity native-object lifecycle regression
 
 Unity native rendering objects such as MaterialPropertyBlock must not be constructed from static field initializers or MonoBehaviour constructors. Create them from a valid Unity runtime/editor lifecycle method or lazily at the point of use. When a static-initialization exception is reported, add a regression check that enters Play Mode and exercises the affected rendering path, not merely a source-text check.
+
+## 12. Local-coating recovery gate
+
+The 2026-11-24 local-cell implementation supersedes section 9's foam-patch mechanism.
+Run `dotnet run --project Tools/QualityChecks/QualityChecks.csproj` for deterministic coating rules only.
+Run `UFOWASH.Editor.UfoWashRecoveryChecks.RunBatch` in a disposable exact-version Unity project for the two-contract rule fixture.
+Neither replaces manual camera/input, authored-saucer visibility/access, sound, performance or screenshot acceptance.
+The complete positive/negative checklist and evidence requirements are in `reports/QUALITY_RECOVERY_2026-11-24.md`.

@@ -34,6 +34,8 @@ namespace UFOWASH.Editor
             Require<UfoWashCustomerShip>("Customer ship docking controller", errors);
             Require<UfoWashCustomerNpc>("Interactive customer NPC", errors);
             Require<UfoWashHUD>("HUD", errors);
+            if (Shader.Find("UFO WASH/Local Coating") == null)
+                errors.Add("Missing local dirt/foam coating shader.");
 
             var surfaces = Object.FindObjectsByType<UfoWashDirtSurface>(FindObjectsSortMode.None);
             if (surfaces.Length < 2)
@@ -59,7 +61,7 @@ namespace UFOWASH.Editor
                     }
 
                     string shaderName = material.shader.name;
-                    bool supported = shaderName.StartsWith("Universal Render Pipeline/") ||
+                    bool supported = shaderName.StartsWith("Universal Render Pipeline/") || shaderName == "UFO WASH/Local Coating" ||
                         shaderName == "GUI/Text Shader" || shaderName == "UI/Default" ||
                         shaderName == "Sprites/Default";
                     if (!supported)

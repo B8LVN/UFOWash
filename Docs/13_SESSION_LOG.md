@@ -1,3 +1,51 @@
+# 2026-11-24 — Garage-to-spaceport design expansion
+
+- Owner requested brainstorming for a major UI/UX, 3D-model and world overhaul:
+  low-cost garage on a small planet, hiring and visually upgraded facilities.
+- Inspected the three scenes, their builders, automatic Play entry and checked-in
+  Build Settings. Confirmed successive prototypes, not three game levels.
+- Wrote `Docs/GARAGE_TO_SPACEPORT_DIRECTION.md` with world/art direction, progression,
+  UI states, asset priorities, safe scene cleanup and delivery gates.
+- No assets/scenes were moved or deleted, no game code changed, and no gameplay
+  verification was inferred from the owner's Project-window screenshot.
+
+# 2026-11-24 — Branch approval rule and local Git guidance
+
+- **Correction from owner:** use one existing Unity project/repository and switch between two branches; do not create another project folder or clone for normal testing. Removed the separate-copy recommendation from the active handoff and saved the clarified rule.
+- Owner confirmed main is user-facing, the development branch is for development/testing, and changes reach main only after the owner's explicit OK. Recorded the rule in the decision log, handoff and project memory.
+- Owner's screenshot shows Git commands executed outside a Git repository. The earlier separate-clone recommendation was rejected; the correct guidance is to open a terminal inside the existing project repository and switch branches there.
+- No runtime code or main-branch changes were made for this support step.
+
+# 2026-11-24 — Owner-requested direct Play workflow
+
+- **GitHub follow-through:** owner connected GitHub; retried the branch push successfully. `ufo-wash/cleaning-recovery` is now available remotely and main remains unchanged. Download by fetching origin and switching to that branch. This resolves the upload blocker below, not the separate Unity licensing/runtime-verification blocker.
+- Owner explicitly wants Unity Play → main menu → start game, without a UFO WASH/Create step.
+- Added an Editor start-scene hook and temporary Play-session service details; retained the existing menu and authored scene. Stop restores moved props and removes temporary additions.
+- Existing scene generation is no longer an owner test prerequisite. The optional generator is under Developer Tools.
+- Committed direct-entry changes locally on `ufo-wash/cleaning-recovery`, which also contains the earlier cleaning recovery. GitHub push failed: the secure proxy reported no accessible GitHub connection. No remote test branch was created and main was not updated. Connect GitHub with access to `B8LVN/UFOWash`, then retry the branch push.
+- Fourteen deterministic coating checks and syntax checks for 25 game/editor files passed. Tracked scenes, materials, existing metadata, package versions and project settings remained unchanged.
+- Unity runtime evidence remains blocked by the previously confirmed missing license; no unchanged import retry or player build.
+
+# 2026-11-24 — Local cleaning and first-contract recovery
+
+- Inspected the mandatory production records, canonical GDD, clean initial branch state, exact engine/package versions, authored scene structure and current source.
+- Implemented local coating cells shared by dirt, foam and panel totals; shared target acquisition; input/focus/relock guards; proportional supplies; switchable fan purchase and effective power; stage-aware HUD, receipt and prototype pressure audio.
+- Added bay service details to builder source, disabled destructive import-time scene replacement and provided a separate quality-preview command. Preserved checked-in scenes and all existing metadata.
+- Added original shader/audio-generator source and matching metadata, plus deterministic C# and Unity rule-level regression fixtures.
+- **Executed:** 14 deterministic C# coating-state checks passed; 24 game/editor files passed C# 9 syntax parsing. Source whitespace, tracked scene/metadata/package/settings preservation and five new GUID uniqueness checks passed. These checks do not exercise Unity career rules or rendered gameplay.
+- Downloaded official Unity 6000.6.10f1 Linux Editor into ignored verification storage; version command passed. Added GTK/GL/X11 dependencies. First isolated import timed out because the licensing client lacked ICU; installed ICU and retried. Corrected startup reached licensing but exited **198**: **No valid Unity Editor license found**. No successful import/Unity compilation occurred.
+- **Unverified:** Unity import/compile, rule-level Play Mode fixture, manual first/second jobs, camera/input, local coating appearance/access, audio, gameplay screenshots and performance. No player build, paid content, migration, browser app, GitHub issue update or push.
+- Updated current status, next work, backlog, changelogs, improvements, decisions, QA and asset records. See `Docs/reports/QUALITY_RECOVERY_2026-11-24.md`.
+- **Next single task:** unblock licensed Editor verification and finish the documented authored-scene acceptance gate.
+
+# 2026-11-24 — Imported checkout and development direction
+
+- Owner requested a developed Steam-style UFO WASH inspired by Moon Sweepers, Schedule I and Aquapark Tycoon.
+- Read project guidance and canonical design, inspected source organization and the cleaning implementation, and confirmed a clean initial working tree.
+- No Unity Editor command was available on PATH. No compilation, Editor import, gameplay test, screenshot, player build, push or gameplay-code change was performed.
+- Recommended a playable quality-recovery milestone followed by persistent, visible tycoon systems. Both require task selection; actual Editor verification remains an explicit dependency.
+- Updated status, next work, backlog, improvement register and changelog. Existing Unity structure and assets were preserved.
+
 # UFO WASH — Development Session Log
 
 Append one entry at the end of every meaningful development session. This is a compact memory of what the agent inspected, changed, learned and left for the next session.

@@ -133,6 +133,8 @@ Quality = 1 − average contracted-zone contamination − 0.18 × average residu
 
 ## 4. Unity implementation and scope truth
 
+**2026-11-24 recovery source update:** localized coating cells replace whole-panel tint and separate foam patches; the first purchase installs a switchable fan nozzle; tool pressure synthesis, shared targeting, supply limits and revised HUD are implemented in source. Fourteen engine-independent coating checks pass. The downloaded exact Editor reports its version, but this is **not** a Unity import, Play Mode or visual pass. The table's older Unity-reference compile statements apply only to the previous source revision, not this recovery pass. Current acceptance and blockers: `Docs/11_CURRENT_STATUS.md` and `Docs/reports/QUALITY_RECOVERY_2026-11-24.md`.
+
 | GDD system | Unity implementation | State |
 |---|---|---|
 | Hull contamination and local foam feedback | Assets/UFO_WASH/Scripts/Cleaning/UfoWashDirtSurface.cs | Source implemented; foam visibility and per-zone tuning still need QA |
