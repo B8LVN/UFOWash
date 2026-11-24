@@ -6,6 +6,10 @@ namespace UFOWASH
     {
         public static UfoWashCareerLoop Instance { get; private set; }
 
+        [Header("Economy config (data-driven, AC-E4)")]
+        [Tooltip("Assign a UfoWashEconomyConfig asset. Falls back to built-in defaults if unassigned.")]
+        public UfoWashEconomyConfig config;
+
         static readonly string[] OfferTitles = { "QUICK DECONTAMINATION", "DEEP HULL CLEAN", "VIP SHOWROOM FINISH" };
         static readonly string[] OfferClients = { "ZORP // ORION TRADERS", "NYX-7 // DEEP SPACE COURIER", "CAPTAIN VEX // OUTER RIM" };
         static readonly string[] OfferBriefs = {
@@ -24,11 +28,7 @@ namespace UFOWASH
             new Color(0.24f, 0.52f, 0.30f)
         };
         static readonly float[] OfferStartingDirt = { 0.72f, 0.9f, 1f };
-        static readonly int[] OfferPayouts = { 250, 420, 600 };
         static readonly string[] OfferTraits = { "RELIABLE COURIER", "SCRAP PROSPECTOR", "PERFECTIONIST NOBLE" };
-        static readonly float[] OfferTipRates = { 0.08f, 0.16f, 0.35f };
-        static readonly float[] OfferTipQuality = { 0.84f, 0.90f, 0.985f };
-        static readonly float[] OfferReputationRequirements = { 1f, 2.1f, 3.8f };
         static readonly float[] OfferRushWindows = { 300f, 0f, 0f };
         static readonly int[] OfferRushBonuses = { 45, 0, 0 };
 
@@ -47,11 +47,14 @@ namespace UFOWASH
         int activeOfferIndex = -1;
         float activeJobStartedAt;
         float supplyUseMultiplier = 1f;
+
+        UfoWashEconomyConfig Economy => config != null ? config : UfoWashEconomyConfig.CreateInstance<UfoWashEconomyConfig>();
+
         public float Reputation { get; private set; } = 2.1f;
         public int SupplyEfficiencyPercent => Mathf.RoundToInt((1f - supplyUseMultiplier) * 100f);
         public bool CanAcceptJob => !JobAccepted && contractSurfaces.Length > 0 && (customerShip == null || customerShip.IsDocked);
         public float Quality => Mathf.Clamp01(1f - UfoWashDirtSurface.AverageDirt(contractSurfaces) -
-            UfoWashDirtSurface.AverageFoam(contractSurfaces) * 0.18f);
+            UfoWashDirtSurface.AverageFoam(contractSurfaces) * Economy.foamQualityCoefficient);
         public float StageProgress
         {
             get
@@ -64,11 +67,11 @@ namespace UFOWASH
                 {
                     if (surface == null) continue;
                     float progress = CurrentStage == UfoWashToolMode.PreRinse
-                        ? Mathf.InverseLerp(startingDirt, 0.58f, surface.dirt)
+                        ? Mathf.InverseLerp(startingDirt, Economy.preRinseLimit, surface.dirt)
                         : CurrentStage == UfoWashToolMode.Foam
-                            ? Mathf.Clamp01(surface.foam / 0.62f)
-                            : Mathf.Clamp01((0.62f - surface.foam) / 0.52f) *
-                              Mathf.Clamp01((0.58f - surface.dirt) / 0.43f);
+                            ? Mathf.Clamp01(surface.foam / Economy.foamCoverageMin)
+                            : Mathf.Clamp01((Economy.foamCoverageMin - surface.foam) / 0.52f) *
+                              Mathf.Clamp01((Economy.preRinseLimit - surface.dirt) / 0.43f);
                     sum += progress;
                     count++;
                 }
@@ -76,20 +79,23 @@ namespace UFOWASH
             }
         }
         public bool CanSubmit => JobAccepted && CurrentStage == UfoWashToolMode.FinalRinse &&
-            AllZonesAtMost(0.15f, 0.10f);
-        public string QualityGrade => Quality >= 0.985f ? "S" : Quality >= 0.95f ? "A" :
-            Quality >= 0.90f ? "B" : Quality >= 0.85f ? "C" : "D";
+            AllZonesAtMost(Economy.finalRinseDirtMax, Economy.finalRinseFoamMax);
+        public string QualityGrade => Economy.GradeForQuality(Quality);
 
         public int OfferCount => OfferTitles.Length;
         public string Client => activeOfferIndex >= 0 ? OfferClients[activeOfferIndex] : "NO ACTIVE CLIENT";
         public string Ship => "CLASS-IV SCOUT";
         public string ContaminationType => activeOfferIndex >= 0 ? OfferContamination[activeOfferIndex] : OfferContamination[CompletedJobs % OfferContamination.Length];
-        public int Reward => activeOfferIndex >= 0 ? OfferPayouts[activeOfferIndex] : OfferPayouts[0];
+        public int Reward => activeOfferIndex >= 0 ? GetOfferReward(activeOfferIndex) : GetOfferReward(0);
         public string GetOfferTitle(int index) => OfferTitles[Mathf.Clamp(index, 0, OfferTitles.Length - 1)];
         public string GetOfferClient(int index) => OfferClients[Mathf.Clamp(index, 0, OfferClients.Length - 1)];
         public string GetOfferBrief(int index) => OfferBriefs[Mathf.Clamp(index, 0, OfferBriefs.Length - 1)];
         public string GetOfferContamination(int index) => OfferContamination[Mathf.Clamp(index, 0, OfferContamination.Length - 1)];
-        public int GetOfferReward(int index) => OfferPayouts[Mathf.Clamp(index, 0, OfferPayouts.Length - 1)];
+        public int GetOfferReward(int index)
+        {
+            int i = Mathf.Clamp(index, 0, Economy.OpeningQuotes.Length - 1);
+            return Economy.OpeningQuotes[i];
+        }
         public string GetOfferTrait(int index) => OfferTraits[Mathf.Clamp(index, 0, OfferTraits.Length - 1)];
         public string GetOfferRushSummary(int index)
         {
@@ -101,12 +107,26 @@ namespace UFOWASH
         }
         public int GetOfferPotentialTip(int index)
         {
-            int safeIndex = Mathf.Clamp(index, 0, OfferPayouts.Length - 1);
-            return Mathf.RoundToInt(OfferPayouts[safeIndex] * OfferTipRates[safeIndex]);
+            int safeIndex = Mathf.Clamp(index, 0, Economy.OpeningQuotes.Length - 1);
+            return Mathf.RoundToInt(Economy.OpeningQuotes[safeIndex] * Economy.TipRateForQuality(Economy.GetOfferTipQuality(safeIndex)));
         }
-        public float GetOfferTipQuality(int index) => OfferTipQuality[Mathf.Clamp(index, 0, OfferTipQuality.Length - 1)];
-        public bool GetOfferUnlocked(int index) => Reputation >= OfferReputationRequirements[Mathf.Clamp(index, 0, OfferReputationRequirements.Length - 1)];
-        public string GetOfferUnlockRequirement(int index) => "REPUTATION " + OfferReputationRequirements[Mathf.Clamp(index, 0, OfferReputationRequirements.Length - 1)].ToString("0.0") + " STARS";
+        public float GetOfferTipQuality(int index)
+        {
+            int i = Mathf.Clamp(index, 0, 2);
+            return i == 0 ? Economy.tipTier1Quality : i == 1 ? Economy.tipTier2Quality : Economy.tipTier3Quality;
+        }
+        public bool GetOfferUnlocked(int index)
+        {
+            int i = Mathf.Clamp(index, 0, 2);
+            float required = i == 0 ? Economy.reputationMin : i == 1 ? Economy.heavyDispatchRep : Economy.vipContractsRep;
+            return Reputation >= required;
+        }
+        public string GetOfferUnlockRequirement(int index)
+        {
+            int i = Mathf.Clamp(index, 0, 2);
+            float required = i == 0 ? Economy.reputationMin : i == 1 ? Economy.heavyDispatchRep : Economy.vipContractsRep;
+            return "REPUTATION " + required.ToString("0.0") + " STARS";
+        }
         public string StageLabel => CurrentStage == UfoWashToolMode.PreRinse ? "01 / PRE-RINSE" :
             CurrentStage == UfoWashToolMode.Foam ? "02 / FOAM COVERAGE" : "03 / FINAL RINSE";
         public bool HasExpressWindow => JobAccepted && activeOfferIndex >= 0 &&
@@ -140,7 +160,8 @@ namespace UFOWASH
         {
             if (!JobAccepted) return "ACCEPT A CONTRACT AT DISPATCH";
             if (mode != CurrentStage) return "SELECT " + StageLabel + " // KEYS 1 / 2 / 3";
-            return mode == UfoWashToolMode.Foam ? "CHEMICAL EMPTY // SUPPLIES 65 CR" : "WATER EMPTY // SUPPLIES 65 CR";
+            return mode == UfoWashToolMode.Foam ? "CHEMICAL EMPTY // SUPPLIES " + Economy.refillCost + " CR" :
+                "WATER EMPTY // SUPPLIES " + Economy.refillCost + " CR";
         }
 
         public bool IsContractSurface(UfoWashDirtSurface surface)
@@ -164,14 +185,19 @@ namespace UFOWASH
                 string state;
                 // Completion refers to the current ordered stage, not a guess
                 // from foam amount (which decreases during final rinse).
-                bool ready = CurrentStage == UfoWashToolMode.PreRinse ? surface.dirt <= 0.58f :
-                    CurrentStage == UfoWashToolMode.Foam ? surface.foam >= 0.62f :
-                    surface.dirt <= 0.15f && surface.foam <= 0.10f;
-                state = CurrentStage == UfoWashToolMode.PreRinse ?
-                    "DUST " + Mathf.RoundToInt(surface.dirt * 100f) + "% / <=58%" :
+                bool ready = CurrentStage == UfoWashToolMode.PreRinse ? surface.dirt <= Economy.preRinseLimit :
+                    CurrentStage == UfoWashToolMode.Foam ? surface.foam >= Economy.foamCoverageMin :
+                    surface.dirt <= Economy.finalRinseDirtMax && surface.foam <= Economy.finalRinseFoamMax;
+                string limitLabel = CurrentStage == UfoWashToolMode.PreRinse ?
+                    "<=" + (Economy.preRinseLimit * 100f).ToString("0") + "%" :
                     CurrentStage == UfoWashToolMode.Foam ?
-                    "FOAM " + Mathf.RoundToInt(surface.foam * 100f) + "% / >=62%" :
-                    "DIRT " + Mathf.RoundToInt(surface.dirt * 100f) + "% / FOAM " + Mathf.RoundToInt(surface.foam * 100f) + "%";
+                    ">=" + (Economy.foamCoverageMin * 100f).ToString("0") + "%" :
+                    "DIRT <=" + (Economy.finalRinseDirtMax * 100f).ToString("0") + "% / FOAM <=" + (Economy.finalRinseFoamMax * 100f).ToString("0") + "%";
+                state = CurrentStage == UfoWashToolMode.PreRinse ?
+                    "DUST " + Mathf.RoundToInt(surface.dirt * 100f) + "% / " + limitLabel :
+                    CurrentStage == UfoWashToolMode.Foam ?
+                    "FOAM " + Mathf.RoundToInt(surface.foam * 100f) + "% / " + limitLabel :
+                    "DIRT " + Mathf.RoundToInt(surface.dirt * 100f) + "% / FOAM " + Mathf.RoundToInt(surface.foam * 100f) + "% / " + limitLabel;
                 if (lines.Length > 0) lines.Append('\n');
                 lines.Append(ready ? "[OK] " : "[  ] ").Append(GetZoneName(surface)).Append('\n')
                     .Append("       ").Append(state);
@@ -192,7 +218,8 @@ namespace UFOWASH
                 contractSurfaces = FindObjectsByType<UfoWashDirtSurface>(FindObjectsSortMode.None);
             if (contractSurfaces == null) contractSurfaces = System.Array.Empty<UfoWashDirtSurface>();
             customerNpc = FindAnyObjectByType<UfoWashCustomerNpc>();
-            if (UfoWashHUD.Credits == 0) UfoWashHUD.Credits = 750;
+            if (UfoWashHUD.Credits == 0) UfoWashHUD.Credits = Economy.openingCredits;
+            Reputation = Economy.openingReputation;
             if (UfoWashProgressSave.Instance != null)
                 UfoWashProgressSave.Instance.RestoreCareer(this);
         }
@@ -303,12 +330,12 @@ namespace UFOWASH
 
         void AdvanceStageIfReady()
         {
-            if (CurrentStage == UfoWashToolMode.PreRinse && AllZonesAtMost(0.58f, -1f))
+            if (CurrentStage == UfoWashToolMode.PreRinse && AllZonesAtMost(Economy.preRinseLimit, -1f))
             {
                 CurrentStage = UfoWashToolMode.Foam;
                 LastMessage = "ALL HULL ZONES PRE-RINSED // SWITCH TO FOAM (2)";
             }
-            else if (CurrentStage == UfoWashToolMode.Foam && AllZonesAtLeastFoam(0.62f))
+            else if (CurrentStage == UfoWashToolMode.Foam && AllZonesAtLeastFoam(Economy.foamCoverageMin))
             {
                 CurrentStage = UfoWashToolMode.FinalRinse;
                 LastMessage = "EVERY ZONE COATED // FINAL RINSE (3)";
@@ -317,21 +344,20 @@ namespace UFOWASH
 
         public void RefillSupplies()
         {
-            const int refillCost = 65;
             if (Water >= 99f && Chemical >= 99f)
             {
                 LastMessage = "SUPPLIES ALREADY FULL";
                 return;
             }
-            if (UfoWashHUD.Credits < refillCost)
+            if (UfoWashHUD.Credits < Economy.refillCost)
             {
-                LastMessage = "INSUFFICIENT CREDITS // REFILL COST 65 CR";
+                LastMessage = "INSUFFICIENT CREDITS // REFILL COST " + Economy.refillCost + " CR";
                 return;
             }
-            UfoWashHUD.Credits -= refillCost;
+            UfoWashHUD.Credits -= Economy.refillCost;
             Water = 100f;
             Chemical = 100f;
-            LastMessage = "SUPPLIES REFILLED // -65 CR";
+            LastMessage = "SUPPLIES REFILLED // -" + Economy.refillCost + " CR";
             if (UfoWashProgressSave.Instance != null)
                 UfoWashProgressSave.Instance.SaveNow();
         }
@@ -342,12 +368,28 @@ namespace UFOWASH
 
             int basePayout = Reward;
             int qualityBonus = Mathf.RoundToInt(basePayout * Mathf.Clamp01((Quality - 0.85f) / 0.15f) * 0.25f);
-            int tip = Quality >= OfferTipQuality[activeOfferIndex]
-                ? Mathf.RoundToInt(basePayout * OfferTipRates[activeOfferIndex]) : 0;
+            int tip = Quality >= GetOfferTipQuality(activeOfferIndex)
+                ? Mathf.RoundToInt(basePayout * Economy.TipRateForQuality(Quality)) : 0;
             int rushBonus = RushBonus;
             int payout = basePayout + qualityBonus + tip + rushBonus;
             string grade = QualityGrade;
-            Reputation = Mathf.Clamp(Reputation + (Quality >= 0.985f ? 0.25f : Quality >= 0.92f ? 0.16f : Quality >= 0.84f ? 0.08f : -0.15f), 1f, 5f);
+            Reputation = Mathf.Clamp(Reputation + Economy.ReputationDeltaForQuality(Quality), Economy.reputationMin, Economy.reputationMax);
+            float reputationBefore = Reputation - Economy.ReputationDeltaForQuality(Quality);
+
+            // Generate forensic report (Section 4.2, AC-F1..F4)
+            var reportManager = FindAnyObjectByType<UfoWashForensicReportManager>();
+            if (reportManager != null)
+            {
+                reportManager.GenerateReport(
+                    OfferClients[activeOfferIndex].Split('/')[0].Trim(),
+                    Ship,
+                    ContaminationType,
+                    contractSurfaces,
+                    basePayout, qualityBonus, tip, rushBonus,
+                    reputationBefore, Reputation,
+                    100f - Water, 100f - Chemical,
+                    Time.time - activeJobStartedAt);
+            }
 
             JobAccepted = false;
             CompletedJobs++;
@@ -399,7 +441,7 @@ namespace UFOWASH
             for (int i = 0; i < contractSurfaces.Length; i++)
             {
                 var surface = contractSurfaces[i];
-                if (surface == null || surface.dirt > 0.58f || surface.foam < foamLimit) return false;
+                if (surface == null || surface.dirt > Economy.preRinseLimit || surface.foam < foamLimit) return false;
             }
             return true;
         }
