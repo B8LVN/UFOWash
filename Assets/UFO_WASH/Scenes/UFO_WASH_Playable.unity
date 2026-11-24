@@ -136,8 +136,10 @@ Material:
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
-  stringTagMap: {}
-  disabledShaderPasses: []
+  stringTagMap:
+    RenderType: Opaque
+  disabledShaderPasses:
+  - MOTIONVECTORS
   m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
@@ -236,7 +238,7 @@ Material:
     - _ZWrite: 1
     m_Colors:
     - _BaseColor: {r: 0.09, g: 0.13, b: 0.2, a: 1}
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _Color: {r: 0.089999996, g: 0.12999997, b: 0.19999996, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
   m_BuildTextureStacks: []
@@ -258,8 +260,10 @@ Material:
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
-  stringTagMap: {}
-  disabledShaderPasses: []
+  stringTagMap:
+    RenderType: Opaque
+  disabledShaderPasses:
+  - MOTIONVECTORS
   m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
@@ -358,7 +362,7 @@ Material:
     - _ZWrite: 1
     m_Colors:
     - _BaseColor: {r: 0.09, g: 0.13, b: 0.2, a: 1}
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _Color: {r: 0.089999996, g: 0.12999997, b: 0.19999996, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
   m_BuildTextureStacks: []
@@ -523,6 +527,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UFOWASH.UfoWashDirtSurface
   dirt: 1
+  foam: 0
+  correctedHull: {fileID: 0}
+  originalHull: {fileID: 0}
+  originalColliderMesh: {fileID: 0}
+  reportedCoatingFailure: 0
+  contaminationTint:
+    r: 0.48
+    g: 0.3
+    b: 0.16
+    a: 1
 --- !u!23 &110275072
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -740,8 +754,10 @@ Material:
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
-  stringTagMap: {}
-  disabledShaderPasses: []
+  stringTagMap:
+    RenderType: Opaque
+  disabledShaderPasses:
+  - MOTIONVECTORS
   m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
@@ -840,7 +856,7 @@ Material:
     - _ZWrite: 1
     m_Colors:
     - _BaseColor: {r: 0.07, g: 0.1, b: 0.16, a: 1}
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _Color: {r: 0.06999998, g: 0.09999997, b: 0.15999997, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
   m_BuildTextureStacks: []
@@ -935,6 +951,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UFOWASH.UfoWashDirtSurface
   dirt: 1
+  foam: 0
+  correctedHull: {fileID: 0}
+  originalHull: {fileID: 0}
+  originalColliderMesh: {fileID: 0}
+  reportedCoatingFailure: 0
+  contaminationTint:
+    r: 0.48
+    g: 0.3
+    b: 0.16
+    a: 1
 --- !u!23 &479360237
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1061,6 +1087,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UFOWASH.UfoWashDirtSurface
   dirt: 1
+  foam: 0
+  correctedHull: {fileID: 0}
+  originalHull: {fileID: 0}
+  originalColliderMesh: {fileID: 0}
+  reportedCoatingFailure: 0
+  contaminationTint:
+    r: 0.48
+    g: 0.3
+    b: 0.16
+    a: 1
 --- !u!23 &486247790
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1187,6 +1223,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UFOWASH.UfoWashDirtSurface
   dirt: 1
+  foam: 0
+  correctedHull: {fileID: 0}
+  originalHull: {fileID: 0}
+  originalColliderMesh: {fileID: 0}
+  reportedCoatingFailure: 0
+  contaminationTint:
+    r: 0.48
+    g: 0.3
+    b: 0.16
+    a: 1
 --- !u!23 &605691677
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1425,6 +1471,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UFOWASH.UfoWashDirtSurface
   dirt: 0.8
+  foam: 0
+  correctedHull: {fileID: 0}
+  originalHull: {fileID: 0}
+  originalColliderMesh: {fileID: 0}
+  reportedCoatingFailure: 0
+  contaminationTint:
+    r: 0.48
+    g: 0.3
+    b: 0.16
+    a: 1
 --- !u!23 &719270638
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1532,6 +1588,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f76b60b1cec386f4681e5db8df00b34f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UFOWASH.UfoWashHUD
+  creditsText: {fileID: 0}
+  contractLabelText: {fileID: 0}
+  clientText: {fileID: 0}
+  shipText: {fileID: 0}
+  contaminationText: {fileID: 0}
+  stateText: {fileID: 0}
+  instructionText: {fileID: 0}
+  progressText: {fileID: 0}
+  stageText: {fileID: 0}
+  supplyText: {fileID: 0}
+  zonesText: {fileID: 0}
+  rushText: {fileID: 0}
+  progressFill: {fileID: 0}
+  zonePanel: {fileID: 0}
+  waterFill: {fileID: 0}
+  foamFill: {fileID: 0}
+  toolModeCards: []
+  toolModeLabels: []
+  career: {fileID: 0}
+  tool: {fileID: 0}
+  toolText: {fileID: 0}
+  zoneChecklistVisible: 1
 --- !u!4 &744902112
 Transform:
   m_ObjectHideFlags: 0
@@ -1595,6 +1673,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UFOWASH.UfoWashDirtSurface
   dirt: 1
+  foam: 0
+  correctedHull: {fileID: 0}
+  originalHull: {fileID: 0}
+  originalColliderMesh: {fileID: 0}
+  reportedCoatingFailure: 0
+  contaminationTint:
+    r: 0.48
+    g: 0.3
+    b: 0.16
+    a: 1
 --- !u!23 &871598108
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1709,6 +1797,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UFOWASH.UfoWashPlayerInteraction
   viewCamera: {fileID: 1867692722}
   interactionRange: 3.2
+  currentTarget: {fileID: 0}
+  controller: {fileID: 0}
 --- !u!114 &1019842475
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1726,6 +1816,16 @@ MonoBehaviour:
   cleanPerSecond: 0.38
   sprayRadius: 0.35
   spraying: 0
+  selectedMode: 0
+  sprayParticles: {fileID: 0}
+  impactParticles: {fileID: 0}
+  nextImpactTime: 0
+  particleMaterial: {fileID: 0}
+  controller: {fileID: 0}
+  toolAudio: {fileID: 0}
+  <FanNozzleInstalled>k__BackingField: 0
+  <FanNozzleActive>k__BackingField: 0
+  <Feedback>k__BackingField: AIM AT A CONTRACTED HULL PANEL
 --- !u!114 &1019842476
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1739,9 +1839,25 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UFOWASH.UfoWashFirstPersonController
   cameraPivot: {fileID: 2044600077}
+  playerCamera: {fileID: 0}
   moveSpeed: 5.5
   mouseSensitivity: 0.12
   gravity: -20
+  explorationCameraDistance: 4.2
+  explorationCameraShoulder: 1.05
+  explorationCameraHeight: 0.55
+  explorationCameraPitch: 5
+  controller: {fileID: 0}
+  bodyRenderers: []
+  viewModelRenderers: []
+  sprayTool: {fileID: 0}
+  pitch: 0
+  verticalVelocity: 0
+  inputSuspended: 0
+  isCleaningView: 0
+  discardMouseDelta: 0
+  hasFocus: 1
+  swallowHeldClick: 0
 --- !u!143 &1019842477
 CharacterController:
   m_ObjectHideFlags: 0
@@ -1800,8 +1916,10 @@ Material:
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
-  stringTagMap: {}
-  disabledShaderPasses: []
+  stringTagMap:
+    RenderType: Opaque
+  disabledShaderPasses:
+  - MOTIONVECTORS
   m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
@@ -1900,7 +2018,7 @@ Material:
     - _ZWrite: 1
     m_Colors:
     - _BaseColor: {r: 0.02, g: 0.42, b: 0.58, a: 1}
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _Color: {r: 0.02, g: 0.41999996, b: 0.58, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
   m_BuildTextureStacks: []
@@ -1922,8 +2040,10 @@ Material:
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
-  stringTagMap: {}
-  disabledShaderPasses: []
+  stringTagMap:
+    RenderType: Opaque
+  disabledShaderPasses:
+  - MOTIONVECTORS
   m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
@@ -2022,7 +2142,7 @@ Material:
     - _ZWrite: 1
     m_Colors:
     - _BaseColor: {r: 0.12, g: 0.16, b: 0.2, a: 1}
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _Color: {r: 0.11999995, g: 0.15999997, b: 0.19999996, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
   m_BuildTextureStacks: []
@@ -2187,6 +2307,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UFOWASH.UfoWashDirtSurface
   dirt: 1
+  foam: 0
+  correctedHull: {fileID: 0}
+  originalHull: {fileID: 0}
+  originalColliderMesh: {fileID: 0}
+  reportedCoatingFailure: 0
+  contaminationTint:
+    r: 0.48
+    g: 0.3
+    b: 0.16
+    a: 1
 --- !u!23 &1306793598
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -2313,6 +2443,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UFOWASH.UfoWashDirtSurface
   dirt: 1
+  foam: 0
+  correctedHull: {fileID: 0}
+  originalHull: {fileID: 0}
+  originalColliderMesh: {fileID: 0}
+  reportedCoatingFailure: 0
+  contaminationTint:
+    r: 0.48
+    g: 0.3
+    b: 0.16
+    a: 1
 --- !u!23 &1338296939
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -2513,6 +2653,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1447224176}
   - component: {fileID: 1447224175}
+  - component: {fileID: 1447224177}
   m_Layer: 0
   m_Name: Bay Light
   m_TagString: Untagged
@@ -2600,6 +2741,33 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1447224177
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1447224174}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.UniversalAdditionalLightData
+  m_UsePipelineSettings: 1
+  m_AdditionalLightsShadowResolutionTier: 2
+  m_CustomShadowLayers: 0
+  m_LightCookieSize: {x: 1, y: 1}
+  m_LightCookieOffset: {x: 0, y: 0}
+  m_SoftShadowQuality: 0
+  m_RenderingLayersMask:
+    m_Bits: 1
+  m_ShadowRenderingLayersMask:
+    m_Bits: 1
+  m_Version: 4
+  m_LightLayerMask: 1
+  m_ShadowLayerMask: 1
+  m_RenderingLayers: 1
+  m_ShadowRenderingLayers: 1
 --- !u!21 &1551580043
 Material:
   serializedVersion: 8
@@ -2617,8 +2785,10 @@ Material:
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
-  stringTagMap: {}
-  disabledShaderPasses: []
+  stringTagMap:
+    RenderType: Opaque
+  disabledShaderPasses:
+  - MOTIONVECTORS
   m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
@@ -2717,7 +2887,7 @@ Material:
     - _ZWrite: 1
     m_Colors:
     - _BaseColor: {r: 0.17, g: 0.22, b: 0.28, a: 1}
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _Color: {r: 0.16999996, g: 0.21999997, b: 0.27999997, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
   m_BuildTextureStacks: []
@@ -2770,6 +2940,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UFOWASH.UfoWashDirtSurface
   dirt: 0.9
+  foam: 0
+  correctedHull: {fileID: 0}
+  originalHull: {fileID: 0}
+  originalColliderMesh: {fileID: 0}
+  reportedCoatingFailure: 0
+  contaminationTint:
+    r: 0.48
+    g: 0.3
+    b: 0.16
+    a: 1
 --- !u!23 &1581849192
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -2883,7 +3063,12 @@ MonoBehaviour:
   prompt: E  INTERACT
   baseCost: 200
   cleaningPowerIncrease: 0.25
+  sprayCoverageIncrease: 0.06
+  rangeIncrease: 0.5
   maxLevel: 5
+  saveKey: ion-washer
+  level: 0
+  sprayTool: {fileID: 0}
 --- !u!23 &1620004757
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -3025,6 +3210,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UFOWASH.UfoWashDirtSurface
   dirt: 1
+  foam: 0
+  correctedHull: {fileID: 0}
+  originalHull: {fileID: 0}
+  originalColliderMesh: {fileID: 0}
+  reportedCoatingFailure: 0
+  contaminationTint:
+    r: 0.48
+    g: 0.3
+    b: 0.16
+    a: 1
 --- !u!23 &1690977856
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -3467,6 +3662,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UFOWASH.UfoWashDirtSurface
   dirt: 1
+  foam: 0
+  correctedHull: {fileID: 0}
+  originalHull: {fileID: 0}
+  originalColliderMesh: {fileID: 0}
+  reportedCoatingFailure: 0
+  contaminationTint:
+    r: 0.48
+    g: 0.3
+    b: 0.16
+    a: 1
 --- !u!23 &2005193844
 MeshRenderer:
   m_ObjectHideFlags: 0

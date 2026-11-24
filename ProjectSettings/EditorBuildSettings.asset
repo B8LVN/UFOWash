@@ -4,15 +4,5 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes:
-  - enabled: 1
-    path: Assets/UFO_WASH/Scenes/UFO_WASH_PowerSlice.unity
-    guid: d21d6b41c846c054894fd96779b861ce
-  - enabled: 1
-    path: Assets/UFO_WASH/Scenes/UFO_WASH_Playable.unity
-    guid: be27e27a3dd05734fbb5dd802596c28e
-  - enabled: 1
-    path: Assets/Scenes/SampleScene.unity
-    guid: 99c9720ab356a0642a771bea13969a05
-  m_configObjects:
-    com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  m_Scenes: []
+  m_configObjects: {}
