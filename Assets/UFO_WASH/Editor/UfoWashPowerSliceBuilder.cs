@@ -51,6 +51,7 @@ namespace UFOWASH.Editor
             matDark = LoadPlayMaterial("PS_DarkMetal");
             matCyan = LoadPlayMaterial("PS_AlienTeal");
             matWhite = LoadPlayMaterial("PS_White");
+            matBlue = LoadPlayMaterial("PS_BluePaint");
             matOrange = LoadPlayMaterial("PS_HazardOrange");
             matGlow = LoadPlayMaterial("PS_EmissiveCyan");
 
@@ -74,6 +75,13 @@ namespace UFOWASH.Editor
                 BuildStarterBayServiceDetails();
                 BuildServiceAccess();
             }
+            // The normal owner workflow is Play -> main menu -> start the shift.
+            // Keep progression and the first worker temporary; never rewrite the authored scene.
+            if (Object.FindAnyObjectByType<UfoWashProgressSave>() == null)
+                playModeDetails.AddComponent<UfoWashProgressSave>();
+            if (Object.FindAnyObjectByType<UfoWashWashAttendant>() == null)
+                BuildWashAttendant(new Vector3(-5.2f, 0f, 1.2f));
+
             foreach (var root in scene.GetRootGameObjects())
                 if (root != playModeDetails && !originalRoots.Contains(root))
                     root.transform.SetParent(playModeDetails.transform, true);
@@ -382,7 +390,7 @@ Left mouse: operate washer",
             if (string.IsNullOrEmpty(modelPath)) return false;
             var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(modelPath);
             if (prefab == null) return false;
-            var model = PrefabUtility.InstantiatePrefab(prefab) as GameObject;
+            var model = Object.Instantiate(prefab);
             if (model == null) return false;
 
             model.name = "KENNEY CC0 // ASTRONAUT WASH TECH";

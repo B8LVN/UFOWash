@@ -4,6 +4,7 @@ Record decisions that affect scope, architecture, design or production. Newest f
 
 | ID | Date | Decision | Status | Rationale / notes |
 |---|---|---|---|---|
+| D-019 | 2026-11-24 | Persist company ledger state in a versioned JSON save with a backup; do not resume an in-progress contract after reload. | Implemented — unverified | Preserve reinvestment across sessions without serializing scene references; damaged data must remain recoverable and must not be silently overwritten. |
 | D-018 | 2026-11-24 | Use one local Unity project/repository with two branches: main is user-facing; develop/test on ufo-wash/cleaning-recovery and merge only after the owner's explicit OK. | Approved by owner | Owner rejected separate project copies. Switch branches in the existing project folder; successful checks or a dev push do not authorize merging main. |
 | D-017 | 2026-11-24 | Normal owner testing must be Play → main menu → start game, with no generation menu step. | Owner requested; implemented — unverified in Unity | Select the existing main scene automatically and apply temporary service access in Play rather than overwriting the authored scene. |
 | D-014 | 2026-11-24 | Prototype UV-independent local coating cells for the existing static hull, using one state for visible dirt/foam and panel summaries. | Implemented — unverified in Unity | Existing procedural saucer has no authored UVs. Locality and weighted totals pass deterministic checks; the technique remains provisional until curved-hull visual/performance comparison. |

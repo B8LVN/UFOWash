@@ -29,7 +29,7 @@ Source now contains local dirt/foam, tool pressure audio, shared target acquisit
 
 **Normal testing path: press Unity Play → main menu → start the shift. No UFO WASH/Create command is required.** The Editor start-scene hook selects the existing main-menu scene and adds the new service access in memory for that Play session, then cleans it up on Stop. This direct-entry source change still needs licensed Play Mode verification.
 
-Preserve `Assets/UFO_WASH/Scenes/UFO_WASH_PowerSlice.unity` and existing `.meta` files. The separate preview generator is now a developer-only optional tool, not an owner setup step. No player builds, paid assets, migrations, browser rewrite or additional feature expansion belongs to this handoff. Saveable station progression and the first worker are separately assigned work, not part of this recovery pass.
+Preserve `Assets/UFO_WASH/Scenes/UFO_WASH_PowerSlice.unity` and existing `.meta` files. The separate preview generator is now a developer-only optional tool, not an owner setup step. No player builds, paid assets, migrations, browser rewrite or additional feature expansion belongs to this handoff. The company ledger and first wash tech are now included on this test branch as source-only progression work; run their save, affordability, blocked-water and refill checks during the same Unity review.
 
 ---
 

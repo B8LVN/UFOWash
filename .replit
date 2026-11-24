@@ -1,4 +1,4 @@
-modules = ["dotnet-8.0"]
+modules = ["dotnet-8.0", "python-base-3.13"]
 [nix]
 channel = "stable-25_05"
 packages = ["gtk3", "libGL", "xorg.libX11", "xorg.libXcursor", "xorg.libXrandr", "icu"]

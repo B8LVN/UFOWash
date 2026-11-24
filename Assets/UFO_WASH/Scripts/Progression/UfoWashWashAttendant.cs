@@ -149,7 +149,7 @@ namespace UFOWASH
             statusText = label.AddComponent<TextMesh>();
             statusText.anchor = TextAnchor.MiddleCenter;
             statusText.alignment = TextAlignment.Center;
-            statusText.characterSize = 0.035f;
+            statusText.characterSize = 0.0035f;
             statusText.fontSize = 48;
             statusText.color = new Color(0.35f, 0.94f, 1f);
             statusText.text = status;

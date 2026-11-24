@@ -48,7 +48,10 @@ namespace UFOWASH
             sprayTool.cleanPerSecond += cleaningPowerIncrease;
             sprayTool.sprayRadius += sprayCoverageIncrease;
             sprayTool.range += rangeIncrease;
-            UfoWashCareerLoop.Instance?.NotifyBossMessage("NOZZLE FITTED // -"+cost+" CR // Q TO SWITCH FAN / PRECISION");
+            if (UfoWashProgressSave.Instance != null)
+                UfoWashProgressSave.Instance.RecordUpgrade(saveKey, level);
+            UfoWashCareerLoop.Instance?.NotifyBossMessage(
+                "NOZZLE FITTED // -" + cost + " CR // LEVEL " + level + " // Q TO SWITCH FAN / PRECISION");
             Debug.Log($"[UFO WASH] Ion washer level {level}: power {sprayTool.cleanPerSecond:0.00}/s, coverage radius {sprayTool.sprayRadius:0.00}, range {sprayTool.range:0.0}m.");
         }
 
@@ -56,6 +59,7 @@ namespace UFOWASH
         {
             level = Mathf.Clamp(savedLevel, 0, maxLevel);
             if (sprayTool == null) return;
+            if (level > 0) sprayTool.InstallFanNozzle();
             sprayTool.cleanPerSecond += cleaningPowerIncrease * level;
             sprayTool.sprayRadius += sprayCoverageIncrease * level;
             sprayTool.range += rangeIncrease * level;

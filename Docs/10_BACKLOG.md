@@ -5,7 +5,7 @@
 - **Implemented — unverified in Unity:** local area-weighted dirt/foam overlay, tool pressure audio, shared camera/spray targets, guarded input, proportional supplies, switchable fan purchase, stage-aware checklist/receipt and separate starter-bay preview source.
 - **Verified outside Unity:** 14 deterministic production coating-state checks. This does not move the P0 gameplay gates to verified.
 - **Blocked:** licensed Unity import, two-contract rule fixture, actual authored-scene Play Mode/screenshots and visual/audio/performance review. Exact Editor downloaded and version command succeeded; see current status for licensing retry.
-- **Next:** finish this verification gate and resolve defects. Saveable station growth/first-worker work is separately assigned, not implemented here.
+- **Next:** finish this verification gate and resolve defects. Station growth and the first attendant are now on the same test branch, but remain unverified and should be checked alongside the cleaning loop in Unity.
 - Evidence and acceptance steps: `Docs/reports/QUALITY_RECOVERY_2026-11-24.md`. Older entries below remain historical.
 
 ## 2026-11-24 — Import handover

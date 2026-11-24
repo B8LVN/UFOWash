@@ -159,3 +159,22 @@ The complete positive/negative checklist and evidence requirements are in `repor
   copy. Verify buttons and input work.
 - Source rules include `UfoWashHullWinding.IsInward` and are exercised by the
   .NET deterministic fixture. This does not replace Unity Play Mode acceptance.
+
+## 13. Company ledger and first attendant
+
+The following Unity Editor tests remain required; source inspection is not a pass:
+
+- Fresh start: receive 750 GC, 2.1 reputation, full water and chemical, zero completed jobs, no hired attendant and no washer upgrades.
+- Hire affordability: below 120 GC, hiring is denied without changing balance or save; at 120 GC or above, the tech is hired once and the exact cost is deducted.
+- Attendant work: accept a contract and confirm only contracted panels are pre-rinsed; the service stage advances only after all zones meet the existing threshold.
+- Blocked state: exhaust water and confirm the tech reports blocked, stops changing dirt, and resumes after a successful refill.
+- Washer upgrade: buy an affordable upgrade, confirm power/coverage/reach increase once, save, and verify those values and the fan nozzle restore after restarting Play Mode.
+- Land claim: buy an eligible sector expansion and verify its barrier/content state and cost persist after restarting.
+- Save/load round-trip: complete a job, restart Play Mode, and compare credits, reputation, remaining supplies, completed-job count, washer level, hired state and unlocked land.
+- Active-job boundary: interrupt a contract and restart; confirm the unfinished contract is not resumed, no payout is duplicated, and saved company progress remains.
+- Corrupt primary save: with a valid backup, confirm backup recovery is visible and the damaged primary is preserved; with both files invalid, confirm saving is visibly disabled and neither file is overwritten.
+- Missing save: confirm a new company starts with defaults and can create a save after a purchase or completed job.
+
+For Editor QA, inspect `Application.persistentDataPath/UfoWash/company-save.json` and its `.bak` backup. Copy test files before destructive corruption checks. The service and attendant are injected for Play Mode only; do not regenerate or overwrite the authored scene to test them.
+
+No Unity import, Play Mode run or filesystem corruption test was performed in this checkout because a licensed Unity Editor is unavailable.

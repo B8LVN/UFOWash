@@ -38,7 +38,7 @@ All notable project changes should be recorded here. Use newest entries first. K
 
 - Added a versioned company ledger for credits, reputation, supplies, completed jobs, washer levels, attendant hiring and sector claims. The save rotates a backup, restores a valid backup when possible and blocks writes if all copies are invalid.
 - Added a hireable Vesper wash tech for 120 GC, matching the GDD's prototype hiring target. When hired, the tech pre-rinses only the active contract's hull panels and visibly reports idle, working or blocked-on-water status.
-- The scene builder uses the included Kenney CC0 astronaut model for the tech when available, with an explicitly temporary primitive fallback.
+- The Play Mode hook and optional scene builder use the included Kenney CC0 astronaut model for the tech when available, with an explicitly temporary primitive fallback. Play injection leaves the authored scene untouched.
 - Restored washer upgrades and sector gates from the ledger; preserved earlier sector claims stored in PlayerPrefs.
 - Active contracts do not resume after reload; finished company progression does.
 - Source implementation only. Unity import, scene regeneration, C# compilation, Play Mode, save corruption tests and visual verification remain outstanding.

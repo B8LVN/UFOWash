@@ -1,5 +1,6 @@
 <Project>
   <PropertyGroup>
+    <BaseOutputPath>../../generated-artifacts/quality-checks/bin/</BaseOutputPath>
     <BaseIntermediateOutputPath>../../generated-artifacts/quality-checks/obj/</BaseIntermediateOutputPath>
   </PropertyGroup>
 </Project>

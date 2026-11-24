@@ -143,9 +143,9 @@ Quality = 1 − average contracted-zone contamination − 0.18 × average residu
 | Trait tips, reputation unlocks and NPC identity | UfoWashCareerLoop.cs, UfoWashCustomerNpc.cs, UfoWashContractTerminalUI.cs | C# compile check passed; UI and receipt behavior unverified |
 | Title, story, briefing and field guide | UfoWashFrontEnd.cs | Source exists; earlier local run observed, needs art and interaction polish |
 | Vesper vista, modular outpost and palette | UfoWashPowerSliceBuilder.cs, KenneyModularSpaceKit, Art/Textures | Editor C# compile check passed; CC0 source kit and Vesper recolor are present; asset import, scene regeneration and visual check pending |
-| Sector land claims and gate unlocks | UfoWashSectorGate.cs, UfoWashProgressSave.cs, UfoWashPowerSliceBuilder.cs | Three physical gates are authored; JSON save integration is source-implemented; import and reload unverified |
+| Sector land claims and gate unlocks | UfoWashSectorGate.cs, UfoWashProgressSave.cs, UfoWashPowerSliceBuilder.cs | Three physical gates are authored; JSON save integration is source-implemented; Play Mode restoration is unverified |
 | Company ledger and washer upgrades | UfoWashProgressSave.cs, UfoWashCareerLoop.cs, UfoWashUpgradeStation.cs | Versioned JSON, backup recovery and progression restoration implemented in source; Unity round-trip and corruption cases unverified |
-| First attendant | UfoWashWashAttendant.cs, UfoWashPowerSliceBuilder.cs | Hireable for 120 GC, matching the GDD target; pre-rinses contracted zones and reports water blockage; scene import and task-loop behavior unverified |
+| First attendant | UfoWashWashAttendant.cs, UfoWashPowerSliceBuilder.cs | Hireable for 120 GC, matching the GDD target; pre-rinses contracted zones and reports water blockage; temporary Play Mode injection and task-loop behavior unverified |
 | Physical building placement and utility routing | None | Designed, not implemented; sector claim currently unlocks land only |
 | Full staff AI, work orders and automation | None beyond the bounded attendant prototype | Full navigation, rosters, wages, work-order configuration and automated lines remain design/future work |
 | Ship roster, chemistry damage, Rare Residue and full multi-sector progression | Partial or absent | Future production work; only basic sector purchase persistence is implemented |
