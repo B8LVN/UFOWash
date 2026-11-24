@@ -2,6 +2,15 @@
 
 **Last updated:** 2026-11-24
 
+## Latest design planning — garage to spaceport
+
+Owner requested a major UI/UX, model and world improvement around a small-planet,
+low-cost garage start, hiring and visibly upgraded facilities. The proposal and
+verified roles of the three existing scenes are recorded in
+`Docs/GARAGE_TO_SPACEPORT_DIRECTION.md`. This is design planning, not implemented
+art/gameplay. No scenes or Build Settings were changed. Core runtime acceptance
+remains outstanding; the owner's Project-window screenshot does not verify it.
+
 ## Active quality recovery — latest source state
 
 **Status: Implemented — unverified in Unity; acceptance remains Blocked.**

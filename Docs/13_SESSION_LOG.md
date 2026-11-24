@@ -1,3 +1,14 @@
+# 2026-11-24 — Garage-to-spaceport design expansion
+
+- Owner requested brainstorming for a major UI/UX, 3D-model and world overhaul:
+  low-cost garage on a small planet, hiring and visually upgraded facilities.
+- Inspected the three scenes, their builders, automatic Play entry and checked-in
+  Build Settings. Confirmed successive prototypes, not three game levels.
+- Wrote `Docs/GARAGE_TO_SPACEPORT_DIRECTION.md` with world/art direction, progression,
+  UI states, asset priorities, safe scene cleanup and delivery gates.
+- No assets/scenes were moved or deleted, no game code changed, and no gameplay
+  verification was inferred from the owner's Project-window screenshot.
+
 # 2026-11-24 — Branch approval rule and local Git guidance
 
 - **Correction from owner:** use one existing Unity project/repository and switch between two branches; do not create another project folder or clone for normal testing. Removed the separate-copy recommendation from the active handoff and saved the clarified rule.

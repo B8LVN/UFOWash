@@ -1,5 +1,10 @@
 # Next Production Milestone
 
+**New design direction:** See `Docs/GARAGE_TO_SPACEPORT_DIRECTION.md` for the
+owner-requested small-planet garage start, UI/3D overhaul, visible growth and
+proposed safe scene cleanup. The document is a proposal, not a completed overhaul;
+current cleaning/runtime acceptance remains the immediate implementation gate.
+
 **Owner's branch rule:** One local Unity project/repository, two branches—not two project folders. `main` is user-facing. Develop and test on `ufo-wash/cleaning-recovery`; merge changes into `main` only after the owner explicitly says OK.
 
 ## Active handoff — cleaning and first-contract verification
