@@ -2,6 +2,8 @@
 
 ## Status
 
+**Direct Play update:** normal owner workflow is now **Unity Play → main menu → start the shift**, with no Create/Generate step. `Editor/UfoWashPlayModeEntry.cs` selects the existing menu scene and applies the service-access additions only in memory. Stop removes additions and restores moved props; no scene/material assets are regenerated or saved. The old separate preview command remains only as an optional developer tool. This update is source-checked, not Unity-runtime verified.
+
 **Implemented — unverified in Unity. Not accepted.** No player build is authorized or produced.
 The existing scene, existing `.meta` GUIDs, package versions and project version are preserved.
 The source changes are an experimental recovery pass, not a claim of polished art or finished gameplay.
@@ -32,9 +34,9 @@ These tests do **not** execute Unity physics, rendering, input, career logic, au
 
 The .NET runner also parses every game/editor C# source with C# 9 grammar and `UNITY_EDITOR` defined. This catches syntax errors, not Unity API/reference or shader errors.
 
-Final checks: **24** game/editor C# files passed C# 9 syntax parsing; `git diff --check` passed.
+The earlier source checks covered **24** game/editor files; the direct Play update adds one file, for **25**.
 `git diff --exit-code` for tracked scenes, existing metadata, `Packages` and `ProjectSettings` returned **0**.
-Each of the five new asset metadata GUIDs occurs once under `Assets`; generated Editor/import outputs are ignored.
+There are six new metadata GUIDs after the direct Play update; generated Editor/import outputs are ignored.
 This is source/preservation evidence only, not successful Unity compilation.
 
 ### Editor verification route
@@ -60,11 +62,11 @@ ship turnaround and a different second contract. This fixture is **not gameplay/
 
 1. Open the project in the exact Editor and retain the existing main scene. Resolve all Console import/compile errors.
 2. Run **UFO WASH > QA > VALIDATE ACTIVE GAME SCENE** on the canonical scene.
-3. Save any owner edits. Use **UFO WASH > CREATE QUALITY PREVIEW (PRESERVE MAIN SCENE)** for the new bay dressing; inspect both scenes without overwriting the canonical one.
-4. Enter Play Mode, clock in and accept the routine contract.
+3. Press Unity **Play**, including from another open scene. Confirm the main menu appears automatically, with no Create command or scene file replacement.
+4. Start the shift from the main menu, then accept the routine contract. Confirm the service access appears in the canonical bay during Play; after Stop, confirm the original scene and prop positions are restored.
 5. Record a close hull view before/after a short stationary spray. Only the contact region should change; circling the UFO must expose remaining dirt.
 6. Clean only one panel; verify every remaining panel still gates pre-rinse. Select foam early: no work or supply charge. Complete all panels, then repeat this check for foam and final rinse.
-7. Stop spraying: foam must remain at its original locations. Rinse a different spot: distant foam must remain. Use the preview's upper service stairs/decks for canopy/roof access; traverse all steps and bridge without jumping, clipping or camera faults. Observe the curved saucer, cockpit and underside for holes, seams or inaccessible contamination. The preserved older main scene lacks this access; do not certify it unchanged if local hull work is unreachable.
+7. Stop spraying: foam must remain at its original locations. Rinse a different spot: distant foam must remain. Use the automatically added service stairs/decks for canopy/roof access; traverse all steps and bridge without jumping, clipping or camera faults. Observe the saucer, cockpit and underside for holes, seams or inaccessible contamination.
 8. Check activation/contact/stop audio, water/foam/rinse character, no lingering particles or loops after menu, pause, disable or focus loss.
 9. Check third-person exploration, first-person-only active cleaning, close target acquisition, walls, decorative hull parts, camera collision, mouse sensitivity, Escape/relock, focus loss and UI close while holding LMB.
 10. Deplete supplies; verify zero means no work and the final tank fraction grants only proportional work. Refill costs 65 GC once, full tanks cost nothing.

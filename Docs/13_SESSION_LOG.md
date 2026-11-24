@@ -1,3 +1,11 @@
+# 2026-11-24 — Owner-requested direct Play workflow
+
+- Owner explicitly wants Unity Play → main menu → start game, without a UFO WASH/Create step.
+- Added an Editor start-scene hook and temporary Play-session service details; retained the existing menu and authored scene. Stop restores moved props and removes temporary additions.
+- Existing scene generation is no longer an owner test prerequisite. The optional generator is under Developer Tools.
+- Preparing a separate GitHub test branch for download; do not represent it as merged into main. Exact push outcome is reported separately after verification.
+- Unity runtime evidence remains blocked by the previously confirmed missing license; no unchanged import retry or player build.
+
 # 2026-11-24 — Local cleaning and first-contract recovery
 
 - Inspected the mandatory production records, canonical GDD, clean initial branch state, exact engine/package versions, authored scene structure and current source.

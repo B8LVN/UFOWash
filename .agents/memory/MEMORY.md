@@ -1,1 +1,2 @@
 - [Hosted Unity verification](hosted-unity-verification.md) — Editor installation and version output do not establish licensed import or gameplay access.
+- [Direct Play workflow](direct-play-workflow.md) — owner requires Play → main menu → start game, with no Create/Generate menu step.

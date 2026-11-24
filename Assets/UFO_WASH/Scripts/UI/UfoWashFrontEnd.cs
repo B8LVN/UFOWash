@@ -59,18 +59,24 @@ namespace UFOWASH
                 customerNpc.enabled = false;
             }
 
-            TextMesh[] worldSigns = FindObjectsByType<TextMesh>(FindObjectsSortMode.None);
-            for (int i = 0; i < worldSigns.Length; i++)
-            {
-                Renderer signRenderer = worldSigns[i].GetComponent<Renderer>();
-                if (signRenderer == null || !signRenderer.enabled) continue;
-                hiddenWorldSigns.Add(signRenderer);
-                signRenderer.enabled = false;
-            }
+            HideWorldSignsUntilGameplay();
 
             EnsureEventSystem();
             BuildCanvas();
             ShowMainMenu();
+        }
+
+        public void HideWorldSignsUntilGameplay()
+        {
+            if (gameplayStarted) return;
+            var worldSigns = FindObjectsByType<TextMesh>(FindObjectsSortMode.None);
+            foreach (var sign in worldSigns)
+            {
+                Renderer signRenderer = sign.GetComponent<Renderer>();
+                if (signRenderer == null || !signRenderer.enabled || hiddenWorldSigns.Contains(signRenderer)) continue;
+                hiddenWorldSigns.Add(signRenderer);
+                signRenderer.enabled = false;
+            }
         }
 
         void OnDestroy()

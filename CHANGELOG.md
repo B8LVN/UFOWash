@@ -1,3 +1,9 @@
+# 2026-11-24 — Direct Unity Play entry
+
+- Removed the scene-generation menu step from normal testing: Play automatically opens the existing main-menu scene.
+- Service access/detail additions are applied in memory for the Play session and cleaned up on Stop, without regenerating scene or material assets.
+- Kept the separate scene generator as an optional developer tool. Licensed Unity runtime verification remains blocked.
+
 # 2026-11-24 — Cleaning and first-contract recovery source
 
 - Replaced whole-panel tint and independent foam objects with a bounded local coating overlay whose area-weighted cells drive panel progress.

@@ -27,7 +27,7 @@ namespace UFOWASH.Editor
             BuildScene(!Application.isBatchMode);
         }
 
-        [MenuItem("UFO WASH/CREATE QUALITY PREVIEW (PRESERVE MAIN SCENE)", false, 1)]
+        [MenuItem("UFO WASH/Developer Tools/Create Separate Scene Preview", false, 1)]
         public static void BuildQualityPreview()
         {
             if (!Application.isBatchMode && !EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo()) return;
@@ -36,7 +36,63 @@ namespace UFOWASH.Editor
 
         internal static void AutoRebuildGeneratedScene()
         {
-            Debug.Log("UFO WASH: builder changed. Existing scenes preserved. Use CREATE QUALITY PREVIEW to review changes.");
+            Debug.Log("UFO WASH: source updated. Press Play for the main menu; existing scene files are preserved.");
+        }
+
+        static GameObject playModeDetails;
+        static readonly List<KeyValuePair<Transform, Vector3>> movedPlayModeProps =
+            new List<KeyValuePair<Transform, Vector3>>();
+
+        internal static void AddPlayModeServiceDetails(Scene scene)
+        {
+            if (!Application.isPlaying || scene.path != ScenePath || playModeDetails != null) return;
+            // Reuse the authored materials without regenerating or modifying assets.
+            matMetal = LoadPlayMaterial("PS_BrushedSteel");
+            matDark = LoadPlayMaterial("PS_DarkMetal");
+            matCyan = LoadPlayMaterial("PS_AlienTeal");
+            matWhite = LoadPlayMaterial("PS_White");
+            matOrange = LoadPlayMaterial("PS_HazardOrange");
+            matGlow = LoadPlayMaterial("PS_EmissiveCyan");
+
+            var originalRoots = new HashSet<GameObject>(scene.GetRootGameObjects());
+            playModeDetails = new GameObject("PLAY MODE // SERVICE ACCESS") { hideFlags = HideFlags.DontSave };
+            SceneManager.MoveGameObjectToScene(playModeDetails, scene);
+            bool hasAuthoredAccess = false;
+            foreach (var root in originalRoots)
+                foreach (var child in root.GetComponentsInChildren<Transform>(true))
+                {
+                    if (child.name == "Upper hull service deck") hasAuthoredAccess = true;
+                    if (child.name != "Chemical drum" && child.name != "Drum lid" && child.name != "Drum hazard stripe") continue;
+                    Vector3 position = child.position;
+                    // Older scenes placed these props across the new stair approach.
+                    if (Mathf.Abs(Mathf.Abs(position.x) - 6.5f) > 0.1f || position.z < -6f) continue;
+                    movedPlayModeProps.Add(new KeyValuePair<Transform, Vector3>(child, position));
+                    child.position = new Vector3(position.x * 1.23f, position.y, position.z - 2.3f);
+                }
+            if (!hasAuthoredAccess)
+            {
+                BuildStarterBayServiceDetails();
+                BuildServiceAccess();
+            }
+            foreach (var root in scene.GetRootGameObjects())
+                if (root != playModeDetails && !originalRoots.Contains(root))
+                    root.transform.SetParent(playModeDetails.transform, true);
+        }
+
+        static Material LoadPlayMaterial(string name)
+        {
+            var material = AssetDatabase.LoadAssetAtPath<Material>("Assets/UFO_WASH/Art/Materials/" + name + ".mat");
+            if (material == null) throw new System.InvalidOperationException("Missing authored service-bay material: " + name);
+            return material;
+        }
+
+        internal static void RemovePlayModeServiceDetails()
+        {
+            foreach (var prop in movedPlayModeProps)
+                if (prop.Key != null) prop.Key.position = prop.Value;
+            movedPlayModeProps.Clear();
+            if (playModeDetails != null) Object.DestroyImmediate(playModeDetails);
+            playModeDetails = null;
         }
 
         static void BuildScene(bool showDialog, string outputPath = ScenePath)
@@ -1111,12 +1167,6 @@ Left mouse: operate washer",
             if (EditorApplication.isCompiling || EditorApplication.isPlayingOrWillChangePlaymode)
             {
                 EditorApplication.delayCall += RebuildAfterImport;
-                return;
-            }
-            var activeScene = EditorSceneManager.GetActiveScene();
-            if (activeScene.path == BuilderScenePath && activeScene.isDirty)
-            {
-                Debug.LogWarning("UFO WASH: generated scene refresh skipped because the open scene has unsaved edits. Save or close it, then use UFO WASH > REBUILD GENERATED SCENE (MANUAL FALLBACK) when ready.");
                 return;
             }
             UfoWashPowerSliceBuilder.AutoRebuildGeneratedScene();
