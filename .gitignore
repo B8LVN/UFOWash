@@ -22,3 +22,4 @@
 *.VC.VC.opendb
 .DS_Store
 Thumbs.db
+/generated-artifacts/

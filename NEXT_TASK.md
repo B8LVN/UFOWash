@@ -1,5 +1,27 @@
 # Next Production Milestone
 
+## Active handoff — cleaning and first-contract verification
+
+**Task:** Finish the integrated quality-recovery milestone in the existing Unity game.
+
+**Status:** Source implemented; Unity runtime/visual acceptance **Blocked** pending a working licensed Editor session.
+
+**Owner:** Developer with Unity 6000.6.10f1 Editor access; product owner reviews gameplay evidence.
+
+**Dependencies:** successful Editor licensing/import; preserved authored scene; actual Play Mode and screenshots.
+
+**Next single action:** Establish the working Editor session and run the complete acceptance sequence in `Docs/reports/QUALITY_RECOVERY_2026-11-24.md`. Fix any discovered defects before declaring this milestone complete.
+
+The exact Linux Editor has been downloaded into ignored `generated-artifacts/unity-editor/`; its version command succeeds. After installing required Linux libraries and ICU, the isolated import exited **198**: **No valid Unity Editor license found**. Activate the exact Editor or provide an accessible licensed session; do not send credentials in chat. No further import retry is useful until licensing changes.
+
+Source now contains local dirt/foam, tool pressure audio, shared target acquisition, guarded input, a switchable fan purchase, supply limits, revised HUD and a non-destructive bay-preview generator. Fourteen engine-independent coating checks pass. Neither these checks nor the new two-contract Unity rule fixture count as authored-scene gameplay acceptance.
+
+Preserve `Assets/UFO_WASH/Scenes/UFO_WASH_PowerSlice.unity` and existing `.meta` files. Use **UFO WASH > CREATE QUALITY PREVIEW (PRESERVE MAIN SCENE)** only after saving owner edits. No player builds, paid assets, migrations, browser rewrite or additional feature expansion belongs to this handoff. Saveable station progression and the first worker are separately assigned work, not part of this recovery pass.
+
+---
+
+## Historical handoff (superseded by the active handoff above)
+
 ## 2026-11-24 — Imported-project direction
 
 The owner wants continued development toward a Steam-quality UFO WASH inspired by Moon Sweepers, Schedule I and Aquapark Tycoon, not merely a runnable import. Recommended next work is an integrated playable quality-recovery pass before expanding the tycoon systems. This recommendation awaits task selection; no gameplay changes or new runtime verification occurred during import orientation.

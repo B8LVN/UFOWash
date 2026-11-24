@@ -1,3 +1,15 @@
+# 2026-11-24 — Integrated quality-recovery source
+
+Local area-weighted dirt/foam, guarded camera/spray/input, supply-fraction limits,
+switchable fan purchase, effective power, readable service HUD/receipt and original
+prototype tool audio are implemented in source. Builder adds a separate bay preview
+and no longer replaces scenes on import. Existing scenes/metadata are preserved.
+
+Fourteen deterministic production coating-state checks passed outside Unity.
+An exact-version Editor was downloaded; successful version output is not runtime
+acceptance. Import/licensing outcome is in current status. No player build or
+gameplay screenshot evidence was produced. See `reports/QUALITY_RECOVERY_2026-11-24.md`.
+
 # UFO WASH — Changelog
 
 ## 2026-11-23 — Playable service-loop pass

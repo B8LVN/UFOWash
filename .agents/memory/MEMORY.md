@@ -1,0 +1,1 @@
+- [Hosted Unity verification](hosted-unity-verification.md) — Editor installation and version output do not establish licensed import or gameplay access.

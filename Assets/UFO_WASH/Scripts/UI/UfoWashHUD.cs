@@ -12,21 +12,18 @@ namespace UFOWASH
         Text creditsText, contractLabelText, clientText, shipText, contaminationText, stateText, instructionText, progressText, stageText, supplyText, zonesText;
         Image progressFill;
         UfoWashCareerLoop career;
+        UfoWashSprayTool tool;
+        Text toolText;
 
         void Start()
         {
             career = UfoWashCareerLoop.Instance;
+            tool = FindAnyObjectByType<UfoWashSprayTool>();
             BuildInterface();
         }
 
         void Update()
         {
-            if (Keyboard.current != null && Keyboard.current.rKey.wasPressedThisFrame)
-            {
-                if (career != null) career.ResetActiveJob();
-                else UfoWashDirtSurface.ResetJob();
-            }
-
             if (career == null) career = UfoWashCareerLoop.Instance;
             RefreshInterface();
         }
@@ -44,13 +41,13 @@ namespace UFOWASH
             scaler.matchWidthOrHeight = .5f;
 
             var panel = MakeImage(canvasObject.transform, "Mission Panel", new Color(.018f,.035f,.065f,.94f),
-                new Vector2(0,1), new Vector2(0,1), new Vector2(28,-28), new Vector2(470,448));
+                new Vector2(0,1), new Vector2(0,1), new Vector2(28,-28), new Vector2(470,326));
             AddText(panel.transform, "Brand", "U F O   /   W A S H", 23, new Color(.24f,.88f,1f),
                 new Vector2(0,1), new Vector2(0,1), new Vector2(24,-18), new Vector2(420,34), TextAnchor.MiddleLeft);
             AddText(panel.transform, "Subbrand", "INTERGALACTIC VEHICLE CARE  //  BAY 01", 11, new Color(.48f,.66f,.78f),
                 new Vector2(0,1), new Vector2(0,1), new Vector2(24,-52), new Vector2(420,22), TextAnchor.MiddleLeft);
 
-            creditsText = AddText(panel.transform, "Credits", "CREDITS  //  0000", 19, new Color(1f,.72f,.28f),
+            creditsText = AddText(panel.transform, "Credits", "CREDITS  //  0000", 17, new Color(1f,.72f,.28f),
                 new Vector2(0,1), new Vector2(0,1), new Vector2(24,-86), new Vector2(420,28), TextAnchor.MiddleLeft);
             contractLabelText = AddText(panel.transform, "ContractLabel", "DISPATCH BOARD", 11, new Color(.36f,.83f,.95f),
                 new Vector2(0,1), new Vector2(0,1), new Vector2(24,-122), new Vector2(420,20), TextAnchor.MiddleLeft);
@@ -74,28 +71,34 @@ namespace UFOWASH
                 new Vector2(0,1), new Vector2(0,1), new Vector2(24,-266), new Vector2(420,20), TextAnchor.MiddleLeft);
             supplyText = AddText(panel.transform, "Supplies", "WATER 100%  //  FOAM 100%", 11, new Color(.95f,.72f,.35f),
                 new Vector2(0,1), new Vector2(0,1), new Vector2(24,-292), new Vector2(420,20), TextAnchor.MiddleLeft);
-            AddText(panel.transform, "Zone Heading", "HULL SERVICE ZONES", 11, new Color(.36f,.83f,.95f),
-                new Vector2(0,1), new Vector2(0,1), new Vector2(24,-320), new Vector2(420,18), TextAnchor.MiddleLeft);
-            zonesText = AddText(panel.transform, "Zone Checklist", "Accept a contract to inspect the hull.", 11,
-                new Color(.72f,.84f,.9f), new Vector2(0,1), new Vector2(0,1), new Vector2(24,-342),
-                new Vector2(420,96), TextAnchor.UpperLeft);
+            var zonePanel = MakeImage(canvasObject.transform, "Service Checklist", new Color(.018f,.035f,.065f,.90f),
+                new Vector2(1,1), new Vector2(1,1), new Vector2(-28,-28), new Vector2(430,230));
+            AddText(zonePanel.transform, "Zone Heading", "HULL ZONES  //  ALL MUST PASS", 13, new Color(.36f,.83f,.95f),
+                new Vector2(0,1), new Vector2(0,1), new Vector2(20,-18), new Vector2(390,24), TextAnchor.MiddleLeft);
+            zonesText = AddText(zonePanel.transform, "Zone Checklist", "Accept a contract to inspect the hull.", 13,
+                new Color(.72f,.84f,.9f), new Vector2(0,1), new Vector2(0,1), new Vector2(20,-54),
+                new Vector2(390,160), TextAnchor.UpperLeft);
 
-            stateText = AddText(canvasObject.transform, "Contract State", "CONTRACT REQUIRED", 17, new Color(.25f,.9f,1f),
-                new Vector2(.5f,0), new Vector2(.5f,0), new Vector2(0,46), new Vector2(760,30), TextAnchor.MiddleCenter);
-            instructionText = AddText(canvasObject.transform, "Controls", "WASD MOVE  //  E INTERACT  //  LMB SPRAY  //  1 PRE-RINSE  2 FOAM  3 FINAL RINSE  //  R RESET",
+            stateText = AddText(canvasObject.transform, "Contract State", "CONTRACT REQUIRED", 15, new Color(.25f,.9f,1f),
+                new Vector2(.5f,0), new Vector2(.5f,0), new Vector2(0,42), new Vector2(1000,64), TextAnchor.MiddleCenter);
+            instructionText = AddText(canvasObject.transform, "Controls", "WASD MOVE  //  E INTERACT  //  HOLD LMB WASH  //  1 PRE-RINSE  2 FOAM  3 RINSE  //  ESC CURSOR",
                 12, new Color(.65f,.77f,.85f), new Vector2(.5f,0), new Vector2(.5f,0),
                 new Vector2(0,18), new Vector2(900,22), TextAnchor.MiddleCenter);
             AddText(canvasObject.transform, "Reticle", "+", 25, new Color(.6f,.95f,1f),
                 new Vector2(.5f,.5f), new Vector2(.5f,.5f), Vector2.zero, new Vector2(30,30), TextAnchor.MiddleCenter);
+            toolText = AddText(canvasObject.transform, "Tool Feedback", "", 13, new Color(.83f,.95f,1f),
+                new Vector2(.5f,.5f), new Vector2(.5f,.5f), new Vector2(0,-55), new Vector2(660,48), TextAnchor.MiddleCenter);
         }
 
         void RefreshInterface()
         {
             if (creditsText == null) return;
-            float cleanliness = career != null && career.JobAccepted ? career.Quality : 1f - UfoWashDirtSurface.TotalDirt();
-            creditsText.text = "CREDITS  //  " + Credits.ToString("0000") +
-                (career != null ? "     REPUTATION  //  " + career.Reputation.ToString("0.0") + " ★" : string.Empty);
-            progressFill.fillAmount = cleanliness;
+            float cleanliness = career != null && (career.JobAccepted || JobComplete) ? career.Quality : 0f;
+            creditsText.text = Credits.ToString("0000") + " GC" +
+                (career != null ? "    //    REP " + career.Reputation.ToString("0.00") + " / 5" : string.Empty);
+            // Plain Images have no sprite: resize the track rather than relying on
+            // Filled mode, which Unity ignores for a sprite-less Image.
+            progressFill.rectTransform.anchorMax = new Vector2(cleanliness, 1f);
             progressText.text = "CLEANLINESS  //  " + Mathf.RoundToInt(cleanliness * 100f) + "%";
 
             if (career == null)
@@ -111,9 +114,16 @@ namespace UFOWASH
             contractLabelText.text = career.JobAccepted ? "ACTIVE SERVICE ORDER" : "DISPATCH BOARD // NEXT AVAILABLE JOB";
             shipText.text = "VESSEL // " + career.Ship + (career.JobAccepted ? "     PAYOUT // " + career.Reward + " CR" : string.Empty);
             contaminationText.text = career.JobAccepted ? "HAZARD // " + career.ContaminationType : "HAZARD // INSPECT AT CONTRACT BOARD";
-            stageText.text = "SERVICE PROCESS // " + career.StageLabel;
+            stageText.text = career.JobAccepted ? "SERVICE PROCESS // " + career.StageLabel : "SERVICE PROCESS // AWAITING DISPATCH";
             supplyText.text = "WATER " + Mathf.RoundToInt(career.Water) + "%  //  FOAM CHEMICAL " + Mathf.RoundToInt(career.Chemical) + "%";
-            zonesText.text = career.GetZoneChecklist();
+            zonesText.text = career.JobAccepted ? career.GetZoneChecklist() :
+                JobComplete ? career.LastReceipt : "01  ACCEPT DISPATCH\n02  SWEEP EACH HULL ZONE\n03  INSPECT AND GET PAID\n04  FIT A FAN NOZZLE AT EQUIPMENT";
+            if (tool != null)
+            {
+                toolText.text = tool.Feedback;
+                instructionText.text = "WASD MOVE  //  E INTERACT  //  HOLD LMB WASH  //  1 WATER  2 FOAM  3 RINSE" +
+                    (tool.FanNozzleInstalled ? "  //  Q " + (tool.FanNozzleActive ? "FAN" : "PRECISION") : "  //  ESC CURSOR");
+            }
 
             if (career.JobAccepted && career.CanSubmit)
             {
@@ -124,13 +134,14 @@ namespace UFOWASH
             }
             else if (career.JobAccepted)
             {
-                stateText.text = career.LastMessage + "  //  " + career.StageLabel + "  //  HOLD LEFT MOUSE";
+                stateText.text = career.LastMessage;
                 stateText.color = new Color(.25f,.9f,1f);
             }
             else if (JobComplete)
             {
                 contractLabelText.text = "CERTIFIED // PAYMENT RECEIVED";
-                stateText.text = career.LastMessage + "  //  CONTRACT COMPLETE  //  NEXT JOB AT TERMINAL";
+                stateText.text = "PAYMENT RECEIVED +" + career.LastPayout + " CR // REFILL OR FIT A FAN NOZZLE\n" +
+                    (career.CanAcceptJob ? "NEXT CONTRACT READY AT DISPATCH" : "CUSTOMER DEPARTING // NEXT SHIP INBOUND");
                 stateText.color = new Color(.35f,1f,.62f);
             }
             else if (!career.CanAcceptJob)
@@ -160,6 +171,7 @@ namespace UFOWASH
             rect.sizeDelta = size;
             var image = go.GetComponent<Image>();
             image.color = color;
+            image.raycastTarget = false;
             return image;
         }
 
@@ -181,8 +193,9 @@ namespace UFOWASH
             text.text = value;
             text.alignment = alignment;
             text.fontStyle = FontStyle.Bold;
-            text.horizontalOverflow = HorizontalWrapMode.Overflow;
-            text.verticalOverflow = VerticalWrapMode.Overflow;
+            text.horizontalOverflow = HorizontalWrapMode.Wrap;
+            text.verticalOverflow = VerticalWrapMode.Truncate;
+            text.raycastTarget = false;
             return text;
         }
     }

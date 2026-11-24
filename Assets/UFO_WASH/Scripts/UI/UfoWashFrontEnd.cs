@@ -59,7 +59,7 @@ namespace UFOWASH
                 customerNpc.enabled = false;
             }
 
-            TextMesh[] worldSigns = FindObjectsByType<TextMesh>();
+            TextMesh[] worldSigns = FindObjectsByType<TextMesh>(FindObjectsSortMode.None);
             for (int i = 0; i < worldSigns.Length; i++)
             {
                 Renderer signRenderer = worldSigns[i].GetComponent<Renderer>();

@@ -18,21 +18,31 @@ namespace UFOWASH.Editor
         [MenuItem("UFO WASH/REBUILD GENERATED SCENE (MANUAL FALLBACK)", false, 0)]
         public static void Build()
         {
+            if (Application.isBatchMode)
+                throw new System.InvalidOperationException("Scene replacement requires an interactive confirmation.");
+            if (!EditorUtility.DisplayDialog("Replace generated scene?",
+                "This recreates the canonical PowerSlice scene. Use the separate QUALITY PREVIEW command to preserve it. Continue?",
+                "Replace generated scene", "Cancel")) return;
+            if (!EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo()) return;
             BuildScene(!Application.isBatchMode);
         }
 
-        // Called only when this dedicated generated-scene builder changes.
-        // Gameplay script edits never require rebuilding the environment.
-        internal static void AutoRebuildGeneratedScene()
+        [MenuItem("UFO WASH/CREATE QUALITY PREVIEW (PRESERVE MAIN SCENE)", false, 1)]
+        public static void BuildQualityPreview()
         {
-            BuildScene(false);
+            if (!Application.isBatchMode && !EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo()) return;
+            BuildScene(false, "Assets/UFO_WASH/Scenes/UFO_WASH_QualityPreview.unity");
         }
 
-        static void BuildScene(bool showDialog)
+        internal static void AutoRebuildGeneratedScene()
         {
-            // This is the game's dedicated generated scene. Recreate it as the active
-            // scene only when this builder changes; ordinary gameplay script edits do
-            // not invoke this method and never require a rebuild click.
+            Debug.Log("UFO WASH: builder changed. Existing scenes preserved. Use CREATE QUALITY PREVIEW to review changes.");
+        }
+
+        static void BuildScene(bool showDialog, string outputPath = ScenePath)
+        {
+            // Invoked explicitly by a menu command, never by ordinary source import.
+            // Candidate scenes use a separate output path and preserve Build Settings.
             var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
             EnsureFoldersAndMaterials();
             RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Flat;
@@ -65,6 +75,8 @@ namespace UFOWASH.Editor
             Cube("Wash platform", new Vector3(0,.08f,3.2f), new Vector3(10,.18f,11), matMetal);
             Cube("Platform cyan perimeter front", new Vector3(0,.19f,-2.35f), new Vector3(10,.06f,.12f), matGlow);
             Cube("Platform cyan perimeter rear", new Vector3(0,.19f,8.75f), new Vector3(10,.06f,.12f), matGlow);
+            BuildStarterBayServiceDetails();
+            BuildServiceAccess();
             // Back wall branding and service displays
             Sign("UFO WASH", new Vector3(0,8.2f,19.05f), 2.0f, matCyan);
             Sign("INTERGALACTIC DETAILING // BAY 01", new Vector3(0,7.1f,19.03f), .42f, matWhite);
@@ -151,14 +163,14 @@ namespace UFOWASH.Editor
             // Upgrade console with obvious label
             var terminal=Cube("SPRAYER UPGRADE CONSOLE",new Vector3(-8.8f,1.25f,-3.5f),new Vector3(1.7f,2.5f,1.1f),matBlue);
             terminal.AddComponent<UfoWashUpgradeStation>();
-            Cube("Console screen",new Vector3(-8.8f,1.75f,-2.92f),new Vector3(1.35f,.8f,.06f),matGlow);
-            Sign("UPGRADE",new Vector3(-8.8f,2.35f,-2.88f),.3f,matWhite);
+            Cube("Console screen",new Vector3(-8.8f,1.75f,-4.08f),new Vector3(1.35f,.8f,.06f),matGlow).GetComponent<Collider>().enabled=false;
+            Sign("FAN NOZZLE // 200 CR",new Vector3(-8.8f,2.75f,-4.08f),.22f,matWhite);
             // Props: hose reels, barrels, crates and floor lamps
             for(int i=0;i<2;i++) {
                 float x=i==0?-6.5f:6.5f;
-                Cylinder("Chemical drum",new Vector3(x,.8f,-5.5f),new Vector3(.55f,.8f,.55f),matBlue);
-                Cylinder("Drum lid",new Vector3(x,1.62f,-5.5f),new Vector3(.58f,.08f,.58f),matMetal);
-                for(int y=0;y<3;y++) Cube("Drum hazard stripe",new Vector3(x,.45f+y*.28f,-4.94f),new Vector3(.65f,.07f,.025f),matOrange);
+                Cylinder("Chemical drum",new Vector3(x*1.23f,.8f,-7.8f),new Vector3(.55f,.8f,.55f),matBlue);
+                Cylinder("Drum lid",new Vector3(x*1.23f,1.62f,-7.8f),new Vector3(.58f,.08f,.58f),matMetal);
+                for(int y=0;y<3;y++) Cube("Drum hazard stripe",new Vector3(x*1.23f,.45f+y*.28f,-7.24f),new Vector3(.65f,.07f,.025f),matOrange);
             }
             // Lighting
             Light sun=new GameObject("Hangar key light").AddComponent<Light>(); sun.type=LightType.Directional; sun.intensity=1.0f; sun.color=new Color(.68f,.8f,1f); sun.transform.rotation=Quaternion.Euler(48,-28,0);
@@ -189,10 +201,13 @@ namespace UFOWASH.Editor
             frontEnd.AddComponent<UfoWashFrontEnd>();
 
             OrganizeHierarchy(scene);
-            EditorSceneManager.SaveScene(scene,ScenePath);
-            var scenes=new List<EditorBuildSettingsScene>(EditorBuildSettings.scenes);
-            scenes.RemoveAll(s=>s.path==ScenePath); scenes.Insert(0,new EditorBuildSettingsScene(ScenePath,true)); EditorBuildSettings.scenes=scenes.ToArray();
-            Selection.activeObject=AssetDatabase.LoadAssetAtPath<SceneAsset>(ScenePath);
+            EditorSceneManager.SaveScene(scene,outputPath);
+            if (outputPath == ScenePath)
+            {
+                var scenes=new List<EditorBuildSettingsScene>(EditorBuildSettings.scenes);
+                scenes.RemoveAll(s=>s.path==ScenePath); scenes.Insert(0,new EditorBuildSettingsScene(ScenePath,true)); EditorBuildSettings.scenes=scenes.ToArray();
+            }
+            Selection.activeObject=AssetDatabase.LoadAssetAtPath<SceneAsset>(outputPath);
             if (showDialog)
                 EditorUtility.DisplayDialog("UFO WASH SCENE BUILT",
                     @"The UFO WASH scene is ready. Press Play.
@@ -203,7 +218,63 @@ E: interact / accept contract
 Left mouse: operate washer",
                     "PLAY");
             else
-                Debug.Log("UFO WASH: generated scene rebuilt and opened automatically after builder changes.");
+                Debug.Log("UFO WASH: preview generated at " + outputPath + ". Visual acceptance requires Play Mode evidence.");
+        }
+
+        static void BuildStarterBayServiceDetails()
+        {
+            // Restrained graphite / cyan service fixtures with amber access edges.
+            // Low-profile details stay outside the walkable route around the ship.
+            for (int side = -1; side <= 1; side += 2)
+            {
+                Cube("Service trench surround", new Vector3(side*5.8f,.025f,3.2f),new Vector3(.55f,.05f,9.2f),matDark);
+                for (int i=0;i<23;i++)
+                    Cube("Drain grate",new Vector3(side*5.8f,.055f,-1.2f+i*.4f),new Vector3(.45f,.025f,.055f),matMetal)
+                        .GetComponent<Collider>().enabled=false;
+                Cube("Fluid manifold",new Vector3(side*10.8f,.8f,7f),new Vector3(1.2f,1.6f,3f),matDark);
+                for(int pipe=0;pipe<2;pipe++)
+                {
+                    var line=Cylinder("Water and foam riser",new Vector3(side*10.1f,2.6f,6.3f+pipe*1.4f),
+                        new Vector3(.13f,1.9f,.13f),pipe==0?matCyan:matWhite);
+                    line.GetComponent<Collider>().enabled=false;
+                }
+                Cube("Manifold service light",new Vector3(side*10.12f,1.15f,7f),new Vector3(.06f,.10f,2.3f),matGlow);
+                for(int mark=0;mark<10;mark++)
+                    Cube("Keep-clear amber marker",new Vector3(side*6.4f,.022f,-1.5f+mark),new Vector3(.22f,.025f,.32f),matOrange)
+                        .GetComponent<Collider>().enabled=false;
+            }
+            Sign("01  PRE-RINSE    /    02  FOAM    /    03  RINSE",new Vector3(0,5.9f,19.02f),.27f,matWhite);
+            Sign("DUST BASIN  /  INDEPENDENT SERVICE",new Vector3(0,5.25f,19.02f),.20f,matCyan);
+        }
+
+        static void BuildServiceAccess()
+        {
+            // Local washing needs real access above the canopy, not a global
+            // progress shortcut. This candidate catwalk still requires traversal QA.
+            for(int step=1;step<=16;step++)
+            {
+                float height=step*.2f;
+                Cube("Upper service stair "+step,new Vector3(6.2f,height*.5f,-6.4f+(step-.5f)*.35f),
+                    new Vector3(1.6f,height,.35f),matMetal);
+                Cube("Stair amber nosing",new Vector3(6.2f,height+.008f,-6.4f+(step-1)*.35f),
+                    new Vector3(1.55f,.015f,.04f),matOrange).GetComponent<Collider>().enabled=false;
+            }
+            for(int side=-1;side<=1;side+=2)
+            {
+                Cube("Upper hull service deck",new Vector3(side*6.2f,3.1f,4.2f),new Vector3(1.6f,.2f,10f),matMetal);
+                for(int support=0;support<3;support++)
+                {
+                    float z=-.3f+support*4.5f;
+                    Cube("Deck support",new Vector3(side*6.8f,1.5f,z),new Vector3(.16f,3f,.16f),matDark);
+                    Cube("Safety rail post",new Vector3(side*6.95f,3.7f,z),new Vector3(.08f,1f,.08f),matOrange);
+                }
+                Cube("Outer safety rail",new Vector3(side*6.95f,4.15f,4.2f),new Vector3(.08f,.10f,10f),matOrange);
+                Cube("Deck cyan access edge",new Vector3(side*5.43f,3.22f,4.2f),new Vector3(.04f,.025f,9.8f),matCyan)
+                    .GetComponent<Collider>().enabled=false;
+            }
+            Cube("Rear service bridge",new Vector3(0,3.1f,9.2f),new Vector3(14f,.2f,1.6f),matMetal);
+            Cube("Rear bridge rail",new Vector3(0,4.15f,9.95f),new Vector3(14f,.10f,.08f),matOrange);
+            Sign("UPPER HULL ACCESS",new Vector3(6.2f,1.1f,-6.7f),.22f,matWhite);
         }
 
         static void OrganizeHierarchy(Scene scene)
@@ -1014,9 +1085,7 @@ Left mouse: operate washer",
         }
     }
 
-    // A generated environment is a build artifact, not a manual daily task.
-    // When this specific builder file is reimported after Git pull, refresh its
-    // dedicated scene once. Other C# changes do not rebuild or replace the scene.
+    // Import is never permission to replace an authored scene.
     public sealed class UfoWashSceneAutoBuilder : AssetPostprocessor
     {
         const string BuilderPath = "Assets/UFO_WASH/Editor/UfoWashPowerSliceBuilder.cs";
@@ -1050,11 +1119,7 @@ Left mouse: operate washer",
                 Debug.LogWarning("UFO WASH: generated scene refresh skipped because the open scene has unsaved edits. Save or close it, then use UFO WASH > REBUILD GENERATED SCENE (MANUAL FALLBACK) when ready.");
                 return;
             }
-            try { UfoWashPowerSliceBuilder.AutoRebuildGeneratedScene(); }
-            catch (System.Exception exception)
-            {
-                Debug.LogError("UFO WASH automatic scene refresh failed. Use the manual Build command once and report this error. " + exception);
-            }
+            UfoWashPowerSliceBuilder.AutoRebuildGeneratedScene();
         }
     }
 }

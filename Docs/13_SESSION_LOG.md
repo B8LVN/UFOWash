@@ -1,3 +1,15 @@
+# 2026-11-24 — Local cleaning and first-contract recovery
+
+- Inspected the mandatory production records, canonical GDD, clean initial branch state, exact engine/package versions, authored scene structure and current source.
+- Implemented local coating cells shared by dirt, foam and panel totals; shared target acquisition; input/focus/relock guards; proportional supplies; switchable fan purchase and effective power; stage-aware HUD, receipt and prototype pressure audio.
+- Added bay service details to builder source, disabled destructive import-time scene replacement and provided a separate quality-preview command. Preserved checked-in scenes and all existing metadata.
+- Added original shader/audio-generator source and matching metadata, plus deterministic C# and Unity rule-level regression fixtures.
+- **Executed:** 14 deterministic C# coating-state checks passed; 24 game/editor files passed C# 9 syntax parsing. Source whitespace, tracked scene/metadata/package/settings preservation and five new GUID uniqueness checks passed. These checks do not exercise Unity career rules or rendered gameplay.
+- Downloaded official Unity 6000.6.10f1 Linux Editor into ignored verification storage; version command passed. Added GTK/GL/X11 dependencies. First isolated import timed out because the licensing client lacked ICU; installed ICU and retried. Corrected startup reached licensing but exited **198**: **No valid Unity Editor license found**. No successful import/Unity compilation occurred.
+- **Unverified:** Unity import/compile, rule-level Play Mode fixture, manual first/second jobs, camera/input, local coating appearance/access, audio, gameplay screenshots and performance. No player build, paid content, migration, browser app, GitHub issue update or push.
+- Updated current status, next work, backlog, changelogs, improvements, decisions, QA and asset records. See `Docs/reports/QUALITY_RECOVERY_2026-11-24.md`.
+- **Next single task:** unblock licensed Editor verification and finish the documented authored-scene acceptance gate.
+
 # 2026-11-24 — Imported checkout and development direction
 
 - Owner requested a developed Steam-style UFO WASH inspired by Moon Sweepers, Schedule I and Aquapark Tycoon.

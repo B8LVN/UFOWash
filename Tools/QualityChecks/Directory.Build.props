@@ -1,0 +1,5 @@
+<Project>
+  <PropertyGroup>
+    <BaseIntermediateOutputPath>../../generated-artifacts/quality-checks/obj/</BaseIntermediateOutputPath>
+  </PropertyGroup>
+</Project>

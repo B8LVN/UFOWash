@@ -36,6 +36,8 @@ namespace UFOWASH
         public UfoWashToolMode CurrentStage { get; private set; } = UfoWashToolMode.PreRinse;
         public float Water { get; private set; } = 100f;
         public float Chemical { get; private set; } = 100f;
+        public string LastReceipt { get; private set; } = string.Empty;
+        public int LastPayout { get; private set; }
         UfoWashCustomerShip customerShip;
         UfoWashCustomerNpc customerNpc;
         UfoWashDirtSurface[] contractSurfaces = System.Array.Empty<UfoWashDirtSurface>();
@@ -71,6 +73,16 @@ namespace UFOWASH
         public string StageLabel => CurrentStage == UfoWashToolMode.PreRinse ? "01 / PRE-RINSE" :
             CurrentStage == UfoWashToolMode.Foam ? "02 / FOAM COVERAGE" : "03 / FINAL RINSE";
 
+        public bool CanUseTool(UfoWashToolMode mode) => JobAccepted && mode == CurrentStage &&
+            (mode == UfoWashToolMode.Foam ? Chemical > 0f : Water > 0f);
+
+        public string ToolBlockReason(UfoWashToolMode mode)
+        {
+            if (!JobAccepted) return "ACCEPT A CONTRACT AT DISPATCH";
+            if (mode != CurrentStage) return "SELECT " + StageLabel + " // KEYS 1 / 2 / 3";
+            return mode == UfoWashToolMode.Foam ? "CHEMICAL EMPTY // SUPPLIES 65 CR" : "WATER EMPTY // SUPPLIES 65 CR";
+        }
+
         public bool IsContractSurface(UfoWashDirtSurface surface)
         {
             if (surface == null) return false;
@@ -90,13 +102,19 @@ namespace UFOWASH
                 var surface = contractSurfaces[i];
                 if (surface == null) continue;
                 string state;
-                if (surface.dirt <= 0.15f && surface.foam <= 0.10f) state = "CERTIFIED";
-                else if (surface.dirt > 0.58f) state = "PRE-RINSE";
-                else if (surface.foam < 0.62f) state = "FOAM COVERAGE";
-                else state = "FINAL RINSE";
+                // Completion refers to the current ordered stage, not a guess
+                // from foam amount (which decreases during final rinse).
+                bool ready = CurrentStage == UfoWashToolMode.PreRinse ? surface.dirt <= 0.58f :
+                    CurrentStage == UfoWashToolMode.Foam ? surface.foam >= 0.62f :
+                    surface.dirt <= 0.15f && surface.foam <= 0.10f;
+                state = CurrentStage == UfoWashToolMode.PreRinse ?
+                    "DUST " + Mathf.RoundToInt(surface.dirt * 100f) + "% / <=58%" :
+                    CurrentStage == UfoWashToolMode.Foam ?
+                    "FOAM " + Mathf.RoundToInt(surface.foam * 100f) + "% / >=62%" :
+                    "DIRT " + Mathf.RoundToInt(surface.dirt * 100f) + "% / FOAM " + Mathf.RoundToInt(surface.foam * 100f) + "%";
                 if (lines.Length > 0) lines.Append('\n');
-                lines.Append("[").Append(state == "CERTIFIED" ? "OK" : "  ").Append("] ")
-                    .Append(GetZoneName(surface)).Append("  ·  ").Append(state);
+                lines.Append(ready ? "[OK] " : "[  ] ").Append(GetZoneName(surface)).Append('\n')
+                    .Append("       ").Append(state);
             }
             return lines.ToString();
         }
@@ -110,8 +128,9 @@ namespace UFOWASH
         {
             customerShip = FindAnyObjectByType<UfoWashCustomerShip>();
             if (customerShip != null) contractSurfaces = customerShip.ServiceSurfaces;
-            if (contractSurfaces == null || contractSurfaces.Length == 0)
-                contractSurfaces = FindObjectsByType<UfoWashDirtSurface>();
+            if (customerShip == null)
+                contractSurfaces = FindObjectsByType<UfoWashDirtSurface>(FindObjectsSortMode.None);
+            if (contractSurfaces == null) contractSurfaces = System.Array.Empty<UfoWashDirtSurface>();
             customerNpc = FindAnyObjectByType<UfoWashCustomerNpc>();
             if (UfoWashHUD.Credits == 0) UfoWashHUD.Credits = 750;
         }
@@ -138,6 +157,14 @@ namespace UFOWASH
                 return;
             }
 
+            // Fail before accepting an unserviceable contract, never silently fall
+            // back to the old global tint or charge supplies for missing visuals.
+            foreach (var surface in contractSurfaces)
+                if (surface == null || !surface.PrepareCoating())
+                {
+                    LastMessage = "CONTRACT BLOCKED // HULL COATING SETUP FAILED // CHECK CONSOLE";
+                    return;
+                }
             activeOfferIndex = Mathf.Clamp(offerIndex, 0, OfferTitles.Length - 1);
             JobAccepted = true;
             CurrentStage = UfoWashToolMode.PreRinse;
@@ -154,9 +181,10 @@ namespace UFOWASH
         }
 
         public bool ApplyTool(UfoWashDirtSurface surface, UfoWashToolMode mode, float seconds,
-            Vector3 hitPoint, Vector3 hitNormal, float sprayRadius)
+            Vector3 hitPoint, Vector3 hitNormal, float sprayRadius, float power = 1f)
         {
-            if (!JobAccepted || surface == null || seconds <= 0f) return false;
+            if (!JobAccepted || surface == null || seconds <= 0f || !float.IsFinite(seconds) ||
+                !float.IsFinite(power) || power <= 0f) return false;
             if (!IsContractSurface(surface))
             {
                 LastMessage = "THIS SURFACE IS OUTSIDE THE ACTIVE SERVICE ORDER";
@@ -168,7 +196,13 @@ namespace UFOWASH
                 return false;
             }
 
-            float supplyCost = seconds * (mode == UfoWashToolMode.Foam ? 1.5f : 0.8f);
+            if (!surface.CoatingReady) return false;
+            float rate = mode == UfoWashToolMode.Foam ? 1.5f : 0.8f;
+            // A nearly empty tank buys only the remaining fraction of a frame.
+            // Pauses/stalls cannot grant seconds of free work for the last drop.
+            float available = mode == UfoWashToolMode.Foam ? Chemical : Water;
+            float actualSeconds = Mathf.Min(seconds, available / rate);
+            float supplyCost = actualSeconds * rate;
             if (mode == UfoWashToolMode.Foam)
             {
                 if (Chemical <= 0f) { LastMessage = "CHEMICAL EMPTY // REFILL AT SUPPLY STATION"; return false; }
@@ -180,7 +214,7 @@ namespace UFOWASH
                 Water = Mathf.Max(0f, Water - supplyCost);
             }
 
-            surface.Process(mode, seconds, hitPoint, hitNormal, sprayRadius);
+            surface.Process(mode, actualSeconds * power, hitPoint, hitNormal, sprayRadius);
             AdvanceStageIfReady();
             return true;
         }
@@ -239,6 +273,10 @@ namespace UFOWASH
             JobAccepted = false;
             CompletedJobs++;
             UfoWashHUD.Credits += payout;
+            LastPayout = payout;
+            LastReceipt = "GRADE " + grade + "  //  BASE " + basePayout + " + QUALITY " + qualityBonus +
+                " + TIP " + tip + " = " + payout + " CR\nREPUTATION " + Reputation.ToString("0.00") +
+                " STARS  //  JOBS CERTIFIED " + CompletedJobs;
             if (customerNpc != null) customerNpc.OnContractCompleted(grade, tip);
             if (customerShip != null) customerShip.DepartAndReturn();
             activeOfferIndex = -1;

@@ -1,3 +1,14 @@
+# 2026-11-24 — Cleaning and first-contract recovery source
+
+- Replaced whole-panel tint and independent foam objects with a bounded local coating overlay whose area-weighted cells drive panel progress.
+- Unified spray/camera targeting; tightened stage/supply/input guards, interaction range and final tank-fraction handling.
+- First equipment purchase now unlocks a switchable fan nozzle; cleaning power affects actual work.
+- Added original prototype tool pressure audio, readable zone/receipt/tool HUD feedback and removed accidental R-key job reset.
+- Builder changes add service-bay detail in a separate preview; asset import no longer overwrites the main scene.
+- Added 14 passing engine-independent C# coating checks and an unexecuted Unity Play Mode rule fixture for two contracts, supplies, payout, reputation and purchase.
+- Downloaded exact Unity 6000.6.10f1 Editor; version command succeeds. Isolated import/licensing verification remains separately reported in current status. No player build or gameplay screenshots produced; no runtime or visual acceptance claimed.
+- Preserved authored scenes, existing metadata, engine and package versions. Updated production and QA handoff records.
+
 # 2026-11-24 — Imported-project orientation
 
 - Confirmed the owner wants continued UFO WASH development toward Steam-quality gameplay, not a web conversion or a run-only setup.

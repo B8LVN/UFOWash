@@ -1,5 +1,7 @@
+modules = ["dotnet-8.0"]
 [nix]
 channel = "stable-25_05"
+packages = ["gtk3", "libGL", "xorg.libX11", "xorg.libXcursor", "xorg.libXrandr", "icu"]
 
 [agent]
 expertMode = true

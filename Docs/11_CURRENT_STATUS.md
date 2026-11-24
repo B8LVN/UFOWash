@@ -2,6 +2,24 @@
 
 **Last updated:** 2026-11-24
 
+## Active quality recovery — latest source state
+
+**Status: Implemented — unverified in Unity; acceptance remains Blocked.**
+
+- Local grime and persistent foam now share area-weighted surface cells; the old whole-renderer dirt tint and separate foam spheres were removed. Original hull materials and scene references are retained.
+- Camera and spray share contracted-panel targeting; valid stages/supplies gate active cleaning. Input focus/relock/menu handling and shoulder-camera interaction range were corrected in source.
+- Added a switchable wide fan nozzle as the first 200 GC purchase, actual cleaning-power effects, proportional last-drop supply use, stage-aware zone feedback, bounded HUD panels and a separate payout receipt.
+- Added original synthesized tool pressure audio. Starter-bay drain/manifold/signage and upper-hull access stairs/catwalk are builder source only, **not** a regenerated or visually reviewed scene. The older preserved main scene lacks elevated access and must not be assumed completable with local coating.
+- Import no longer replaces the main scene. The new **CREATE QUALITY PREVIEW (PRESERVE MAIN SCENE)** command generates a separate candidate scene. Existing scenes and existing metadata are unchanged.
+- **Executed:** 14 deterministic C# checks against the production coating-state class passed with .NET 8; 24 game/editor files passed C# 9 syntax parsing. `git diff --check` and tracked scene/metadata/package/settings preservation checks passed; five new metadata GUIDs are unique. These are not Unity API/shader compilation, physics or gameplay tests.
+- **Editor access:** downloaded the official Linux Unity 6000.6.10f1 Editor to ignored `generated-artifacts/unity-editor/`; `Editor/Unity -version` reports **6000.6.10f1**. Installed required GTK/GL/X11 libraries and ICU. Initial isolated import timed out because ICU was missing; after correction the licensing client connected, but Unity exited **198**, reporting **No valid Unity Editor license found**. Logs: ignored `generated-artifacts/unity-import.log` and `generated-artifacts/unity-import-with-icu.log`. No successful Unity script compilation/import occurred. The owner checkout was not opened in Unity.
+- **Required unblock:** activate this Editor through the owner's licensed Unity workflow, or provide an accessible licensed exact-version session. Do not supply credentials in chat or bypass licensing. Retrying unchanged cannot resolve this gate.
+- **Still required:** successful Unity import/compilation, the included two-contract rule fixture, real authored-bay Play Mode with manual controls, gameplay screenshots, audio review and coating/camera performance measurements. No player build was created.
+- Detailed changes, evidence boundary and exact acceptance sequence: `Docs/reports/QUALITY_RECOVERY_2026-11-24.md`.
+- GitHub Issue update remains unavailable: no linked issue URL/number or connected issue workflow was supplied. Do not claim an issue update or close an issue.
+
+Older sections below are historical and do not supersede this verification boundary.
+
 ## Imported checkout orientation — 2026-11-24
 
 - Owner requested development toward a Steam-quality game using Moon Sweepers, Schedule I and Aquapark Tycoon as references, rather than import/run setup.
