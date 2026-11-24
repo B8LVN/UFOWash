@@ -1,4 +1,6 @@
+using System;
 using NUnit.Framework;
+using UnityEngine;
 using UFOWASH;
 
 namespace UFOWASH.Tests.EditMode
@@ -12,7 +14,7 @@ namespace UFOWASH.Tests.EditMode
         UfoWashEconomyConfig config;
 
         [SetUp]
-        public void SetUp() => config = new UfoWashEconomyConfig();
+        public void SetUp() => config = ScriptableObject.CreateInstance<UfoWashEconomyConfig>();
 
         [Test]
         public void AC_E1_TipRateAtQualityBoundaries()
