@@ -146,6 +146,7 @@ Agent rules: Deleting (DeleteAsset, Destroy, script-delete, or AssetDatabase / F
 
 - `com.IvanMurzak.Unity.MCP.Editor.Rql.Modules.UnityCoreModule`
 - `com.IvanMurzak.Unity.MCP.Editor.Rql.ToolTypesModule`
+- `com.IvanMurzak.Unity.MCP.Editor.Rql.Mathematics.MathematicsModule`
 - `com.IvanMurzak.Unity.MCP.Editor.Rql.AssetStore.AssetStoreModule`
 - `com.IvanMurzak.Unity.MCP.Editor.Rql.Lighting.LightingModule`
 - `com.IvanMurzak.Unity.MCP.Editor.Rql.Physics3D.PhysicsModule`
